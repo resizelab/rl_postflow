@@ -37,8 +37,17 @@ class FrameIOClient:
         """
         self.config = config
         self.base_url = "https://api.frame.io/v2"
+        
+        # Support both dict and object configuration
+        self.api_token = getattr(config, 'api_token', config.get('api_token') if isinstance(config, dict) else None)
+        if not self.api_token:
+            raise ValueError("Frame.io API token is required")
+            
+        self.root_asset_id = getattr(config, 'root_asset_id', config.get('root_asset_id') if isinstance(config, dict) else None)
+        self.upload_enabled = getattr(config, 'upload_enabled', config.get('upload_enabled', True) if isinstance(config, dict) else True)
+        
         self.headers = {
-            "Authorization": f"Bearer {config.api_token}",
+            "Authorization": f"Bearer {self.api_token}",
             "Content-Type": "application/json"
         }
         self.project_info = None
@@ -124,7 +133,7 @@ class FrameIOClient:
         Returns:
             Asset ID if successful
         """
-        if not self.config.upload_enabled:
+        if not self.upload_enabled:
             logger.info("Upload disabled in config")
             return None
             

@@ -50,20 +50,25 @@ class DiscordNotifier:
         try:
             payload = {
                 "content": message,
-                "username": self.config.bot_name,
-                "avatar_url": self.config.avatar_url
+                "username": getattr(self.config, 'bot_name', 'PostFlow Bot'),
+                "avatar_url": getattr(self.config, 'avatar_url', None)
             }
             
             if embed:
                 payload["embeds"] = [embed]
             
-            response = requests.post(self.config.webhook_url, json=payload)
+            webhook_url = getattr(self.config, 'webhook_url', self.config.get('webhook_url') if isinstance(self.config, dict) else None)
+            if not webhook_url:
+                print("❌ Discord webhook URL not configured")
+                return False
+            
+            response = requests.post(webhook_url, json=payload)
             response.raise_for_status()
             
             print(f"📢 Discord notification sent: {message[:50]}...")
             return True
             
-        except requests.exceptions.RequestException as e:
+        except Exception as e:
             print(f"❌ Discord notification failed: {e}")
             return False
     

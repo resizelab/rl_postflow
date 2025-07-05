@@ -317,6 +317,93 @@ class LucidLinkWatcher:
             }
         return None
     
+    def _extract_shot_nomenclature(self, filename: str) -> str:
+        """
+        Extrait la nomenclature de shot d'un nom de fichier.
+        
+        Args:
+            filename: Nom du fichier
+            
+        Returns:
+            Nomenclature du shot (ex: UNDLM_12345)
+        """
+        import re
+        
+        # Pattern pour extraire la nomenclature (ex: UNDLM_12345, PROJECT_ABC123)
+        pattern = r'([A-Z]+_[A-Z0-9]+)'
+        match = re.search(pattern, filename)
+        
+        if match:
+            return match.group(1)
+        
+        # Pattern alternatif pour d'autres formats
+        pattern_alt = r'([A-Z][A-Z0-9]{2,}_[A-Z0-9]{3,})'
+        match_alt = re.search(pattern_alt, filename)
+        
+        if match_alt:
+            return match_alt.group(1)
+            
+        return ""
+    
+    def _extract_version(self, filename: str) -> int:
+        """
+        Extrait le numéro de version d'un nom de fichier.
+        
+        Args:
+            filename: Nom du fichier
+            
+        Returns:
+            Numéro de version (défaut: 1)
+        """
+        import re
+        
+        # Pattern pour extraire la version (ex: v001, v002, v123)
+        pattern = r'v(\d+)'
+        match = re.search(pattern, filename.lower())
+        
+        if match:
+            return int(match.group(1))
+        
+        # Version par défaut si pas trouvée
+        return 1
+    
+    def _should_process_file(self, filename: str) -> bool:
+        """
+        Détermine si un fichier doit être traité.
+        
+        Args:
+            filename: Nom du fichier
+            
+        Returns:
+            True si le fichier doit être traité
+        """
+        # Extensions vidéo acceptées
+        valid_extensions = {'.mov', '.mp4', '.avi', '.mkv', '.mxf', '.prores'}
+        
+        # Vérifier l'extension
+        file_path = Path(filename)
+        if file_path.suffix.lower() not in valid_extensions:
+            return False
+        
+        # Vérifier si le fichier contient une nomenclature valide
+        nomenclature = self._extract_shot_nomenclature(filename)
+        if not nomenclature:
+            return False
+        
+        # Ignorer les fichiers temporaires
+        if filename.startswith('.') or filename.startswith('~'):
+            return False
+        
+        # Ignorer les fichiers avec des patterns spécifiques
+        ignore_patterns = ['temp', 'tmp', 'backup', 'cache']
+        filename_lower = filename.lower()
+        
+        for pattern in ignore_patterns:
+            if pattern in filename_lower:
+                return False
+        
+        return True
+    
     def _handle_new_file(self, file_path: str, file_info: Dict[str, Any]):
         """Gère la détection d'un nouveau fichier."""
         filename = Path(file_path).name
@@ -414,6 +501,7 @@ class WorkflowTrigger:
         """
         self.frameio = frameio_client
         self.sheets = google_sheets_client
+        self.google_sheets = google_sheets_client  # Alias pour les tests
         self.discord = discord_notifier
         self.config = config
         self.error_handler = error_handler

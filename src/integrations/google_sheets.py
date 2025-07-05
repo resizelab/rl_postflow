@@ -43,6 +43,11 @@ class GoogleSheetsClient:
         self.worksheet = None
         self.last_sync_time = None
         
+        # Support both dict and object configuration
+        self.spreadsheet_id = getattr(config, 'spreadsheet_id', config.get('spreadsheet_id') if isinstance(config, dict) else None)
+        self.service_account_file = getattr(config, 'service_account_file', config.get('service_account_file') if isinstance(config, dict) else None)
+        self.worksheet_name = getattr(config, 'worksheet_name', config.get('worksheet_name', 'Shot Tracking') if isinstance(config, dict) else 'Shot Tracking')
+        
         # Column mapping for shot tracking
         self.columns = {
             'nomenclature': 'A',
@@ -68,7 +73,7 @@ class GoogleSheetsClient:
     def connect(self) -> bool:
         """Establish connection to Google Sheets."""
         try:
-            credentials_path = Path(self.config.credentials_file)
+            credentials_path = Path(self.service_account_file)
             if not credentials_path.exists():
                 logger.error(f"Credentials file not found: {credentials_path}")
                 return False
@@ -88,11 +93,11 @@ class GoogleSheetsClient:
             self.client = gspread.authorize(creds)
             
             # Open spreadsheet
-            self.spreadsheet = self.client.open_by_key(self.config.spreadsheet_id)
+            self.spreadsheet = self.client.open_by_key(self.spreadsheet_id)
             
             # Get or create worksheet
             try:
-                self.worksheet = self.spreadsheet.worksheet(self.config.worksheet_name)
+                self.worksheet = self.spreadsheet.worksheet(self.worksheet_name)
             except gspread.WorksheetNotFound:
                 self.worksheet = self.create_shot_tracking_worksheet()
             
