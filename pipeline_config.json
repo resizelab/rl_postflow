@@ -1,0 +1,36 @@
+{
+  "project_name": "UNDLM Documentary",
+  "discord": {
+    "webhook_url": "",
+    "channel_name": "postproduction",
+    "notifications_enabled": false
+  },
+  "lucidlink": {
+    "mount_path": "/path/to/lucidlink",
+    "verify_sources": true
+  },
+  "after_effects": {
+    "project_template": "templates/ae_template.aep",
+    "output_format": "mp4",
+    "render_settings": "high_quality"
+  },
+  "ebsynth": {
+    "settings_file": "ebsynth_settings.json",
+    "output_format": "png_sequence"
+  },
+  "frameio": {
+    "api_token": "",
+    "project_id": "",
+    "upload_enabled": false
+  },
+  "google_sheets": {
+    "credentials_file": "",
+    "spreadsheet_id": "",
+    "sync_enabled": false
+  },
+  "auto_processing": {
+    "enabled": false,
+    "batch_size": 5,
+    "delay_between_batches": 30
+  }
+}
