@@ -138,8 +138,11 @@ class TestErrorHandler:
         
         task_id = handler.add_task('success_task', {'value': 42})
         
-        # Attendre le traitement
-        time.sleep(1)
+        # Attendre le traitement avec timeout
+        timeout = 5
+        start_time = time.time()
+        while len(results) == 0 and time.time() - start_time < timeout:
+            time.sleep(0.1)
         
         handler.stop_processing()
         

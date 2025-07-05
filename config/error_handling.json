@@ -1,0 +1,27 @@
+{
+    "db_path": "data/postflow.db",
+    "retry_base_delay": 1.0,
+    "retry_backoff_factor": 2.0,
+    "max_retry_delay": 60.0,
+    "health_monitor": {
+        "check_interval": 60,
+        "alert_threshold": 3
+    },
+    "alerts": {
+        "email_enabled": false,
+        "discord_enabled": true
+    },
+    "watcher": {
+        "base_path": "/tmp/postflow_watch",
+        "watch_paths": [
+            "/tmp/postflow_watch/renders",
+            "/tmp/postflow_watch/sources"
+        ],
+        "poll_interval": 5.0
+    },
+    "dashboard": {
+        "host": "127.0.0.1",
+        "port": 5000,
+        "debug": true
+    }
+}

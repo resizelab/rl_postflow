@@ -6,6 +6,7 @@ from unittest.mock import Mock, patch
 from src.integrations.frameio import FrameIOClient
 from src.integrations.google_sheets import GoogleSheetsClient
 from src.integrations.discord import DiscordNotifier
+from src.utils.status_tracker import ShotStatus, PipelineStage
 
 
 class TestFrameIOIntegration:
@@ -35,10 +36,10 @@ class TestFrameIOIntegration:
         mock_response.json.return_value = {'id': 'new_folder_id'}
         mock_requests.post.return_value = mock_response
         
-        config = {
-            'api_token': 'test_token',
-            'root_asset_id': 'root_id'
-        }
+        config = Mock()
+        config.api_token = 'test_token'
+        config.root_folder_id = 'root_id'
+        config.project_id = 'project_id'
         
         client = FrameIOClient(config)
         folder_id = client.create_shot_folder_structure('UNDLM_12345')
@@ -49,16 +50,28 @@ class TestFrameIOIntegration:
     @patch('src.integrations.frameio.requests')
     def test_upload_video(self, mock_requests):
         """Test d'upload vidéo."""
-        # Mock de la réponse d'upload
-        mock_response = Mock()
-        mock_response.status_code = 201
-        mock_response.json.return_value = {'id': 'uploaded_asset_id'}
-        mock_requests.post.return_value = mock_response
-        
-        config = {
-            'api_token': 'test_token',
-            'root_asset_id': 'root_id'
+        # Mock pour la création d'asset
+        mock_asset_response = Mock()
+        mock_asset_response.status_code = 201
+        mock_asset_response.json.return_value = {
+            'id': 'uploaded_asset_id',
+            'upload_url': 'https://upload.frameio.com/test'
         }
+        mock_asset_response.raise_for_status.return_value = None
+        
+        # Mock pour l'upload
+        mock_upload_response = Mock()
+        mock_upload_response.status_code = 200
+        mock_upload_response.raise_for_status.return_value = None
+        
+        mock_requests.post.return_value = mock_asset_response
+        mock_requests.put.return_value = mock_upload_response
+        
+        config = Mock()
+        config.api_token = 'test_token'
+        config.root_folder_id = 'root_id'
+        config.project_id = 'project_id'
+        config.upload_enabled = True
         
         client = FrameIOClient(config)
         
@@ -106,6 +119,7 @@ class TestGoogleSheetsIntegration:
         mock_worksheet.get_all_values.return_value = [
             ['UNDLM_12345', 'Scene 1', 'Description', 'Pending', 'VFX', '50', '2024-01-01']
         ]
+        mock_worksheet.col_values.return_value = ['UNDLM_12345']
         mock_worksheet.find.return_value = Mock(row=1, col=1)
         mock_worksheet.update.return_value = True
         
@@ -113,10 +127,10 @@ class TestGoogleSheetsIntegration:
         mock_client.open_by_key.return_value = mock_sheet
         mock_sheet.worksheet.return_value = mock_worksheet
         
-        config = {
-            'service_account_file': 'credentials.json',
-            'spreadsheet_id': 'sheet_id'
-        }
+        config = Mock()
+        config.service_account_file = 'credentials.json'
+        config.spreadsheet_id = 'sheet_id'
+        config.worksheet_name = 'Sheet1'
         
         client = GoogleSheetsClient(config)
         # Mock la connexion établie
@@ -126,8 +140,8 @@ class TestGoogleSheetsIntegration:
         
         result = client.update_shot_status(
             'UNDLM_12345',
-            'In Review',
-            'VFX',
+            ShotStatus.REVIEW_UPLOADED,
+            PipelineStage.AFTER_EFFECTS,
             75,
             'Updated via PostFlow'
         )
