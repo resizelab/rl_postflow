@@ -3,7 +3,9 @@
   "discord": {
     "webhook_url": "",
     "channel_name": "postproduction",
-    "notifications_enabled": false
+    "notifications_enabled": false,
+    "bot_name": "RL PostFlow Bot",
+    "avatar_url": "https://cdn.discordapp.com/emojis/🎬.png"
   },
   "lucidlink": {
     "base_path": "/Volumes/resizelab/o2b-undllm",
@@ -25,12 +27,21 @@
   "frameio": {
     "api_token": "",
     "project_id": "",
-    "upload_enabled": false
+    "root_folder_id": "",
+    "upload_enabled": false,
+    "auto_notify": true,
+    "review_settings": {
+      "auto_approval": false,
+      "require_comments": true
+    }
   },
   "google_sheets": {
     "credentials_file": "",
     "spreadsheet_id": "",
-    "sync_enabled": false
+    "worksheet_name": "Shot Tracking",
+    "sync_enabled": false,
+    "auto_update": true,
+    "backup_enabled": true
   },
   "auto_processing": {
     "enabled": false,

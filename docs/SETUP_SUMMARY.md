@@ -121,9 +121,16 @@ src/
 ```
 
 ### 3. Configuration des Intégrations
-- Discord webhook pour notifications
-- Frame.io pour validation
-- Google Sheets pour suivi
+```bash
+# Configuration interactive
+python configure_integrations.py
+
+# Installation des dépendances
+pip install -r requirements.txt
+
+# Test des intégrations
+python test_integrations.py
+```
 
 ### 4. Tests de Production
 ```bash
@@ -147,7 +154,7 @@ python test_integrations_simple.py
 | Pipeline Python | ✅ | Développé et testé |
 | Sources | ⏳ | À ajouter dans `UNDLM_SOURCES/` |
 | Templates AE | ⏳ | À créer dans `TEMPLATES/` |
-| Intégrations | ⏳ | À configurer (webhooks, tokens) |
+| Intégrations | ⏳ | Configuration disponible avec `configure_integrations.py` |
 
 ## 🎉 Résultat
 **Pipeline UNDLM PostFlow prêt pour la production** avec architecture modulaire, structure serveur complète et outils de validation développés.
