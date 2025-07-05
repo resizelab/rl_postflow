@@ -1,13 +1,131 @@
-# Tests UNDLM PostFlow
+# Tests PostFlow
 
-Ce dossier contient tous les tests et scripts de validation pour le pipeline UNDLM PostFlow.
+Ce dossier contient tous les tests pour le système PostFlow. Les tests sont organisés de manière modulaire et utilisent pytest.
 
-## Structure des tests
+## 📁 Structure
 
-### 📋 Tests de validation
-- `setup_validation.py` - Validation complète du setup et configuration
-- `test_server_structure.py` - Test de la structure serveur LucidLink
-- `test_integrations_simple.py` - Test des intégrations et nomenclatures
+```
+tests/
+├── conftest.py                    # Configuration pytest et fixtures
+├── requirements-test.txt          # Dépendances pour les tests
+├── unit/                          # Tests unitaires
+│   ├── test_error_handler.py      # Tests du gestionnaire d'erreurs
+│   ├── test_file_watcher.py       # Tests du watcher de fichiers
+│   └── test_integrations.py       # Tests des intégrations
+├── integration/                   # Tests d'intégration
+│   ├── test_workflow.py           # Tests du workflow complet
+│   └── test_server_structure.py   # Tests de structure serveur
+└── fixtures/                      # Données de test
+    └── test_data.py               # Données communes
+```
+
+## 🚀 Exécution des tests
+
+### Installation des dépendances
+```bash
+pip install -r tests/requirements-test.txt
+```
+
+### Exécuter tous les tests
+```bash
+pytest tests/
+```
+
+### Exécuter les tests unitaires uniquement
+```bash
+pytest tests/unit/
+```
+
+### Exécuter les tests d'intégration uniquement
+```bash
+pytest tests/integration/
+```
+
+### Exécuter avec coverage
+```bash
+pytest tests/ --cov=src --cov-report=html
+```
+
+### Exécuter en parallèle
+```bash
+pytest tests/ -n auto
+```
+
+## 📋 Types de tests
+
+### Tests unitaires (`tests/unit/`)
+Tests des composants individuels :
+- **test_error_handler.py** : Gestionnaire d'erreurs, queue persistante, retries
+- **test_file_watcher.py** : Watcher de fichiers, détection d'événements
+- **test_integrations.py** : Intégrations Frame.io, Google Sheets, Discord
+
+### Tests d'intégration (`tests/integration/`)
+Tests du système complet :
+- **test_workflow.py** : Workflow end-to-end avec retries et gestion d'erreurs
+- **test_server_structure.py** : Structure et configuration du serveur
+
+## 🔧 Configuration
+
+### Fixtures pytest (conftest.py)
+- `temp_dir` : Dossier temporaire pour les tests
+- `test_db_path` : Base de données SQLite de test
+- `mock_config` : Configuration de test standard
+- `sample_file_event` : Événement de fichier de test
+- `mock_*_client` : Clients mockés pour les intégrations
+
+### Variables d'environnement
+```bash
+# Pour les tests d'intégration
+export FRAMEIO_API_TOKEN="test_token"
+export GOOGLE_SHEETS_CREDENTIALS="test_credentials.json"
+export DISCORD_WEBHOOK_URL="https://discord.com/api/webhooks/test"
+```
+
+## 📊 Coverage
+
+Objectif de coverage : **>90%**
+
+Zones critiques à tester :
+- ✅ Gestionnaire d'erreurs et retries
+- ✅ Queue persistante SQLite
+- ✅ File watcher et détection d'événements
+- ✅ Workflow complet avec intégrations
+- ✅ Gestion de pannes et robustesse
+
+## 🐛 Debug des tests
+
+### Logs détaillés
+```bash
+pytest tests/ -v -s --log-level=DEBUG
+```
+
+### Test spécifique
+```bash
+pytest tests/ -k "test_task_retry" -v
+```
+
+### Profiling des tests lents
+```bash
+pytest tests/ --durations=10
+```
+
+## ⚡ Tests rapides
+
+Pour les développements rapides, utilisez les marqueurs pytest :
+
+```bash
+# Tests rapides uniquement (< 1s)
+pytest tests/ -m "not slow"
+
+# Tests critiques uniquement
+pytest tests/ -m "critical"
+```
+
+Marqueurs disponibles :
+- `@pytest.mark.slow` : Tests lents (>5s)
+- `@pytest.mark.critical` : Tests critiques
+- `@pytest.mark.integration` : Tests d'intégration
+- `@pytest.mark.unit` : Tests unitaires
 
 ### 🚀 Exécution des tests
 

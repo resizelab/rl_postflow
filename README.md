@@ -30,7 +30,23 @@ RL PostFlow est un pipeline modulaire de post-production conçu pour gérer le w
 - **Frame.io** : Upload automatique pour review
 - **Google Sheets** : Synchronisation bidirectionnelle
 
-## 🚀 Installation & Utilisation
+## � Structure du Projet
+
+```
+rl_postflow/
+├── main.py                  # Point d'entrée principal
+├── dashboard.py             # Dashboard web de monitoring
+├── src/                     # Code source modulaire
+├── tests/                   # Tests organisés (unitaires/intégration)
+├── scripts/                 # Scripts utilitaires
+├── examples/                # Exemples et démos
+├── docs/                    # Documentation
+└── data/                    # Données et configuration
+```
+
+📖 **Documentation détaillée** : Voir [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
+
+## �🚀 Installation & Utilisation
 
 ### Prérequis
 ```bash
@@ -48,8 +64,9 @@ python -m venv .venv
 source .venv/bin/activate  # macOS/Linux
 # ou .venv\Scripts\activate  # Windows
 
-# Installer les dépendances
-pip install requests
+# Installation automatique des dépendances
+python scripts/install_dependencies.py
+
 ```
 
 ### Utilisation Rapide
@@ -62,23 +79,46 @@ python main.py
 
 #### 2. Export par Scène
 ```bash
-python export_by_scene.py
+python examples/export_by_scene.py
 ```
 **Résultat :** 25 fichiers JSON individuels par scène
 
 #### 3. Pipeline Complet (Démo)
 ```bash
-python pipeline_demo.py
+python examples/pipeline_demo.py
 ```
 **Résultat :** Démontre le workflow complet sur une scène
 
-## 📁 Structure du Projet
-
+#### 4. Dashboard de Monitoring
+```bash
+python dashboard.py
 ```
-rl_postflow/
-├── main.py                   # Parser et export de base
-├── pipeline_demo.py          # Démo pipeline complet  
-├── export_by_scene.py        # Export par scène
+**Résultat :** Interface web de monitoring du pipeline
+
+## 🧪 Tests
+
+### Exécution des Tests
+```bash
+# Tests rapides
+python scripts/quick_test.py
+
+# Tests unitaires
+pytest tests/unit/
+
+# Tests d'intégration
+pytest tests/integration/
+
+# Tous les tests avec coverage
+pytest tests/ --cov=src
+```
+
+### Structure des Tests
+- **`tests/unit/`** : Tests unitaires pour chaque module
+- **`tests/integration/`** : Tests d'intégration du workflow
+- **`tests/fixtures/`** : Données de test communes
+- **`tests/legacy/`** : Anciens tests (référence)
+
+📖 **Guide détaillé** : Voir [tests/README.md](tests/README.md)
 ├── pipeline_config.json      # Configuration pipeline
 ├── pipeline_status.json      # État temps réel des plans
 ├── data/
