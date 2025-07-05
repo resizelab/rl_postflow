@@ -6,13 +6,17 @@
     "notifications_enabled": false
   },
   "lucidlink": {
-    "mount_path": "/path/to/lucidlink",
-    "verify_sources": true
+    "base_path": "/Volumes/resizelab/o2b-undllm",
+    "volume_name": "o2b-undllm",
+    "auto_verify_sources": true,
+    "create_directories": true
   },
   "after_effects": {
-    "project_template": "templates/ae_template.aep",
-    "output_format": "mp4",
-    "render_settings": "high_quality"
+    "template_path": "UNDLM_SHOT_TEMPLATE.aep",
+    "export_format": "mov",
+    "resolution": "HD",
+    "frame_rate": 25,
+    "auto_render": false
   },
   "ebsynth": {
     "settings_file": "ebsynth_settings.json",

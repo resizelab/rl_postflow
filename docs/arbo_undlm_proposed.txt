@@ -1,0 +1,60 @@
+UNDLM_POSTFLOW_LUCIDLINK/
+├── 1_REF_FILES
+│   ├── 1_BRIEFS_AND_REPORTS
+│   ├── 2_FONTS
+│   ├── 3_LUTS
+│   ├── 4_REF
+│   │   ├── STYLE_GUIDES
+│   │   └── CHARACTER_SHEETS
+├── 2_IN
+│   └── _FROM_GRADING
+│       └── UNDLM_SOURCES/
+│           ├── UNDLM_00001_A_0002C123X250401_112218G6_UNDLM.mov
+│           ├── UNDLM_00002_B_0003D456Y270501_145632H7_UNDLM.mov
+│           └── ...                              # Clips individuels par plan
+├── 3_PROJECTS
+│   ├── 1_EDIT
+│   │   ├── _BACKUP
+│   │   ├── UNDLM_EDIT_v001.prproj
+│   │   └── zz_ASSIST
+│   ├── 2_VFX
+│   │   ├── _BACKUP
+│   │   ├── _TEMPLATES/
+│   │   │   ├── UNDLM_SHOT_TEMPLATE.aep        # Template de base
+│   │   │   └── EBSYNTH_SETUP.aep
+│   │   ├── MASTER/
+│   │   │   └── UNDLM_MASTER_v001.aep          # Projet master avec séquences
+│   │   └── SEQUENCES/
+│   │       ├── SC01_REVEIL_HOPITAL_JOUR/
+│   │       │   ├── 250707_SC01_REVEIL_HOPITAL_JOUR_v001.aep
+│   │       │   └── ...
+│   │       ├── SC02_COULOIR_HOPITAL_JOUR/
+│   │       │   ├── 250707_SC02_COULOIR_HOPITAL_JOUR_v001.aep
+│   │       │   └── ...
+│   │       └── ...                            # Séquences et numérotation provisoires
+
+│   └── 3_GRADING
+├── 4_OUT
+│   ├── 1_FROM_EDIT
+│   │   ├── 1_WIP
+│   │   └── 2_DEF
+│   ├── 2_FROM_VFX
+│   │   ├── BY_SHOT/
+│   │   │   ├── UNDLM_00001/
+│   │   │   │   ├── UNDLM_00001_v001.mov
+│   │   │   │   ├── UNDLM_00001_v002.mov
+│   │   │   │   └── ...
+│   │   │   └── ...
+│   │   ├── BY_SCENE/
+│   │   │   ├── SC01_REVEIL_HOPITAL_JOUR/
+│   │   │   └── ...
+│   │   └── ALL/
+│   │       ├── UNDLM_ALL_v001.mov
+│   │       └── ...
+│   └── 3_MIX
+│       ├── FOR_MIX
+│       └── FROM_MIX
+└── 5_DELIVERABLES
+    └── MASTER
+        ├── PRORES
+        └── PAD

@@ -246,9 +246,18 @@ Solution: Vérifier l'URL webhook dans pipeline_config.json
 ## 📞 Support
 
 Pour toute question ou amélioration, consultez :
+- **Documentation** : Voir le dossier [`docs/`](docs/) pour la documentation complète
+- **Tests** : Exécuter `python run_tests.py` pour valider le setup
 - **Logs** : Les messages détaillés apparaissent dans le terminal
 - **Dashboard** : `output/pipeline_dashboard.json` pour l'état complet
-- **Status** : `pipeline_status.json` pour le suivi individuel des plans
+- **Status** : `data/pipeline_status.json` pour le suivi individuel des plans
+
+## 📚 Documentation
+
+- [`docs/README.md`](docs/README.md) - Documentation complète
+- [`docs/SETUP_SUMMARY.md`](docs/SETUP_SUMMARY.md) - Résumé de configuration
+- [`docs/arbo_undlm_proposed.txt`](docs/arbo_undlm_proposed.txt) - Arborescence serveur
+- [`tests/README.md`](tests/README.md) - Guide des tests
 
 ## 📄 License
 
