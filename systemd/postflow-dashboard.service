@@ -1,0 +1,31 @@
+[Unit]
+Description=PostFlow Dashboard Service
+After=network.target
+Requires=network.target
+
+[Service]
+Type=simple
+User=postflow
+Group=postflow
+WorkingDirectory=/opt/postflow
+Environment=POSTFLOW_CONFIG=/etc/postflow/production.json
+Environment=PYTHONPATH=/opt/postflow/src
+ExecStart=/opt/postflow/venv/bin/gunicorn -w 4 -b 0.0.0.0:8080 --timeout 300 --worker-class eventlet --worker-connections 1000 dashboard:app
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=postflow-dashboard
+
+# Sécurité
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/postflow /var/log/postflow
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+[Install]
+WantedBy=multi-user.target

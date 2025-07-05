@@ -1,0 +1,28 @@
+[Unit]
+Description=PostFlow File Watcher Service
+After=network.target
+Requires=network.target
+
+[Service]
+Type=simple
+User=postflow
+Group=postflow
+WorkingDirectory=/opt/postflow
+Environment=POSTFLOW_CONFIG=/etc/postflow/production.json
+Environment=PYTHONPATH=/opt/postflow/src
+ExecStart=/opt/postflow/venv/bin/python main.py --config /etc/postflow/production.json
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=postflow-watcher
+
+# Sécurité
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/postflow /var/log/postflow /mnt/lucidlink
+
+[Install]
+WantedBy=multi-user.target

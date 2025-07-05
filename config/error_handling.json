@@ -9,7 +9,16 @@
     },
     "alerts": {
         "email_enabled": false,
-        "discord_enabled": true
+        "discord_enabled": true,
+        "discord_webhook_url": "https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN",
+        "email_config": {
+            "smtp_server": "smtp.gmail.com",
+            "smtp_port": 587,
+            "smtp_user": "your_email@gmail.com",
+            "smtp_password": "your_app_password",
+            "from_email": "your_email@gmail.com",
+            "to_emails": ["admin@yourcompany.com"]
+        }
     },
     "watcher": {
         "base_path": "/tmp/postflow_watch",

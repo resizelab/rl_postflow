@@ -1,0 +1,26 @@
+{
+  "frameio": {
+    "api_token": "fio-u-YOUR_API_TOKEN_HERE",
+    "base_url": "https://api.frame.io/v2",
+    "project_id": "YOUR_PROJECT_ID",
+    "team_id": "YOUR_TEAM_ID",
+    "timeout": 30,
+    "max_retries": 3,
+    "upload_enabled": true,
+    "auto_notify": true,
+    "webhook_url": "",
+    "chunk_size": 8388608,
+    "parallel_uploads": 2,
+    "review_settings": {
+      "enable_downloading": true,
+      "enable_comments": true,
+      "password_protected": false,
+      "auto_share": false
+    },
+    "notification_settings": {
+      "upload_complete": true,
+      "review_ready": true,
+      "comment_added": false
+    }
+  }
+}

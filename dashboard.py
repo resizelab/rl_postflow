@@ -25,9 +25,19 @@ except ImportError:
 from src.utils.error_handler import ErrorHandler, PersistentQueue
 from src.utils.file_watcher import LucidLinkWatcher
 
+# Importer les intégrations Frame.io
+try:
+    from src.integrations.frameio import FrameIOClient
+    FRAMEIO_AVAILABLE = True
+except ImportError:
+    FRAMEIO_AVAILABLE = False
+
 # Configuration du logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+if not FRAMEIO_AVAILABLE:
+    logger.warning("Frame.io integrations not available")
 
 # Initialiser Flask
 app = Flask(__name__)
@@ -37,6 +47,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 # Variables globales
 error_handler = None
 watcher = None
+frameio_integration = None
 config = {}
 
 
@@ -54,7 +65,7 @@ def load_config():
 
 def init_components():
     """Initialise les composants."""
-    global error_handler, watcher
+    global error_handler, watcher, frameio_integration
     
     try:
         error_handler = ErrorHandler(config)
@@ -62,6 +73,21 @@ def init_components():
         # Créer un watcher pour les stats (ne démarre pas automatiquement)
         watcher_config = config.get('watcher', {})
         watcher = LucidLinkWatcher(watcher_config, error_handler)
+        
+        # Initialize Frame.io integration
+        if FRAMEIO_AVAILABLE:
+            try:
+                frameio_config_path = Path("config/frameio_config.json")
+                if frameio_config_path.exists():
+                    with open(frameio_config_path, 'r') as f:
+                        frameio_config = json.load(f)
+                    frameio_integration = FrameIOClient(frameio_config)
+                    logger.info("Frame.io integration initialized")
+                else:
+                    logger.warning("Frame.io config not found")
+            except Exception as e:
+                logger.warning(f"Frame.io integration initialization failed: {e}")
+                frameio_integration = None
         
     except Exception as e:
         logger.error(f"Failed to initialize components: {e}")
@@ -206,6 +232,81 @@ def api_cleanup():
     except Exception as e:
         logger.error(f"Error during cleanup: {e}")
         return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/frameio/status')
+def api_frameio_status():
+    """API pour le statut Frame.io."""
+    if not FRAMEIO_AVAILABLE:
+        return jsonify({'error': 'Frame.io integration not available'}), 500
+    
+    try:
+        if frameio_integration:
+            status = frameio_integration.get_status()
+            return jsonify({
+                'success': True,
+                'status': status
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Frame.io client not initialized'
+            })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/api/frameio/projects')
+def api_frameio_projects():
+    """API pour récupérer les projets Frame.io."""
+    if not FRAMEIO_AVAILABLE or not frameio_integration:
+        return jsonify({'error': 'Frame.io integration not available'}), 500
+    
+    try:
+        projects = frameio_integration.get_projects()
+        return jsonify({
+            'success': True,
+            'projects': projects
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/api/frameio/upload', methods=['POST'])
+def api_frameio_upload():
+    """API pour upload de fichiers Frame.io."""
+    if not FRAMEIO_AVAILABLE or not frameio_integration:
+        return jsonify({'error': 'Frame.io integration not available'}), 500
+    
+    try:
+        data = request.get_json()
+        file_path = data.get('file_path')
+        
+        if not file_path:
+            return jsonify({
+                'success': False,
+                'error': 'File path required'
+            }), 400
+        
+        result = frameio_integration.upload_file(
+            file_path,
+            parent_id=data.get('parent_id'),
+            project_id=data.get('project_id'),
+            metadata=data.get('metadata', {})
+        )
+        
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 
 @socketio.on('connect')
