@@ -1,26 +1,16 @@
 {
-  "frameio": {
-    "api_token": "fio-u-YOUR_API_TOKEN_HERE",
-    "base_url": "https://api.frame.io/v2",
-    "project_id": "YOUR_PROJECT_ID",
-    "team_id": "YOUR_TEAM_ID",
-    "timeout": 30,
-    "max_retries": 3,
-    "upload_enabled": true,
-    "auto_notify": true,
-    "webhook_url": "",
-    "chunk_size": 8388608,
-    "parallel_uploads": 2,
-    "review_settings": {
-      "enable_downloading": true,
-      "enable_comments": true,
-      "password_protected": false,
-      "auto_share": false
-    },
-    "notification_settings": {
-      "upload_complete": true,
-      "review_ready": true,
-      "comment_added": false
-    }
-  }
+  "api_token": "fio-u-by9mZfSqXOoglkYg_iy8f4zs_LmYbZObiICcMnEtnyH-VAWb4P8CUt9qrIB-_eHY",
+  "base_url": "https://api.frame.io/v2",
+  "timeout": 30,
+  "max_retries": 3,
+  "upload_enabled": true,
+  "auto_notify": true,
+  "user_id": "8efd9b9f-5f67-47eb-b70f-03a021c92de5",
+  "user_name": "Xavier B",
+  "user_email": "boutin.xavier@gmail.com",
+  "team_id": "b4cec290-e059-4d16-bf36-b46383f35af6",
+  "project_id": "",
+  "chunk_size": 8388608,
+  "parallel_uploads": 2,
+  "review_settings": {}
 }
