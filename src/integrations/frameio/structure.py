@@ -9,7 +9,7 @@ from typing import List, Dict, Optional, Any
 from dataclasses import dataclass
 import logging
 
-from .auth import FrameIOAuth
+from .oauth_auth import FrameIOOAuthAuth
 
 logger = logging.getLogger(__name__)
 
@@ -41,14 +41,20 @@ class FrameIOFolder:
 class FrameIOStructureManager:
     """Gestionnaire de structure Frame.io v4 avec endpoints REST stricts"""
     
-    def __init__(self, auth: FrameIOAuth):
+    def __init__(self, auth: FrameIOOAuthAuth):
         self.auth = auth
-        self.account_id = os.getenv('FRAMEIO_ACCOUNT_ID')
-        self.workspace_id = os.getenv('FRAMEIO_WORKSPACE_ID')
-        self.base_url = os.getenv('FRAMEIO_BASE_URL', 'https://api.frame.io/v4')
+        self.config = getattr(auth, 'config', {})
         
-        if not self.account_id or not self.workspace_id:
-            raise ValueError("FRAMEIO_ACCOUNT_ID et FRAMEIO_WORKSPACE_ID sont requis")
+        # Récupérer les IDs depuis la config en priorité, puis les variables d'environnement
+        frameio_config = self.config.get('frameio', {})
+        self.account_id = frameio_config.get('account_id') or os.getenv('FRAMEIO_ACCOUNT_ID')
+        self.workspace_id = frameio_config.get('workspace_id') or os.getenv('FRAMEIO_WORKSPACE_ID')
+        self.base_url = frameio_config.get('base_url') or os.getenv('FRAMEIO_BASE_URL', 'https://api.frame.io/v4')
+        
+        if not self.account_id:
+            raise ValueError("account_id manquant dans la config frameio ou FRAMEIO_ACCOUNT_ID")
+        if not self.workspace_id:
+            raise ValueError("workspace_id manquant dans la config frameio ou FRAMEIO_WORKSPACE_ID")
     
     async def get_projects(self, workspace_id: Optional[str] = None) -> List[FrameIOProject]:
         """
@@ -100,27 +106,23 @@ class FrameIOStructureManager:
     
     async def get_project_by_id(self, project_id: str, workspace_id: Optional[str] = None) -> Optional[FrameIOProject]:
         """
-        Récupérer un projet spécifique
-        Endpoint: /accounts/{account_id}/workspaces/{workspace_id}/projects/{project_id}
+        Récupérer un projet par son ID en listant tous les projets du workspace
+        L'API v4 ne permet pas l'accès direct à un projet via son ID
         """
         try:
-            ws_id = workspace_id or self.config.workspace_id
-            headers = await self.auth.get_auth_headers()
-            url = f"{self.config.base_url}/accounts/{self.config.account_id}/workspaces/{ws_id}/projects/{project_id}"
+            ws_id = workspace_id or self.workspace_id
             
-            response = await self.auth._request_with_retry("GET", url, headers=headers)
-            project_data = response.json()
+            # Lister tous les projets du workspace
+            projects = await self.get_projects(ws_id)
             
-            return FrameIOProject(
-                id=project_data["id"],
-                name=project_data["name"],
-                workspace_id=ws_id,
-                account_id=self.config.account_id,
-                root_folder_id=project_data.get("root_folder_id"),
-                description=project_data.get("description"),
-                created_at=project_data.get("created_at"),
-                updated_at=project_data.get("updated_at")
-            )
+            # Chercher le projet avec l'ID correspondant
+            for project in projects:
+                if project.id == project_id:
+                    logger.info(f"Projet trouvé: {project.name} (ID: {project.id})")
+                    return project
+            
+            logger.warning(f"Projet avec ID {project_id} non trouvé dans le workspace {ws_id}")
+            return None
             
         except Exception as e:
             logger.error(f"Erreur récupération projet {project_id}: {e}")
@@ -133,11 +135,11 @@ class FrameIOStructureManager:
         Endpoint: /accounts/{account_id}/workspaces/{workspace_id}/projects/{project_id}/folders
         """
         try:
-            ws_id = workspace_id or self.config.workspace_id
-            headers = await self.auth.get_auth_headers()
+            ws_id = workspace_id or self.workspace_id
+            headers = await self.auth.get_headers()
             
             # Construire l'URL selon l'arborescence v4
-            url = f"{self.config.base_url}/accounts/{self.config.account_id}/workspaces/{ws_id}/projects/{project_id}/folders"
+            url = f"{self.base_url}/accounts/{self.account_id}/workspaces/{ws_id}/projects/{project_id}/folders"
             
             params = {}
             if parent_folder_id:
@@ -188,9 +190,9 @@ class FrameIOStructureManager:
         Endpoint: /accounts/{account_id}/workspaces/{workspace_id}/projects/{project_id}/folders
         """
         try:
-            ws_id = workspace_id or self.config.workspace_id
-            headers = await self.auth.get_auth_headers()
-            url = f"{self.config.base_url}/accounts/{self.config.account_id}/workspaces/{ws_id}/projects/{project_id}/folders"
+            ws_id = workspace_id or self.workspace_id
+            headers = await self.auth.get_headers()
+            url = f"{self.base_url}/accounts/{self.account_id}/workspaces/{ws_id}/projects/{project_id}/folders"
             
             payload = {
                 "name": name,

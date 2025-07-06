@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 from .lucidlink import LucidLinkIntegration
-from .frameio import FrameIOClient
+from .frameio import FrameioClient
 from .discord import DiscordNotifier
 
 logger = logging.getLogger(__name__)
@@ -79,7 +79,7 @@ class ReviewWorkflowManager:
             # Frame.io
             frameio_config = self.config.get('frameio', {})
             if frameio_config:
-                self.frameio = FrameIOClient(frameio_config)
+                self.frameio = FrameioClient(frameio_config)
             
             # Discord
             discord_config = self.config.get('discord', {})

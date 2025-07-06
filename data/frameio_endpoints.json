@@ -1,0 +1,2315 @@
+[
+  {
+    "method": "GET",
+    "path": "/v4/accounts",
+    "summary": "List accounts",
+    "description": "List accounts for the current user",
+    "parameters": [
+      {
+        "description": "Opaque Cursor query param for requests returning paginated results.\n<br/>\nNOTE: this value is auto-generated and included as part of links from a previous response. It is not intended to be human readable.\n",
+        "in": "query",
+        "name": "after",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestAfterOpaqueCursor"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "page_size",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestPageSize"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include_total_count",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/IncludeTotalCount"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/v4/accounts/{account_id}/comments/{comment_id}",
+    "summary": "Delete comment",
+    "description": "Delete comment from an asset.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "fd0325d6-89f8-4c2a-b7e0-663681964f8f",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "a7bcc82e-8bdd-43e4-b37b-5d70c61d1ba7",
+        "in": "path",
+        "name": "comment_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "204",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/v4/accounts/{account_id}/comments/{comment_id}",
+    "summary": "Show comment",
+    "description": "Show a single comment on a file.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "2c9e40d6-07c8-48f6-9919-069cf558a90c",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "63e7cbf8-278f-44f7-adf3-9eb902b131f2",
+        "in": "path",
+        "name": "comment_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include",
+        "required": false,
+        "schema": {
+          "description": "Include query parameter for comments",
+          "enum": [
+            "owner",
+            "replies"
+          ],
+          "example": "owner",
+          "title": "CommentInclude",
+          "type": "string"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/v4/accounts/{account_id}/comments/{comment_id}",
+    "summary": "Update comment",
+    "description": "Update comment on given asset.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "f19c77e7-c70f-4a70-a58c-bb0564a8f06a",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "d29c398d-fe0c-42f3-b35a-aa0535892970",
+        "in": "path",
+        "name": "comment_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/v4/accounts/{account_id}/files/{file_id}",
+    "summary": "Delete file",
+    "description": "Delete file by ID.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "eeac1248-0c74-4253-9c3d-945b0bf8f538",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "7896f950-3abd-43e4-9845-be5368ab4d54",
+        "in": "path",
+        "name": "file_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "204",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/v4/accounts/{account_id}/files/{file_id}",
+    "summary": "Show file",
+    "description": "Show file details.\n<br><br>\nUse the `include` query parameter to selectively include additional properties in the response.\n<br><br>\nNote: if you include `media_links.original` and the user does not have permission to download the file\nthen this endpoint will respond with a `403 Forbidden` error. If the content is inaccessible because\nwatermarking is required for this user and isn't supported by the requested media_links, then the request will\nsucceed but the unsupported media links will be set to null.\nSimilarly, if a requested transcode link does not exist for a particular file (e.g. including\n`media_links.video_h264_180` on a static image file) or transoding process hasn't completed\n(i.e. the file's `status` is \"uploaded\" rather than \"transcoded\"), then the link will also be set to null in\nthe response payload. In short, the client must handle null media links gracefully.\n",
+    "parameters": [
+      {
+        "description": "",
+        "example": "af57e0e1-0df1-4057-a710-31873c6673f9",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "817a4f0f-2ff4-425d-80c8-4bc0bd7ffeaa",
+        "in": "path",
+        "name": "file_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "examples": {
+          "creator_project": {
+            "summary": "include parameter for creator and project",
+            "value": "creator,project,project.owner"
+          },
+          "media_links": {
+            "summary": "include parameter for media links",
+            "value": "media_links.original,media_links.thumbnail,media_links.high_quality"
+          }
+        },
+        "in": "query",
+        "name": "include",
+        "required": false,
+        "schema": {
+          "description": "Supported include query parameter values for endpoints that return files with media links",
+          "enum": [
+            "media_links",
+            "media_links.original",
+            "media_links.thumbnail",
+            "media_links.video_h264_180",
+            "media_links.high_quality",
+            "media_links.efficient",
+            "creator",
+            "project",
+            "project.owner"
+          ],
+          "example": "project,project.owner,media_links.original,media_links.thumbnail,media_links.high_quality",
+          "title": "FileWithMediaLinksInclude",
+          "type": "string"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/v4/accounts/{account_id}/files/{file_id}/comments",
+    "summary": "List comments",
+    "description": "List comments on a given asset.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "088f7d25-ac9e-4a7e-a519-b6aa6f0c5786",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "5ff1c03f-5502-4b4b-961f-a39dc40130c5",
+        "in": "path",
+        "name": "file_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include",
+        "required": false,
+        "schema": {
+          "description": "Include query parameter for comments",
+          "enum": [
+            "owner",
+            "replies"
+          ],
+          "example": "owner",
+          "title": "CommentInclude",
+          "type": "string"
+        }
+      },
+      {
+        "description": "Opaque Cursor query param for requests returning paginated results.\n<br/>\nNOTE: this value is auto-generated and included as part of links from a previous response. It is not intended to be human readable.\n",
+        "in": "query",
+        "name": "after",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestAfterOpaqueCursor"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "page_size",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestPageSize"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include_total_count",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/IncludeTotalCount"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/v4/accounts/{account_id}/files/{file_id}/comments",
+    "summary": "Create comment",
+    "description": "Create a comment on a file.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "f273141c-14b6-4613-8a03-e6aadbecf3ed",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "ee25cc41-23a3-410b-b4b5-16783d8eb9a0",
+        "in": "path",
+        "name": "file_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "201",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/v4/accounts/{account_id}/folders/{folder_id}",
+    "summary": "Delete folder",
+    "description": "Delete folder by id.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "81a95b8b-bf36-48df-99fb-df8f09caba97",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "0295d2b8-0e1d-49af-a781-9f9cfbc16582",
+        "in": "path",
+        "name": "folder_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "204",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/v4/accounts/{account_id}/folders/{folder_id}",
+    "summary": "Show folder",
+    "description": "Show folder details.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "fa3a3a3f-f427-4638-8feb-341155367b29",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "bd440772-2ceb-40aa-b800-1344e2028a12",
+        "in": "path",
+        "name": "folder_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include",
+        "required": false,
+        "schema": {
+          "description": "Include query parameter for assets",
+          "enum": [
+            "creator",
+            "project"
+          ],
+          "example": "project,project.owner",
+          "title": "AssetInclude",
+          "type": "string"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/v4/accounts/{account_id}/folders/{folder_id}",
+    "summary": "Update folder",
+    "description": "Update folder details.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "390f1ff0-188e-46f4-801d-565846ec677d",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "84e2a515-8ad8-4639-9d8c-aa29fd740f0f",
+        "in": "path",
+        "name": "folder_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/v4/accounts/{account_id}/folders/{folder_id}/children",
+    "summary": "List folder children",
+    "description": "List the children in the given folder.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "482ad072-109a-496f-ae46-b5eeaf06d50d",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "765d1921-ad2b-44e1-9ca0-6515ed109475",
+        "in": "path",
+        "name": "folder_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include",
+        "required": false,
+        "schema": {
+          "description": "Include query parameter for assets",
+          "enum": [
+            "creator",
+            "project"
+          ],
+          "example": "project,project.owner",
+          "title": "AssetInclude",
+          "type": "string"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "type",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/ChildrenType"
+        }
+      },
+      {
+        "description": "Opaque Cursor query param for requests returning paginated results.\n<br/>\nNOTE: this value is auto-generated and included as part of links from a previous response. It is not intended to be human readable.\n",
+        "in": "query",
+        "name": "after",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestAfterOpaqueCursor"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "page_size",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestPageSize"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include_total_count",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/IncludeTotalCount"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/v4/accounts/{account_id}/folders/{folder_id}/files",
+    "summary": "Create file",
+    "description": "Create new file under parent folder. `Create file (local upload)` and `Create file (remote upload)` have replaced this endpoint.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "8187ab69-e862-40a4-a482-00f92504b90c",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "b26804c5-259d-4a49-8c6c-2ab7e38a6f1a",
+        "in": "path",
+        "name": "folder_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "201",
+      "202",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/v4/accounts/{account_id}/folders/{folder_id}/files/local_upload",
+    "summary": "Create file (local upload)",
+    "description": "Create new file under parent folder through local upload.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "7221aba3-1cd8-438e-834c-5d98abcd1c37",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "93f57d0d-a1d5-4385-84c4-6203eb7b7aa1",
+        "in": "path",
+        "name": "folder_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "201",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/v4/accounts/{account_id}/folders/{folder_id}/files/remote_upload",
+    "summary": "Create file (remote upload)",
+    "description": "Create new file under parent folder through remote upload.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "f4d43a13-695f-43f0-a1f2-612d4191fff1",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "eaa107bb-de23-488a-a8d2-d88dea932ed0",
+        "in": "path",
+        "name": "folder_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "202",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/v4/accounts/{account_id}/folders/{folder_id}/folders",
+    "summary": "Create folder",
+    "description": "Create a new folder inside the given <i>folder_id</i> path param.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "7727c9a6-b662-4051-ab33-c2febdd21928",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "c6af3509-1c0e-40e2-b4fb-f040ff355bcf",
+        "in": "path",
+        "name": "folder_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "201",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/v4/accounts/{account_id}/projects/{project_id}",
+    "summary": "Delete project",
+    "description": "Delete a project.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "ab5e9fcb-6240-4e30-8cf0-2d59637d0531",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "ab89fd18-bb93-43d7-85de-92085dac6a57",
+        "in": "path",
+        "name": "project_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "204",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/v4/accounts/{account_id}/projects/{project_id}",
+    "summary": "Show project",
+    "description": "Show project details.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "df4e271f-92a4-445a-8346-24cc6725282d",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "ac88910d-7da1-445a-938d-2405f3465053",
+        "in": "path",
+        "name": "project_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include",
+        "required": false,
+        "schema": {
+          "description": "Include query parameter for projects",
+          "enum": [
+            "owner"
+          ],
+          "example": "owner",
+          "title": "ProjectInclude",
+          "type": "string"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/v4/accounts/{account_id}/projects/{project_id}",
+    "summary": "Update project",
+    "description": "Update project details.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "8b8f357b-faed-4de5-b104-b218a79c2dfa",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "5c764096-d83a-488f-a313-cd42c8c623bb",
+        "in": "path",
+        "name": "project_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/v4/accounts/{account_id}/projects/{project_id}/shares",
+    "summary": "List shares",
+    "description": "List shares on a project",
+    "parameters": [
+      {
+        "description": "",
+        "example": "a5abb0f2-1341-4551-8f9d-f69608f00b65",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "0fae75a4-04c8-4df3-abdb-197fbe5268b0",
+        "in": "path",
+        "name": "project_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "Opaque Cursor query param for requests returning paginated results.\n<br/>\nNOTE: this value is auto-generated and included as part of links from a previous response. It is not intended to be human readable.\n",
+        "in": "query",
+        "name": "after",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestAfterOpaqueCursor"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "page_size",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestPageSize"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include_total_count",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/IncludeTotalCount"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/v4/accounts/{account_id}/projects/{project_id}/shares",
+    "summary": "Create share",
+    "description": "Create share",
+    "parameters": [
+      {
+        "description": "",
+        "example": "5d193cce-352b-4df7-9572-e53ae962cc1f",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "2d0eb249-0c35-483d-9cc4-7eca42d1a06c",
+        "in": "path",
+        "name": "project_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "201",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/v4/accounts/{account_id}/projects/{project_id}/users",
+    "summary": "List project user roles",
+    "description": "List user roles for a given project.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "52f93483-7111-46bc-bf51-048cf4e7344f",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "7cca295f-cb8b-4803-a82e-cd75321ed87b",
+        "in": "path",
+        "name": "project_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "Supports including deactivated users in the response. Default is false.",
+        "in": "query",
+        "name": "include_deactivated",
+        "required": false,
+        "schema": {
+          "type": "boolean"
+        }
+      },
+      {
+        "description": "Opaque Cursor query param for requests returning paginated results.\n<br/>\nNOTE: this value is auto-generated and included as part of links from a previous response. It is not intended to be human readable.\n",
+        "in": "query",
+        "name": "after",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestAfterOpaqueCursor"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "page_size",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestPageSize"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include_total_count",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/IncludeTotalCount"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/v4/accounts/{account_id}/projects/{project_id}/users/{user_id}",
+    "summary": "Remove a user from a given project",
+    "description": "Remove a user from a given project.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "f67e763a-71ee-4ed3-bfd2-178a21ca1801",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "ec0bf8b2-4bb9-4302-97a2-ce26350159ef",
+        "in": "path",
+        "name": "project_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "34176332-959e-4ac8-b336-a2e693a7cdf7",
+        "in": "path",
+        "name": "user_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "204",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/v4/accounts/{account_id}/projects/{project_id}/users/{user_id}",
+    "summary": "Update user roles for the given project",
+    "description": "Update user roles for the given project if the user is already added to the project. If the user is\n    not added to the project, the user will be added with the given role.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "0d41334e-1156-49fc-925d-fb5dd3abdcf2",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "f87a1b25-df96-4089-b8f6-16dfee6c2a46",
+        "in": "path",
+        "name": "project_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "9eb18920-6aec-42b4-a57a-a198107bf392",
+        "in": "path",
+        "name": "user_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/v4/accounts/{account_id}/shares/{share_id}",
+    "summary": "Delete share",
+    "description": "Delete a share",
+    "parameters": [
+      {
+        "description": "",
+        "example": "1d4de821-dde8-49db-9b96-2119ab9bfec6",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "26a1cbfa-9a80-44e4-b252-9ff05a0e7f2d",
+        "in": "path",
+        "name": "share_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "204",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/v4/accounts/{account_id}/shares/{share_id}",
+    "summary": "Show Share",
+    "description": "Show a single Share.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "c47911f4-c550-4758-b955-2285c91abef7",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "a0cedb43-4876-4562-9624-9164cbbac138",
+        "in": "path",
+        "name": "share_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/v4/accounts/{account_id}/shares/{share_id}",
+    "summary": "Update share",
+    "description": "Update share",
+    "parameters": [
+      {
+        "description": "",
+        "example": "757a51a8-2eca-49f4-81ba-879a0d03a91b",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "86152c2a-7b67-4723-9628-2ce0f0112e6c",
+        "in": "path",
+        "name": "share_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/v4/accounts/{account_id}/shares/{share_id}/assets",
+    "summary": "Add new asset to share",
+    "description": "Add new asset share",
+    "parameters": [
+      {
+        "description": "",
+        "example": "353a6387-663c-4111-8871-724b8daa1865",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "fb572942-9de1-448f-a282-615ff6442d0a",
+        "in": "path",
+        "name": "share_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/v4/accounts/{account_id}/shares/{share_id}/assets/{asset_id}",
+    "summary": "Remove asset from share",
+    "description": "Remove an asset currently in the share from that share",
+    "parameters": [
+      {
+        "description": "",
+        "example": "8164ff69-669d-4f91-bf7a-b7e4efd5bd7f",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "6c83cad7-df31-42fe-858b-d0fe654b2b31",
+        "in": "path",
+        "name": "share_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "90611600-2e63-47dd-a778-9d5dcb33fd31",
+        "in": "path",
+        "name": "asset_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/v4/accounts/{account_id}/shares/{share_id}/reviewers",
+    "summary": "Removes reviewers from secure share",
+    "description": "Removes reviewers from secure Share by three identifier types: `adobe_user_id`, `email`, and `user_id`.\n<br><br>\nA request can only include one identifier type parameter.\n",
+    "parameters": [
+      {
+        "description": "",
+        "example": "200f3bf3-ec00-427e-bc31-1d53e2c9cf9c",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "3fe0c45e-511e-4585-89f2-5e1ae3a0e00a",
+        "in": "path",
+        "name": "share_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "204",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/v4/accounts/{account_id}/shares/{share_id}/reviewers",
+    "summary": "List share reviewers",
+    "description": "List share reviewers",
+    "parameters": [
+      {
+        "description": "",
+        "example": "485960d6-2cee-4a73-83b5-cac9e03b0465",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "26abd5a9-2833-4738-bf44-19e568098670",
+        "in": "path",
+        "name": "share_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "Opaque Cursor query param for requests returning paginated results.\n<br/>\nNOTE: this value is auto-generated and included as part of links from a previous response. It is not intended to be human readable.\n",
+        "in": "query",
+        "name": "after",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestAfterOpaqueCursor"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "page_size",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestPageSize"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include_total_count",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/IncludeTotalCount"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/v4/accounts/{account_id}/shares/{share_id}/reviewers",
+    "summary": "Add reviewers to secure share",
+    "description": "Add reviewers to secure share by three identifier types: `adobe_user_id`, `email`, and `user_id`.\n<br><br>\nA request can only include one identifier type parameter.\n<br><br>\n`email` is the only identifier able to add reviewers to a Share who don't have a Frame account member on the account where the Share belongs.\n",
+    "parameters": [
+      {
+        "description": "",
+        "example": "a5d07564-bf58-4706-b2dd-1002ff4e7844",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "a1819e9c-c0f6-44b8-aeb7-7f2c6e06c692",
+        "in": "path",
+        "name": "share_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "204",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/v4/accounts/{account_id}/users",
+    "summary": "List account user roles",
+    "description": "List user roles for a given account.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "80b93824-b1b0-4d4a-8bd4-4f2b06f4e701",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "Supports including deactivated users in the response. Default is false.",
+        "in": "query",
+        "name": "include_deactivated",
+        "required": false,
+        "schema": {
+          "type": "boolean"
+        }
+      },
+      {
+        "description": "Opaque Cursor query param for requests returning paginated results.\n<br/>\nNOTE: this value is auto-generated and included as part of links from a previous response. It is not intended to be human readable.\n",
+        "in": "query",
+        "name": "after",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestAfterOpaqueCursor"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "page_size",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestPageSize"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include_total_count",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/IncludeTotalCount"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/v4/accounts/{account_id}/webhooks/{webhook_id}",
+    "summary": "Delete webhook",
+    "description": "Delete a webhook.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "3a5c6283-df28-437d-a290-770ed7b05a95",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "80297dad-063f-4c68-8213-d0ea1c2a23e0",
+        "in": "path",
+        "name": "webhook_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "204",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/v4/accounts/{account_id}/webhooks/{webhook_id}",
+    "summary": "Show webhook",
+    "description": "Show webhook details.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "43c166de-1d02-4cf4-a596-353b528aa9d6",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "eea815a0-dcba-4482-abfd-26c7b1c3776a",
+        "in": "path",
+        "name": "webhook_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include",
+        "required": false,
+        "schema": {
+          "description": "Include query parameter for webhooks",
+          "enum": [
+            "creator"
+          ],
+          "example": "creator",
+          "title": "Include",
+          "type": "string"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/v4/accounts/{account_id}/webhooks/{webhook_id}",
+    "summary": "Update webhook",
+    "description": "Update webhook details.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "b6889c91-3958-4930-b418-2c6d7ea8924d",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "3411b6c4-be50-4ae9-aa4d-eb63ae801ebc",
+        "in": "path",
+        "name": "webhook_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/v4/accounts/{account_id}/workspaces",
+    "summary": "List workspaces",
+    "description": "List workspaces for a given account.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "64dccaf9-0cec-4f3d-be91-135a7b10e233",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include",
+        "required": false,
+        "schema": {
+          "description": "Include query parameter for workspaces",
+          "enum": [
+            "creator"
+          ],
+          "example": "creator",
+          "title": "WorkspaceInclude",
+          "type": "string"
+        }
+      },
+      {
+        "description": "Opaque Cursor query param for requests returning paginated results.\n<br/>\nNOTE: this value is auto-generated and included as part of links from a previous response. It is not intended to be human readable.\n",
+        "in": "query",
+        "name": "after",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestAfterOpaqueCursor"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "page_size",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestPageSize"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include_total_count",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/IncludeTotalCount"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/v4/accounts/{account_id}/workspaces",
+    "summary": "Create workspace",
+    "description": "Create workspace from an account.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "05e258f2-4ba9-40e6-8e9e-7a7a4d55bd96",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "201",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/v4/accounts/{account_id}/workspaces/{workspace_id}",
+    "summary": "Delete workspace",
+    "description": "Delete workspace from account.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "59d504ce-d801-46cf-a5b6-d22f99d0ccd6",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "d950f68e-d7dd-4cfb-87d0-a29d277aaa48",
+        "in": "path",
+        "name": "workspace_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "204",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/v4/accounts/{account_id}/workspaces/{workspace_id}",
+    "summary": "Show workspace",
+    "description": "Show workspace details.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "a1887a6b-ac25-42eb-aedd-a8fb4be8fc6f",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "a297e625-0b53-4945-8d67-d661758adf45",
+        "in": "path",
+        "name": "workspace_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include",
+        "required": false,
+        "schema": {
+          "description": "Include query parameter for workspaces",
+          "enum": [
+            "creator"
+          ],
+          "example": "creator",
+          "title": "WorkspaceInclude",
+          "type": "string"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/v4/accounts/{account_id}/workspaces/{workspace_id}",
+    "summary": "Update workspace",
+    "description": "Update a workspace.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "10386f0d-3b7e-417c-ae1f-341764999844",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "99a80daa-9776-4324-a620-7ec7a5ed9542",
+        "in": "path",
+        "name": "workspace_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/v4/accounts/{account_id}/workspaces/{workspace_id}/projects",
+    "summary": "List projects",
+    "description": "List projects in a given workspace.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "072fd15e-2907-449e-aa5a-d44f5ac64b07",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "1066fc5f-6f66-4bc5-9235-5296fd23f1ae",
+        "in": "path",
+        "name": "workspace_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include",
+        "required": false,
+        "schema": {
+          "description": "Include query parameter for projects",
+          "enum": [
+            "owner"
+          ],
+          "example": "owner",
+          "title": "ProjectInclude",
+          "type": "string"
+        }
+      },
+      {
+        "description": "Opaque Cursor query param for requests returning paginated results.\n<br/>\nNOTE: this value is auto-generated and included as part of links from a previous response. It is not intended to be human readable.\n",
+        "in": "query",
+        "name": "after",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestAfterOpaqueCursor"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "page_size",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestPageSize"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include_total_count",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/IncludeTotalCount"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/v4/accounts/{account_id}/workspaces/{workspace_id}/projects",
+    "summary": "Create project",
+    "description": "Create project in a given workspace.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "45813b21-fe2c-4e3b-912f-b9951c6f0ce7",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "316fc9d1-8f7d-4e16-bd15-79c9dfd7f212",
+        "in": "path",
+        "name": "workspace_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "201",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/v4/accounts/{account_id}/workspaces/{workspace_id}/users",
+    "summary": "List workspace user roles",
+    "description": "List user roles for a given workspace.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "5b01299d-d37e-426d-8653-d37d321d746d",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "535bdd42-166c-40ba-b35d-cd75ed10292a",
+        "in": "path",
+        "name": "workspace_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "Supports including deactivated users in the response. Default is false.",
+        "in": "query",
+        "name": "include_deactivated",
+        "required": false,
+        "schema": {
+          "type": "boolean"
+        }
+      },
+      {
+        "description": "Opaque Cursor query param for requests returning paginated results.\n<br/>\nNOTE: this value is auto-generated and included as part of links from a previous response. It is not intended to be human readable.\n",
+        "in": "query",
+        "name": "after",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestAfterOpaqueCursor"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "page_size",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestPageSize"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include_total_count",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/IncludeTotalCount"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/v4/accounts/{account_id}/workspaces/{workspace_id}/users/{user_id}",
+    "summary": "Remove a user from a given workspace",
+    "description": "Remove a user from a given workspace.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "434f5ade-4091-4e9f-9e59-46d575f7bc7c",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "02f881e4-29ea-4540-99f6-05b8795dc85f",
+        "in": "path",
+        "name": "workspace_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "cc22cf7b-45c2-44ec-bc43-7ada94c01e8f",
+        "in": "path",
+        "name": "user_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "204",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/v4/accounts/{account_id}/workspaces/{workspace_id}/users/{user_id}",
+    "summary": "Update user roles for the given workspace",
+    "description": "Update user roles for the given workspace if the user is already added to the workspace. If the user is\n  not added to the workspace, the user will be added with the given role.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "3e64e1ca-b91d-426a-a9c7-d1e8b4ff8c29",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "637e904f-6958-4afe-9b98-47505d1a37aa",
+        "in": "path",
+        "name": "workspace_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "16a0f8ad-a7ff-4c8b-a41e-ba0fce120ad3",
+        "in": "path",
+        "name": "user_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/v4/accounts/{account_id}/workspaces/{workspace_id}/webhooks",
+    "summary": "List webhooks",
+    "description": "List webhooks for the given workspace.",
+    "parameters": [
+      {
+        "description": "",
+        "example": "33265398-cfb1-4f2e-aa9b-079604d41fa0",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "9ac0b107-7dc1-404f-9066-3a7b8be4bacc",
+        "in": "path",
+        "name": "workspace_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include",
+        "required": false,
+        "schema": {
+          "description": "Include query parameter for webhooks",
+          "enum": [
+            "creator"
+          ],
+          "example": "creator",
+          "title": "Include",
+          "type": "string"
+        }
+      },
+      {
+        "description": "Opaque Cursor query param for requests returning paginated results.\n<br/>\nNOTE: this value is auto-generated and included as part of links from a previous response. It is not intended to be human readable.\n",
+        "in": "query",
+        "name": "after",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestAfterOpaqueCursor"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "page_size",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/RequestPageSize"
+        }
+      },
+      {
+        "description": "",
+        "in": "query",
+        "name": "include_total_count",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/IncludeTotalCount"
+        }
+      }
+    ],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/v4/accounts/{account_id}/workspaces/{workspace_id}/webhooks",
+    "summary": "Create webhook",
+    "description": "Creates a single webhook with secret.<br/><br/>Valid events:<p><code>\nfile.created, file.deleted, file.ready, file.updated, file.upload.completed, file.versioned, file.copied, folder.created, folder.deleted, folder.updated, folder.copied, comment.completed, comment.created, comment.deleted, comment.uncompleted, comment.updated, metadata.value.updated, project.created, project.deleted, project.updated\n</code>\n</p>",
+    "parameters": [
+      {
+        "description": "",
+        "example": "9c0aa212-63bb-44fe-9bc2-bd44a88c3e49",
+        "in": "path",
+        "name": "account_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      },
+      {
+        "description": "",
+        "example": "cd91a116-96e9-4ea4-91f2-d671a1af2c0f",
+        "in": "path",
+        "name": "workspace_id",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        }
+      }
+    ],
+    "responses": [
+      "201",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/v4/me",
+    "summary": "User details",
+    "description": "Inspect details of the user associated with the bearer token.",
+    "parameters": [],
+    "responses": [
+      "200",
+      "400",
+      "401",
+      "403",
+      "404",
+      "422",
+      "429"
+    ]
+  }
+]

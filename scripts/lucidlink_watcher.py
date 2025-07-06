@@ -141,50 +141,124 @@ class LucidLinkWatcher(FileSystemEventHandler):
         # Save state
         self._save_state()
     
+    def on_created(self, event):
+        if not event.is_directory and event.src_path.endswith('.mov'):
+            file_path = Path(event.src_path)
+            nomenclature = self._extract_nomenclature_from_file(file_path)
+            if nomenclature and self._verify_nomenclature(nomenclature):
+                print(f"📁 Nouveau fichier détecté en temps réel: {file_path.name} ({nomenclature})")
+                self._process_file(file_path, nomenclature)
+                self._save_state()
+
     def _process_file(self, file_path: Path, nomenclature: str):
         """Process a single file (historical or new)"""
         try:
             # Wait a bit to ensure file is fully written (for new files)
             time.sleep(1)
-            
+            # Extraire la version avec padding
+            import re
+            import asyncio
+            match = re.search(r'_v(\d+)', file_path.name)
+            version = int(match.group(1)) if match else 1
+            version_padded = f"v{version:03d}"
+            print(f"🚀 Début du traitement du fichier {file_path} (version {version_padded})")
             # Scan for new exports
             new_exports = self.workflow_manager.scan_new_exports()
-            
             # Find the export that matches our file
             for export in new_exports:
                 if export.nomenclature == nomenclature and export.file_path == str(file_path):
-                    print(f"✅ Processing export: {export.nomenclature} v{export.version}")
-                    
-                    # Send notification
-                    self.workflow_manager.notify_new_export(export)
-                    
-                    # Send direct Discord notification
-                    if self.discord:
-                        self._send_file_ready_notification(export)
-                    
-                    # Save review state
+                    print(f"🚀 Upload du fichier {file_path} vers Frame.io (version {version_padded})...")
+                    try:
+                        folder_id = self.workflow_manager.config.get('frameio', {}).get('root_folder_id')
+                        project_id = self.workflow_manager.config.get('frameio', {}).get('project_id')
+                        workspace_id = self.workflow_manager.config.get('frameio', {}).get('workspace_id')
+                        scene_name = self._get_scene_name(nomenclature)
+                        print(f"[DEBUG] project_id: {project_id}, workspace_id: {workspace_id}, folder_id: {folder_id}, scene_name: {scene_name}")
+                        # Vérification création/récupération dossier scène
+                        try:
+                            structure_manager = getattr(self.workflow_manager.frameio.upload, 'structure_manager', None)
+                            if not structure_manager:
+                                print("[ERROR] structure_manager non trouvé dans FrameioClient.upload")
+                            else:
+                                scene_folder = asyncio.run(
+                                    structure_manager.find_or_create_scene_folder(
+                                        scene_name, project_id, workspace_id
+                                    )
+                                )
+                                if scene_folder:
+                                    print(f"[DEBUG] Dossier scène OK: {scene_folder.name} (id: {scene_folder.id})")
+                                    folder_id = scene_folder.id  # On utilise l'ID du dossier scène trouvé/créé
+                                else:
+                                    print(f"[ERROR] Impossible de créer/trouver le dossier scène: {scene_name}")
+                                    # Arrêt du traitement pour ce fichier, pas d'upload
+                                    return
+                        except Exception as e:
+                            print(f"[ERROR] Exception lors de la création/récupération du dossier scène: {e}")
+                        # Correction : appel direct au manager d'upload
+                        result = asyncio.run(
+                            self.workflow_manager.frameio.upload.upload_file(
+                                nomenclature,  # shot_id
+                                export.file_path,
+                                scene_name,
+                                folder_id,
+                                workspace_id=workspace_id,
+                                metadata={"description": f"Upload automatique {nomenclature}", "tags": [nomenclature, scene_name, version_padded]}
+                            )
+                        )
+                        if result and getattr(result, 'id', None):
+                            asset_id = getattr(result, 'id', 'N/A')
+                            print(f"✅ Upload terminé pour {file_path} (asset_id: {asset_id})")
+                            # Envoi notification Discord ici (unique, après upload)
+                            if hasattr(export, 'version'):
+                                version_to_notify = f"v{int(export.version):03d}"
+                            else:
+                                version_to_notify = version_padded
+                            self._send_file_ready_notification(export, version_to_notify)
+                        else:
+                            print(f"❌ Erreur upload Frame.io pour {file_path}: {result}")
+                            self._send_error_notification(file_path, version_padded, result)
+                    except Exception as e:
+                        print(f"❌ Exception upload Frame.io pour {file_path}: {e}")
+                        self._send_error_notification(file_path, version_padded, str(e))
                     self.workflow_manager.save_review_state()
                     break
             else:
                 print(f"⚠️  No matching export found for {nomenclature}")
-                
         except Exception as e:
             print(f"❌ Error processing file {file_path}: {e}")
+            self._send_error_notification(file_path, "N/A", str(e))
+
+    def _send_error_notification(self, file_path, version_padded, error_msg):
+        """Envoie une notification Discord en cas d'échec d'upload"""
+        if self.discord:
+            embed = {
+                "title": "❌ ERREUR UPLOAD FRAME.IO",
+                "description": f"Fichier **{Path(file_path).name}** ({version_padded})\nErreur : {error_msg}",
+                "color": 0xff0000,
+                "fields": [
+                    {"name": "Fichier", "value": Path(file_path).name, "inline": True},
+                    {"name": "Version", "value": version_padded, "inline": True},
+                    {"name": "Erreur", "value": str(error_msg), "inline": False}
+                ],
+                "footer": {"text": "Workflow PostFlow - Détection automatique"}
+            }
+            self.discord.send_message(
+                f"❌ **ERREUR UPLOAD FRAME.IO** - {Path(file_path).name} {version_padded}",
+                embed
+            )
+            print(f"📢 Discord error notification sent for {file_path} (version {version_padded})")
     
     def _verify_nomenclature(self, nomenclature: str) -> bool:
         """Verify UNDLM_XXXXX format"""
         import re
         return bool(re.match(r'^UNDLM_\d{5}$', nomenclature))
     
-    def _send_file_ready_notification(self, review_item):
-        """Send notification that file is ready for review"""
+    def _send_file_ready_notification(self, review_item, version_padded=None):
+        """Send notification that file is ready for review (unique, version padding)"""
         try:
-            # Format version with padding (v001, v002, etc.)
-            version_padded = f"v{review_item.version:03d}"
-            
-            # Get scene name from mapping
+            if version_padded is None:
+                version_padded = f"v{review_item.version:03d}"
             scene_name = self._get_scene_name(review_item.nomenclature)
-            
             embed = {
                 "title": "🎬 NOUVEAU FICHIER PRÊT",
                 "description": f"**{review_item.nomenclature}** {version_padded} vient d'être exporté",
@@ -200,12 +274,12 @@ class LucidLinkWatcher(FileSystemEventHandler):
                 ],
                 "footer": {"text": "Workflow PostFlow - Détection automatique"}
             }
-            
-            self.discord.send_message(
-                f"📂 **FICHIER DISPONIBLE** - {review_item.nomenclature}",
-                embed
-            )
-            
+            if self.discord:
+                self.discord.send_message(
+                    f"🎬 **NOUVEAU FICHIER PRÊT** - {review_item.nomenclature} {version_padded}",
+                    embed
+                )
+                print(f"📢 Discord notification sent: 🎬 **NOUVEAU FICHIER PRÊT** - {review_item.nomenclature} {version_padded}")
         except Exception as e:
             print(f"❌ Error sending notification: {e}")
     

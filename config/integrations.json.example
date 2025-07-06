@@ -1,28 +1,17 @@
+# Configuration avec tokens OAuth Frame.io
+
 {
-  "discord": {
-    "webhook_url": "YOUR_DISCORD_WEBHOOK_URL_HERE",
-    "username": "PostFlow BOT",
-    "avatar_url": "https://example.com/avatar.png",
-    "notifications": {
-      "file_detected": true,
-      "upload_success": true,
-      "upload_failed": true,
-      "workflow_complete": true
-    }
-  },
-  "lucidlink": {
-    "base_path": "/Volumes/your_lucidlink_mount",
-    "watch_paths": [
-      "4_OUT/2_FROM_VFX/BY_SHOT"
-    ],
-    "web_base_url": "https://your-lucidlink-domain.com",
-    "nomenclature_pattern": "^([A-Z]+_\\d+)_v(\\d+)\\.",
-    "file_extensions": [".mov", ".mp4", ".avi", ".mkv", ".mxf"]
-  },
   "frameio": {
-    "enabled": true,
-    "auto_upload": true,
-    "create_folders": true,
-    "notification_on_upload": true
+    "client_id": "YOUR_ADOBE_CLIENT_ID",
+    "client_secret": "YOUR_ADOBE_CLIENT_SECRET", 
+    "redirect_uri": "https://localhost:8080/callback",
+    "access_token": "YOUR_ACCESS_TOKEN",
+    "refresh_token": "YOUR_REFRESH_TOKEN",
+    "token_type": "Bearer",
+    "expires_in": 86399,
+    "scope": "email,openid,offline_access,profile,additional_info.roles,AdobeID",
+    "id_token": "YOUR_ID_TOKEN",
+    "last_updated": "2025-01-06T23:03:28.993335",
+    "method": "oauth_web_app"
   }
 }

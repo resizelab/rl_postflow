@@ -10,8 +10,9 @@ from typing import List, Dict, Optional, Any, Union
 from dataclasses import dataclass
 from pathlib import Path
 import logging
+import httpx
 
-from .auth import FrameIOAuth
+from .oauth_auth import FrameIOOAuthAuth
 from .structure import FrameIOStructureManager, FrameIOFolder
 
 logger = logging.getLogger(__name__)
@@ -61,16 +62,22 @@ class FrameIOUploadError(Exception):
 class FrameIOUploadManager:
     """Gestionnaire d'upload Frame.io v4 avec séquence recommandée"""
     
-    def __init__(self, auth: FrameIOAuth):
+    def __init__(self, auth: FrameIOOAuthAuth):
         self.auth = auth
-        self.account_id = os.getenv('FRAMEIO_ACCOUNT_ID')
-        self.workspace_id = os.getenv('FRAMEIO_WORKSPACE_ID')
-        self.base_url = os.getenv('FRAMEIO_BASE_URL', 'https://api.frame.io/v4')
+        
+        # Récupérer les IDs depuis la config en priorité, puis les variables d'environnement
+        config = getattr(auth, 'config', {})
+        frameio_config = config.get('frameio', {})
+        self.account_id = frameio_config.get('account_id') or os.getenv('FRAMEIO_ACCOUNT_ID')
+        self.workspace_id = frameio_config.get('workspace_id') or os.getenv('FRAMEIO_WORKSPACE_ID')
+        self.base_url = frameio_config.get('base_url') or os.getenv('FRAMEIO_BASE_URL', 'https://api.frame.io/v4')
         self.chunk_size = int(os.getenv('FRAMEIO_CHUNK_SIZE', '8388608'))
         self.parallel_uploads = int(os.getenv('FRAMEIO_PARALLEL_UPLOADS', '2'))
         
-        if not self.account_id or not self.workspace_id:
-            raise ValueError("FRAMEIO_ACCOUNT_ID et FRAMEIO_WORKSPACE_ID sont requis")
+        if not self.account_id:
+            raise ValueError("account_id manquant dans la config frameio ou FRAMEIO_ACCOUNT_ID")
+        if not self.workspace_id:
+            raise ValueError("workspace_id manquant dans la config frameio ou FRAMEIO_WORKSPACE_ID")
         
         self.structure_manager = FrameIOStructureManager(auth)
     
@@ -122,7 +129,7 @@ class FrameIOUploadManager:
             if metadata.tags:
                 payload["tags"] = metadata.tags
             
-            response = await self.auth._request_with_retry("POST", url, headers=headers, json=payload)
+            response = await self.auth._request_with_retry("POST", url, json=payload)
             file_data = response.json()
             
             frameio_file = FrameIOFile(
@@ -365,3 +372,188 @@ class FrameIOUploadManager:
         except Exception as e:
             logger.error(f"Erreur batch upload: {e}")
             return [None] * len(files_metadata)
+    
+    async def remote_upload_file(self, shot_id: str, file_path: str, scene_name: str,
+                                project_id: Optional[str] = None, workspace_id: Optional[str] = None,
+                                metadata: Optional[Dict[str, Any]] = None,
+                                public_url: Optional[str] = None) -> Optional[FrameIOFile]:
+        """
+        Upload d'un fichier via remote_upload (URL publique) pour éviter les problèmes S3
+        
+        Args:
+            shot_id: ID du plan (ex: "UNDLM_00412")
+            file_path: Chemin vers le fichier à uploader
+            scene_name: Nom de la scène (ex: "DOUANE MER - JOUR")
+            project_id: ID du projet Frame.io (optionnel)
+            workspace_id: ID du workspace (optionnel) 
+            metadata: Métadonnées additionnelles (optionnel)
+            public_url: URL publique du fichier si déjà disponible (optionnel)
+        
+        Returns:
+            FrameIOFile si succès, None sinon
+        """
+        try:
+            file_path_obj = Path(file_path)
+            if not file_path_obj.exists():
+                raise FileNotFoundError(f"Fichier non trouvé: {file_path}")
+            
+            # Extraire version depuis le nom du fichier
+            filename = file_path_obj.name
+            version = "v001"  # Par défaut
+            if "_v" in filename:
+                try:
+                    version_part = filename.split("_v")[1].split(".")[0]
+                    if version_part.isdigit():
+                        version = f"v{int(version_part):03d}"
+                except:
+                    pass
+            
+            # Préparer les métadonnées
+            upload_metadata = UploadMetadata(
+                shot_id=shot_id,
+                scene_name=scene_name,
+                version=version,
+                file_path=str(file_path),
+                nomenclature=shot_id,
+                description=metadata.get("description") if metadata else f"Plan {shot_id} - {scene_name}",
+                tags=metadata.get("tags") if metadata else [shot_id, scene_name, version]
+            )
+            
+            # 1. Trouver ou créer le dossier de la scène
+            proj_id = project_id or os.getenv("FRAMEIO_DEFAULT_PROJECT_ID")
+            scene_folder = await self.structure_manager.find_or_create_scene_folder(
+                scene_name, proj_id, workspace_id
+            )
+            
+            if not scene_folder:
+                raise Exception(f"Impossible de créer/trouver le dossier pour la scène: {scene_name}")
+            
+            logger.info(f"Remote upload de {filename} vers la scène {scene_name}")
+            
+            # 2. Si pas d'URL publique fournie, en créer une temporaire
+            if not public_url:
+                public_url = await self._create_temporary_public_url(file_path)
+                if not public_url:
+                    logger.warning("Impossible de créer une URL publique, fallback vers upload local")
+                    return await self.upload_file(shot_id, file_path, scene_name, 
+                                                 project_id, workspace_id, metadata)
+            
+            # 3. Utiliser le remote_upload endpoint
+            frameio_file = await self._remote_upload_from_url(
+                filename, public_url, scene_folder.id, workspace_id
+            )
+            
+            if not frameio_file:
+                raise Exception("Échec du remote upload")
+            
+            # 4. Attendre le traitement (optionnel, le remote_upload peut prendre du temps)
+            logger.info(f"Remote upload initié: {shot_id} - {filename} (statut: {frameio_file.status})")
+            
+            # Attendre quelques secondes puis vérifier le statut
+            await asyncio.sleep(5)
+            final_status = await self._check_file_status(frameio_file.id, workspace_id)
+            
+            if final_status:
+                frameio_file.status = final_status
+                logger.info(f"Statut final du fichier: {final_status}")
+            
+            return frameio_file
+            
+        except Exception as e:
+            logger.error(f"Erreur remote upload fichier {shot_id}: {e}")
+            return None
+    
+    async def _create_temporary_public_url(self, file_path: str) -> Optional[str]:
+        """
+        Crée une URL publique temporaire pour le fichier local
+        
+        Note: Cette méthode devrait idéalement utiliser un service cloud (S3, etc.)
+        Pour l'instant, retourne None pour forcer l'utilisation d'une URL externe
+        """
+        # TODO: Implémenter un upload temporaire vers un service cloud
+        # En attendant, on peut utiliser un serveur local ou un service tiers
+        logger.warning("Création d'URL publique temporaire non implémentée")
+        return None
+    
+    async def _remote_upload_from_url(self, filename: str, source_url: str, 
+                                     folder_id: str, workspace_id: str) -> Optional[FrameIOFile]:
+        """
+        Utilise l'endpoint /files/remote_upload pour uploader depuis une URL
+        """
+        try:
+            # Préparer le payload pour remote_upload
+            payload = {
+                "data": {
+                    "name": filename,
+                    "source_url": source_url
+                }
+            }
+            
+            # Ajouter le folder_id si fourni
+            if folder_id:
+                payload["data"]["folder_id"] = folder_id
+            
+            # Faire la requête
+            headers = await self.auth.get_headers()
+            
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    f"{self.base_url}/files/remote_upload",
+                    json=payload,
+                    headers=headers,
+                    timeout=30.0
+                )
+                
+                if response.status_code == 201:
+                    file_data = response.json().get("data", {})
+                    
+                    # Créer l'objet FrameIOFile
+                    frameio_file = FrameIOFile(
+                        id=file_data.get("id"),
+                        name=file_data.get("attributes", {}).get("name"),
+                        size=file_data.get("attributes", {}).get("file_size", 0),
+                        status=file_data.get("attributes", {}).get("status", "uploading"),
+                        folder_id=folder_id,
+                        project_id=file_data.get("attributes", {}).get("project_id"),
+                        workspace_id=workspace_id,
+                        account_id=file_data.get("attributes", {}).get("account_id"),
+                        created_at=file_data.get("attributes", {}).get("created_at"),
+                        updated_at=file_data.get("attributes", {}).get("updated_at")
+                    )
+                    
+                    logger.info(f"Remote upload initié avec succès: {filename} (id: {frameio_file.id})")
+                    return frameio_file
+                else:
+                    logger.error(f"Échec remote upload: {response.status_code} - {response.text}")
+                    return None
+                    
+        except Exception as e:
+            logger.error(f"Erreur lors du remote upload: {e}")
+            return None
+    
+    async def _check_file_status(self, file_id: str, workspace_id: str) -> Optional[str]:
+        """
+        Vérifie le statut d'un fichier dans Frame.io
+        """
+        try:
+            headers = await self.auth.get_headers()
+            
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    f"{self.base_url}/files/{file_id}",
+                    headers=headers,
+                    timeout=10.0
+                )
+                
+                if response.status_code == 200:
+                    file_data = response.json().get("data", {})
+                    status = file_data.get("attributes", {}).get("status")
+                    logger.info(f"Statut du fichier {file_id}: {status}")
+                    return status
+                else:
+                    logger.error(f"Erreur vérification statut: {response.status_code}")
+                    return None
+                    
+        except Exception as e:
+            logger.error(f"Erreur lors de la vérification du statut: {e}")
+            return None
