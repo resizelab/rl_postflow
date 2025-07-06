@@ -2,6 +2,41 @@
 
 Ce dossier contient les scripts utilitaires pour PostFlow.
 
+## 🎬 Frame.io Integration
+- `configure_frameio.py` - Configuration Frame.io générale
+- `configure_frameio_project.py` - Configuration et sélection du projet Frame.io
+- `setup_frameio.py` - Configuration Developer Token
+
+## 🔧 Scripts de configuration
+- `configure_error_handling.py` - Configuration interactive du gestionnaire d'erreurs
+- `configure_integrations.py` - Configuration des intégrations (Discord, LucidLink)
+- `setup_integrations.py` - Installation des intégrations
+- `setup_review_workflow.py` - Configuration du workflow de review
+- `install_dependencies.py` - Installation automatique des dépendances
+
+## 📊 Scripts de monitoring
+- `daily_report.py` - Génération de rapports quotidiens
+- `lucidlink_watcher.py` - Surveillance temps réel des exports LucidLink
+
+## 🎮 Scripts de démonstration
+- `demos/demo_review_workflow.py` - Démonstration du workflow de review
+- `demos/quick_test.py` - Tests rapides
+
+## 🧪 Scripts de test
+Tous les scripts de test sont maintenant dans le dossier `tests/` :
+- `tests/integration/` - Tests d'intégration
+- `tests/unit/` - Tests unitaires
+
+## 📁 Structure organisée
+```
+scripts/
+├── configure_*.py      # Configuration des composants
+├── setup_*.py         # Installation et configuration initiale
+├── daily_report.py    # Monitoring et rapports
+├── lucidlink_watcher.py # Surveillance
+└── demos/            # Démonstrations
+```Ce dossier contient les scripts utilitaires pour PostFlow.
+
 ## 🎬 Frame.io Integration (Nouveau)
 - `configure_frameio.py` - 🎯 Assistant principal Frame.io
 - `setup_frameio.py` - � Configuration Developer Token (solution immédiate)

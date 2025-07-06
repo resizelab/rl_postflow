@@ -18,7 +18,7 @@ class LucidLinkIntegration:
     
     def __init__(self, config: Dict):
         self.config = config
-        self.base_path = Path(config.get('base_path', '/Volumes/UNDLM_POSTFLOW_LUCIDLINK'))
+        self.base_path = Path(config.get('base_path', '/Volumes/resizelab/o2b-undllm'))
         self.sources_path = self.base_path / "2_IN" / "_FROM_GRADING" / "UNDLM_SOURCES"
         self.vfx_projects_path = self.base_path / "3_PROJECTS" / "2_VFX"
         self.vfx_sequences_path = self.base_path / "3_PROJECTS" / "2_VFX" / "SEQUENCES"
@@ -291,3 +291,24 @@ class LucidLinkIntegration:
         except Exception as e:
             logger.error(f"Error creating folder structure for {scene_name}: {e}")
             return False
+    
+    def generate_web_link(self, file_path: str) -> str:
+        """
+        Generate a web link for a file in LucidLink
+        
+        Args:
+            file_path: Relative path to the file from base_path
+            
+        Returns:
+            Web link to the file
+        """
+        # Base URL for LucidLink web access
+        base_url = self.config.get('base_url', 'https://lucidlink.com')
+        
+        # Normalize the file path
+        file_path = file_path.replace('\\', '/').lstrip('/')
+        
+        # Generate the web link
+        web_link = f"{base_url}/file/{file_path}"
+        
+        return web_link

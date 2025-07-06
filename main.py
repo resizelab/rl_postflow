@@ -16,6 +16,9 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 from src.parsers.csv_parser import parse_shots_csv
 from src.exporters.output_generator import export_post_production_data
 from src.integrations.frameio import FrameIOClient
+from src.integrations.discord import DiscordNotifier, DiscordConfig
+from src.integrations.lucidlink import LucidLinkIntegration
+from src.integrations.review_workflow import ReviewWorkflowManager
 
 
 def main():
@@ -31,17 +34,82 @@ def main():
         print(f"❌ Error: CSV file not found at {csv_file}")
         return
     
+    # Initialize Discord notifier
+    discord_notifier = None
     try:
+        # Load integrations configuration
+        integrations_config_path = project_root / "config" / "integrations.json"
+        if integrations_config_path.exists():
+            with open(integrations_config_path, 'r') as f:
+                integrations_config = json.load(f)
+            
+            discord_config = integrations_config.get('discord', {})
+            if discord_config.get('webhook_url'):
+                discord_config_obj = DiscordConfig(
+                    webhook_url=discord_config['webhook_url'],
+                    bot_name=discord_config.get('username', 'PostFlow BOT'),
+                    avatar_url=discord_config.get('avatar_url', '')
+                )
+                discord_notifier = DiscordNotifier(discord_config_obj)
+                print("✅ Discord notifications enabled")
+            else:
+                print("⚠️  Discord webhook not configured")
+        else:
+            print("⚠️  Integrations configuration not found")
+    except Exception as e:
+        print(f"⚠️  Discord initialization failed: {e}")
+    
+    # Send pipeline start notification
+    if discord_notifier:
+        discord_notifier.send_message("🚀 **Pipeline Started** - Processing UNDLM documentary shots")
+    
+    try:
+        # Initialize integrations
+        print("🔧 Initializing Integrations...")
+        frameio_client = None
+        lucidlink_client = None
+        
+        # Initialize LucidLink
+        lucidlink_config = integrations_config.get('lucidlink', {})
+        if not lucidlink_config:
+            # Default LucidLink configuration
+            lucidlink_config = {
+                'base_path': '/Volumes/resizelab/o2b-undllm',
+                'watch_folders': True,
+                'notifications_enabled': True
+            }
+        
+        try:
+            lucidlink_client = LucidLinkIntegration(lucidlink_config)
+            if lucidlink_client.connected:
+                print("✅ LucidLink connected")
+                # Send LucidLink status notification
+                if discord_notifier:
+                    stats = lucidlink_client.get_project_stats()
+                    embed = {
+                        "title": "📁 LucidLink Status",
+                        "description": f"Connected to volume: o2b-undllm",
+                        "color": 0x00ff00,
+                        "fields": [
+                            {"name": "Total Sources", "value": str(stats.get('total_sources', 'N/A')), "inline": True},
+                            {"name": "AE Projects", "value": str(stats.get('ae_projects', 'N/A')), "inline": True},
+                            {"name": "Completed Shots", "value": str(stats.get('completed_shots', 'N/A')), "inline": True}
+                        ]
+                    }
+                    discord_notifier.send_message("🔗 **LucidLink Connected**", embed)
+            else:
+                print("⚠️  LucidLink not accessible")
+        except Exception as e:
+            print(f"⚠️  LucidLink initialization failed: {e}")
+            
         # Initialize Frame.io client
         print("🔧 Initializing Frame.io Client...")
-        frameio_client = None
         
         # Load Frame.io configuration
         frameio_config_path = project_root / "config" / "frameio_config.json"
         if frameio_config_path.exists():
             with open(frameio_config_path, 'r') as f:
-                config_data = json.load(f)
-            frameio_config = config_data.get('frameio', {})
+                frameio_config = json.load(f)  # Configuration directe
             
             try:
                 frameio_client = FrameIOClient(frameio_config)
@@ -55,12 +123,64 @@ def main():
             except Exception as e:
                 print(f"   ⚠️  Frame.io initialization failed: {e}")
                 frameio_client = None
-        else:
-            print("   ⚠️  Frame.io configuration not found")
+        # Initialize Review Workflow Manager
+        print("🔧 Initializing Review Workflow...")
+        try:
+            review_manager = ReviewWorkflowManager(integrations_config)
+            print("✅ Review Workflow initialized")
+            
+            # Scan for new exports
+            new_exports = review_manager.scan_new_exports()
+            if new_exports:
+                print(f"🔍 Found {len(new_exports)} new exports")
+                
+                # Notify about new exports
+                for export in new_exports:
+                    review_manager.notify_new_export(export)
+                    
+                # Save review state
+                review_manager.save_review_state()
+                
+                # Send summary notification
+                if discord_notifier:
+                    stats = review_manager.get_review_stats()
+                    embed = {
+                        "title": "📊 Review Status Summary",
+                        "description": f"Detected {len(new_exports)} new exports",
+                        "color": 0x00ff00,
+                        "fields": [
+                            {"name": "New Exports", "value": str(len(new_exports)), "inline": True},
+                            {"name": "Total Items", "value": str(stats['total_items']), "inline": True},
+                            {"name": "Pending Action", "value": str(stats['pending_action']), "inline": True},
+                            {"name": "In Review", "value": str(stats['in_review']), "inline": True},
+                            {"name": "Approved", "value": str(stats['approved']), "inline": True},
+                            {"name": "Rejected", "value": str(stats['rejected']), "inline": True}
+                        ]
+                    }
+                    discord_notifier.send_message("📋 **Review Workflow Status**", embed)
+            else:
+                print("📁 No new exports found")
+        except Exception as e:
+            print(f"⚠️  Review Workflow initialization failed: {e}")
+            review_manager = None
         
         # Parse CSV file
         print(f"\n📂 Processing file: {csv_file}")
         post_production_data = parse_shots_csv(str(csv_file))
+        
+        # Send parsing completion notification
+        if discord_notifier:
+            embed = {
+                "title": "📊 CSV Parsing Completed",
+                "description": f"Successfully parsed {post_production_data.project_info.total_shots} shots",
+                "color": 0x00ff00,
+                "fields": [
+                    {"name": "Total Shots", "value": str(post_production_data.project_info.total_shots), "inline": True},
+                    {"name": "Unique Scenes", "value": str(post_production_data.project_info.unique_scenes), "inline": True},
+                    {"name": "Source Files", "value": str(len(post_production_data.project_info.source_files)), "inline": True}
+                ]
+            }
+            discord_notifier.send_message("📋 **CSV Parsing Results**", embed)
         
         # Display results
         print("\n📊 PARSING RESULTS:")
@@ -105,6 +225,8 @@ def main():
         
         # Check for nomenclature gaps
         gaps = post_production_data.get_nomenclature_gaps()
+        deleted_shots = post_production_data.get_deleted_nomenclatures()
+        
         if gaps:
             print(f"\n⚠️  NOMENCLATURE GAPS DETECTED:")
             print(f"   • Missing plans: {len(gaps)}")
@@ -115,10 +237,31 @@ def main():
         else:
             print(f"\n✅ NO NOMENCLATURE GAPS DETECTED")
         
+        # Show deleted shots information
+        if deleted_shots:
+            print(f"\n📋 PLANS SUPPRIMÉS AU MONTAGE:")
+            print(f"   • Total supprimés: {len(deleted_shots)}")
+            print(f"   • Plans supprimés: {', '.join(deleted_shots)}")
+        else:
+            print(f"\n✅ NO DELETED SHOTS")
+        
         # Export data to all formats
         print(f"\n📤 EXPORTING DATA...")
         output_dir = project_root / "output"
         exported_files = export_post_production_data(post_production_data, str(output_dir))
+        
+        # Send export completion notification
+        if discord_notifier:
+            file_list = "\n".join([f"• {format_name}: {Path(file_path).name}" for format_name, file_path in exported_files.items()])
+            embed = {
+                "title": "📤 Data Export Completed",
+                "description": f"Successfully exported {len(exported_files)} files",
+                "color": 0x0099ff,
+                "fields": [
+                    {"name": "Exported Files", "value": file_list, "inline": False}
+                ]
+            }
+            discord_notifier.send_message("📁 **Export Results**", embed)
         
         print(f"\n📁 EXPORTED FILES:")
         for format_name, file_path in exported_files.items():
@@ -162,8 +305,49 @@ def main():
         print(f"\n🎉 All exports completed! Check the 'output' directory.")
         print(f"\n✅ Processing completed successfully!")
         
+        # Send final completion notification
+        if discord_notifier:
+            duplicates = post_production_data.get_duplicate_shots()
+            gaps = post_production_data.get_nomenclature_gaps()
+            deleted_shots = post_production_data.get_deleted_nomenclatures()
+            
+            embed = {
+                "title": "🎉 Pipeline Processing Completed",
+                "description": "UNDLM documentary post-production data processing finished successfully",
+                "color": 0x00ff00,
+                "fields": [
+                    {"name": "Total Shots", "value": str(post_production_data.project_info.total_shots), "inline": True},
+                    {"name": "Duplicates Found", "value": str(len(duplicates)), "inline": True},
+                    {"name": "Nomenclature Gaps", "value": str(len(gaps)), "inline": True},
+                    {"name": "Files Exported", "value": str(len(exported_files)), "inline": True},
+                    {"name": "Deleted Shots", "value": str(len(deleted_shots)), "inline": True}
+                ]
+            }
+            
+            if deleted_shots:
+                embed["fields"].append({
+                    "name": "Plans Supprimés", 
+                    "value": ", ".join(deleted_shots), 
+                    "inline": False
+                })
+            
+            discord_notifier.send_message("✅ **Pipeline Completed Successfully**", embed)
+        
     except Exception as e:
         print(f"❌ Error during processing: {e}")
+        
+        # Send error notification
+        if discord_notifier:
+            embed = {
+                "title": "❌ Pipeline Error",
+                "description": f"Error during post-production data processing",
+                "color": 0xff0000,
+                "fields": [
+                    {"name": "Error Message", "value": str(e), "inline": False}
+                ]
+            }
+            discord_notifier.send_message("🚨 **Pipeline Error**", embed)
+        
         import traceback
         traceback.print_exc()
 
@@ -191,8 +375,7 @@ def interactive_mode():
                 frameio_config_path = Path("config/frameio_config.json")
                 if frameio_config_path.exists():
                     with open(frameio_config_path, 'r') as f:
-                        config_data = json.load(f)
-                    frameio_config = config_data.get('frameio', {})
+                        frameio_config = json.load(f)  # Configuration directe
                     
                     frameio_client = FrameIOClient(frameio_config)
                     status = frameio_client.get_status()
@@ -212,8 +395,7 @@ def interactive_mode():
                     frameio_config_path = Path("config/frameio_config.json")
                     if frameio_config_path.exists():
                         with open(frameio_config_path, 'r') as f:
-                            config_data = json.load(f)
-                        frameio_config = config_data.get('frameio', {})
+                            frameio_config = json.load(f)  # Configuration directe
                         
                         frameio_client = FrameIOClient(frameio_config)
                         result = frameio_client.upload_file(file_path)
@@ -234,8 +416,7 @@ def interactive_mode():
                 frameio_config_path = Path("config/frameio_config.json")
                 if frameio_config_path.exists():
                     with open(frameio_config_path, 'r') as f:
-                        config_data = json.load(f)
-                    frameio_config = config_data.get('frameio', {})
+                        frameio_config = json.load(f)  # Configuration directe
                     
                     frameio_client = FrameIOClient(frameio_config)
                     projects = frameio_client.get_projects()

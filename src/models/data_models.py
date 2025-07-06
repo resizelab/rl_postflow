@@ -17,17 +17,19 @@ class TimecodeInfo:
     duration: str
     
     def __post_init__(self):
-        """Validate timecode format."""
+        """Validate timecode format, allowing empty timecodes for deleted shots."""
         timecodes = [self.timeline_in, self.timeline_out, 
                     self.source_in, self.source_out, self.duration]
         for tc in timecodes:
-            if not self._is_valid_timecode(tc):
+            if tc and not self._is_valid_timecode(tc):  # Allow empty timecodes
                 raise ValueError(f"Invalid timecode format: {tc}")
     
     @staticmethod
     def _is_valid_timecode(timecode: str) -> bool:
         """Check if timecode follows HH:MM:SS:FF format."""
-        if not timecode or timecode.count(':') != 3:
+        if not timecode:  # Empty timecode is valid
+            return True
+        if timecode.count(':') != 3:
             return False
         try:
             parts = timecode.split(':')
@@ -117,7 +119,7 @@ class PostProductionData:
         """Get a shot by its nomenclature identifier."""
         for shot in self.shots:
             if shot.nomenclature == nomenclature:
-                return shot
+                return
         return None
     
     def get_shots_by_project_code(self, project_code: str) -> List[Shot]:
@@ -137,32 +139,54 @@ class PostProductionData:
         return [shot for shot in self.shots if shot.metadata.ready_for_edit]
     
     def get_nomenclature_gaps(self) -> List[str]:
-        """Find missing nomenclature numbers in the sequence."""
+        """Find missing nomenclature numbers in the sequence, excluding deleted shots."""
         if not self.shots:
             return []
         
         # Extract numeric parts from nomenclatures
         plan_numbers = []
+        deleted_plans = set()  # Track deleted plan numbers
+        
         for shot in self.shots:
             try:
                 plan_id = shot.plan_id
                 if plan_id.isdigit():
                     plan_numbers.append(int(plan_id))
+                
+                # Check if this shot is deleted during editing
+                if (shot.metadata.comments and 
+                    "PLAN SUPPRIMÉ AU MONTAGE" in shot.metadata.comments.upper()):
+                    deleted_plans.add(int(plan_id))
+                    
             except (ValueError, AttributeError):
                 continue
         
         if not plan_numbers:
             return []
         
-        # Find gaps
+        # Find gaps, excluding deleted plans
         plan_numbers.sort()
         gaps = []
         for i in range(min(plan_numbers), max(plan_numbers) + 1):
-            if i not in plan_numbers:
+            if i not in plan_numbers and i not in deleted_plans:
                 project_code = self.shots[0].project_code if self.shots else "UNDLM"
                 gaps.append(f"{project_code}_{i:05d}")
         
         return gaps
+    
+    def get_deleted_shots(self) -> List[Shot]:
+        """Get all shots marked as deleted during editing."""
+        deleted_shots = []
+        for shot in self.shots:
+            if (shot.metadata.comments and 
+                "PLAN SUPPRIMÉ AU MONTAGE" in shot.metadata.comments.upper()):
+                deleted_shots.append(shot)
+        return deleted_shots
+    
+    def get_deleted_nomenclatures(self) -> List[str]:
+        """Get nomenclatures of shots deleted during editing."""
+        deleted_shots = self.get_deleted_shots()
+        return [shot.nomenclature for shot in deleted_shots]
 
 
 # Type aliases for clarity

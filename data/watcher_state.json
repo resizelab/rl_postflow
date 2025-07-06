@@ -1,0 +1,12 @@
+{
+  "processed_files": [
+    "/test/path/UNDLM_00002.mov:1234567891:1000000",
+    "/mock/path/UNDLM_00100_v002.mov:123456789:1000000",
+    "/test/path/UNDLM_00001.mov:1234567890:1000000",
+    "/test/path/UNDLM_00003.mov:1234567892:1000000",
+    "/mock/path/UNDLM_00020_v001.mov:123456789:1000000",
+    "/Volumes/resizelab/o2b-undllm/4_OUT/2_FROM_VFX/BY_SHOT/UNDLM_00001/UNDLM_00001_v001.mov:1748850660.185404:38907661",
+    "/mock/path/UNDLM_00001_v003.mov:123456789:1000000"
+  ],
+  "last_scan": "2025-07-06T10:37:35.436124"
+}
