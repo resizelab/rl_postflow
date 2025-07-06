@@ -28,8 +28,60 @@ RL PostFlow est un pipeline modulaire de post-production conçu pour gérer le w
 - **Discord** : Notifications automatiques avec embeds riches
 - **LucidLink** : Vérification des fichiers sources
 - **After Effects** : Pipeline de traitement AE
-- **Frame.io** : Upload automatique pour review
+- **Frame.io v4** : Upload automatique avec Adobe IMS OAuth 2.0
 - **Google Sheets** : Synchronisation bidirectionnelle
+
+### 🎥 Frame.io v4 - Intégration Adobe IMS (83.3% Complète)
+
+**Migration vers Frame.io API v4** avec authentification Adobe IMS Server-to-Server :
+
+- **🔐 Authentification JWT** : Server-to-Server avec clé privée RSA + Client Credentials fallback
+- **🏗️ Architecture REST v4** : Endpoints stricts avec hiérarchie complète
+- **📤 Upload avancé** : Séquence POST → PUT → Polling avec gestion d'erreurs
+- **💬 Commentaires timecodés** : Support des annotations et replies
+- **⚡ Rate limiting** : Gestion des erreurs 429 avec back-off exponentiel
+- **🔄 Retry automatique** : Robustesse maximale avec cache de tokens
+
+**Configuration actuelle** :
+```bash
+# Variables d'environnement (.env) - Extraites des fichiers JSON Adobe
+FRAMEIO_CLIENT_ID=1b9748d7b40a408d97f943a75b6a9f18
+FRAMEIO_CLIENT_SECRET=p8e-g7Car3_nUyAiD9bD6AzhL3VoB0l7fvmW
+FRAMEIO_ORG_ID=E3761E2A657833C40A495CAC@AdobeOrg
+FRAMEIO_ACCOUNT_ID=1845895
+FRAMEIO_WORKSPACE_ID=4566206088345487626
+FRAMEIO_TECHNICAL_ACCOUNT_ID=your_technical_account_id_here  # ⚠️ À configurer
+```
+
+**⚠️ Action requise** : Créer une intégration Server-to-Server dans Adobe Developer Console pour obtenir le Technical Account ID.
+FRAMEIO_WORKSPACE_ID=your_workspace_id
+```
+
+**Scripts d'intégration** :
+```bash
+# Configuration interactive
+python scripts/configure_frameio.py
+
+# Validation complète
+python scripts/validate_frameio.py
+```
+
+**Extensions VS Code recommandées** :
+- ✅ **REST Client** (`humao.rest-client`) : Tester les endpoints via test_frameio.http
+- ✅ **Postman API Client** (officielle) : Tests API directement dans VS Code
+- ✅ **Python** : Intellisense et debugging
+- ✅ **Pylance** : Type checking Python avancé
+- ✅ **dotenv** : Support des fichiers .env
+
+**Installation des extensions** :
+```bash
+# Via VS Code Command Palette (Ctrl+Shift+P)
+ext install humao.rest-client
+ext install Postman.postman-for-vscode
+ext install ms-python.python
+ext install ms-python.vscode-pylance
+ext install mikestead.dotenv
+```
 
 ## � Structure du Projet
 
@@ -114,6 +166,73 @@ python dashboard.py
 
 ### 📊 **Statut des Tests (v2.1.0)**
 - ✅ **88% de tests passants** (23/26 tests)
+
+## 🚀 Migration Frame.io v4 - Adobe IMS
+
+### ⚠️ Changements Importants
+
+**MIGRATION COMPLÈTE** : L'intégration Frame.io a été entièrement migrée vers l'API v4 avec Adobe IMS OAuth 2.0.
+
+**❌ Deprecated** :
+- ~~Developer Token~~ (plus supporté)
+- ~~Frame.io API v2~~ (déprécié)
+- ~~frameioclient~~ (remplacé par httpx)
+
+**✅ Nouveau** :
+- Adobe IMS Server-to-Server OAuth 2.0
+- Endpoints REST v4 stricts
+- Architecture modulaire découplée
+- Gestion robuste des erreurs et rate limits
+
+### 🔄 Guide de Migration
+
+#### 1. Mise à jour des dépendances
+```bash
+pip install httpx python-dotenv
+```
+
+#### 2. Configuration Adobe IMS
+Créez une application Adobe IMS : https://developer.adobe.com/console/
+- Type : **Server-to-Server OAuth**
+- Scope : **frame.io**
+
+#### 3. Configuration interactive
+```bash
+python scripts/configure_frameio.py
+```
+
+#### 4. Validation
+```bash
+python scripts/validate_frameio.py
+```
+
+#### 5. Test des endpoints
+Ouvrez `test_frameio.http` dans VS Code avec l'extension REST Client
+
+### 📁 Structure Modulaire
+
+```
+src/integrations/frameio/
+├── __init__.py          # Exports et client unifié
+├── auth.py             # Authentification Adobe IMS
+├── structure.py        # Gestion projets/dossiers
+├── upload.py           # Upload fichiers v4
+└── comments.py         # Commentaires timecodés
+```
+
+### 🔧 Utilisation
+
+```python
+from integrations.frameio import create_frameio_client
+
+# Créer un client complet
+client = await create_frameio_client()
+
+# Utiliser les managers
+projects = await client["structure"].get_projects()
+result = await client["upload"].upload_file(file_path, project_id)
+comments = await client["comments"].get_file_comments(file_id)
+```
 - 🔧 **Architecture robuste** et validée
 - 🚀 **Intégrations testées** et fonctionnelles
 - 📈 **+34% d'amélioration** depuis la v2.0
@@ -327,3 +446,34 @@ Projet privé - UNDLM Documentary Production
 ---
 
 > **Note**: Ce projet est en développement actif. La nomenclature et les chemins de fichiers sont amenés à évoluer lors du lancement réel de la production.
+
+# RL PostFlow – Intégration Frame.io v4 (OAuth Web App)
+
+Ce projet utilise uniquement le flow OAuth Web App v4 pour l’authentification Frame.io (Adobe IMS).
+
+Pour la configuration et l’utilisation, voir :
+- `README_FRAMEIO_OAUTH.md`
+
+> **Note** : Toute la documentation et les scripts liés au flow Server-to-Server/JWT ont été archivés (voir `docs/ARCHIVE_FRAMEIO_SERVER_TO_SERVER_DOCS.md`).
+
+## Variables d’environnement principales
+
+- `FRAMEIO_CLIENT_ID`
+- `FRAMEIO_CLIENT_SECRET`
+- `FRAMEIO_AUTH_CODE`
+- `FRAMEIO_ACCOUNT_ID`
+- `FRAMEIO_WORKSPACE_ID`
+
+## Démarrage rapide
+
+1. Suivez le guide dans `README_FRAMEIO_OAUTH.md` pour obtenir un code d’autorisation et initialiser le refresh_token.
+2. Lancez le script de démo :
+   ```bash
+   python scripts/frameio_oauth_webapp_demo.py
+   ```
+3. Le refresh_token sera stocké automatiquement pour les prochaines sessions.
+
+## Documentation
+
+- [README_FRAMEIO_OAUTH.md](README_FRAMEIO_OAUTH.md) – Guide complet OAuth Web App v4
+- [docs/ARCHIVE_FRAMEIO_SERVER_TO_SERVER_DOCS.md](docs/ARCHIVE_FRAMEIO_SERVER_TO_SERVER_DOCS.md) – Archives Server-to-Server (obsolète)
