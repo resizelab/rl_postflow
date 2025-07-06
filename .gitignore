@@ -47,19 +47,27 @@ Thumbs.db
 
 # Logs
 *.log
-logs/
+logs/*.log
 
 # Temporary files
 *.tmp
 *.temp
 .cache/
+temp/
+tmp/
 
-# Output files (optionnel, à adapter selon les besoins)
+# Test files
+test_*.mov
+test_*.mp4
+test_*.avi
+*_test.*
+
+# Output files (keep structure, ignore content)
 output/*.json
 output/*.csv
 !output/.gitkeep
 
-# Configuration locale (si nécessaire)
+# Configuration locale (if any)
 config/local.json
 .env
 .env.local
@@ -76,7 +84,7 @@ htmlcov/
 # Documentation générée
 docs/_build/
 
-# Données sensibles (si applicable)
+# Données sensibles
 data/sensitive/
 *.key
 *.pem
@@ -86,6 +94,26 @@ credentials.json
 *.bak
 *.backup
 
-# Status et dashboard temporaires (optionnel)
+# Status et dashboard temporaires
 pipeline_status.json
 pipeline_dashboard.json
+
+# Node.js (si applicable)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Système de build
+*.o
+*.obj
+*.exe
+*.dll
+*.dylib
+*.a
+*.lib
+
+# Fichiers de configuration spécifiques à l'environnement
+config/frameio_config.json
+config/integrations.json
+data/watcher_state.json

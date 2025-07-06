@@ -1,0 +1,28 @@
+{
+  "discord": {
+    "webhook_url": "YOUR_DISCORD_WEBHOOK_URL_HERE",
+    "username": "PostFlow BOT",
+    "avatar_url": "https://example.com/avatar.png",
+    "notifications": {
+      "file_detected": true,
+      "upload_success": true,
+      "upload_failed": true,
+      "workflow_complete": true
+    }
+  },
+  "lucidlink": {
+    "base_path": "/Volumes/your_lucidlink_mount",
+    "watch_paths": [
+      "4_OUT/2_FROM_VFX/BY_SHOT"
+    ],
+    "web_base_url": "https://your-lucidlink-domain.com",
+    "nomenclature_pattern": "^([A-Z]+_\\d+)_v(\\d+)\\.",
+    "file_extensions": [".mov", ".mp4", ".avi", ".mkv", ".mxf"]
+  },
+  "frameio": {
+    "enabled": true,
+    "auto_upload": true,
+    "create_folders": true,
+    "notification_on_upload": true
+  }
+}

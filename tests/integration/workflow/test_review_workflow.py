@@ -9,9 +9,9 @@ import json
 from pathlib import Path
 
 # Add src directory to path
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from src.integrations.review_workflow import ReviewWorkflowManager, ReviewStatus
+from src.integrations.review_workflow import ReviewWorkflowManager
 
 def test_review_workflow():
     """Test the complete review workflow"""
