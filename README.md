@@ -72,6 +72,20 @@ python scripts/install_dependencies.py
 
 ### Utilisation Rapide
 
+#### 0. 🎬 Configuration Frame.io (Nouveau)
+```bash
+# Assistant interactif pour Frame.io
+python scripts/configure_frameio.py
+# → Choisissez l'option 1 (Developer Token) pour démarrage immédiat
+# → Choisissez l'option 2 (OAuth Adobe IMS) pour solution avancée
+
+# Validation de la configuration
+python scripts/validate_frameio.py
+```
+**✅ Débloquez Frame.io en 5 minutes avec Developer Token**
+
+📖 **Guide complet :** [docs/FRAMEIO_QUICKSTART.md](docs/FRAMEIO_QUICKSTART.md) | [docs/FRAMEIO_INTEGRATION.md](docs/FRAMEIO_INTEGRATION.md)
+
 #### 1. Parser CSV et Export de Base
 ```bash
 python main.py

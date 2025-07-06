@@ -1,14 +1,28 @@
-# Documentation UNDLM PostFlow
+# Docu### 🎬 Frame.io Integration (Nouveau)
+- `FRAMEIO_QUICKSTART.md` - 🚀 Démarrage rapide Frame.io (5 minutes)
+- `FRAMEIO_INTEGRATION.md` - 📖 Guide complet de l'intégration Frame.io
+  - Developer Token (solution immédiate)
+  - OAuth Adobe IMS (solution avancée)
+  - Client unifié et architecturetion UNDLM PostFlow
 
 Ce dossier contient toute la documentation du projet UNDLM PostFlow.
 
 ## 📁 Structure de la documentation
 
-### 📋 Documents de configuration
-- `SETUP_SUMMARY.md` - Résumé complet de la configuration et du setup
-- `arbo_undlm_proposed.txt` - Arborescence proposée pour le serveur LucidLink
+### 🎬 Frame.io Integration (Nouveau)
+- `FRAMEIO_INTEGRATION.md` - � Guide complet de l'intégration Frame.io
+  - Developer Token (solution immédiate)
+  - OAuth Adobe IMS (solution avancée)
+  - Client unifié et architecture
 
-### 📊 Données du pipeline
+### 📋 Configuration du projet
+- `CONFIGURATION.md` - Configuration générale du pipeline
+- `INTEGRATIONS_SETUP.md` - Setup des intégrations (Google Sheets, Discord)
+- `ERROR_HANDLING.md` - Gestion d'erreurs et monitoring
+- `SETUP_SUMMARY.md` - Résumé complet de la configuration et du setup
+
+### 📊 Structure et données
+- `arbo_undlm_proposed.txt` - Arborescence proposée pour le serveur LucidLink
 - Les données générées se trouvent dans [`../data/`](../data/)
 - `pipeline_status.json` - État du pipeline et statistiques (dans `data/`)
 
@@ -19,6 +33,16 @@ Ce dossier contient toute la documentation du projet UNDLM PostFlow.
 
 ## 🚀 Quick Start
 
+### 🎬 Frame.io (Priorité)
+```bash
+# Configuration Frame.io rapide
+python scripts/configure_frameio.py
+
+# Documentation complète
+# Voir FRAMEIO_INTEGRATION.md
+```
+
+### ⚙️ Configuration générale
 1. **Vérifier la configuration**
    ```bash
    python tests/setup_validation.py
