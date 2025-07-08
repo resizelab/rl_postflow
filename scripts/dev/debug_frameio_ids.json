@@ -1,0 +1,23 @@
+{
+  "accounts": [
+    {
+      "id": "60b535d5-8508-459a-8dd6-98ffb0c3eb78",
+      "image": null,
+      "updated_at": "2025-07-07T19:36:08.065019Z",
+      "display_name": "RESIZE LAB",
+      "v4_migrated_at": null,
+      "roles": [
+        "owner"
+      ],
+      "storage_limit": 3000000000000,
+      "created_at": "2025-07-06T13:22:20.544026Z",
+      "storage_usage": 0
+    }
+  ],
+  "user_info": {
+    "name": "boutin xavier",
+    "email": "xavier@resize-lab.com",
+    "avatar_url": null
+  },
+  "timestamp": "2025-07-07T22:20:52.977620"
+}
