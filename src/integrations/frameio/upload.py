@@ -33,6 +33,8 @@ class FrameIOFile:
     upload_urls: Optional[List[str]] = None
     download_url: Optional[str] = None
     thumbnail_url: Optional[str] = None
+    review_url: Optional[str] = None  # Lien de review pour partage
+    share_url: Optional[str] = None   # Lien de partage public
     created_at: Optional[str] = None
     updated_at: Optional[str] = None
 
@@ -151,6 +153,8 @@ class FrameIOUploadManager:
                 upload_urls=[url_info["url"] for url_info in file_data.get("upload_urls", [])],
                 download_url=file_data.get("download_url"),
                 thumbnail_url=file_data.get("thumbnail_url"),
+                review_url=file_data.get("review_url"),
+                share_url=file_data.get("share_url"),
                 created_at=file_data.get("created_at"),
                 updated_at=file_data.get("updated_at")
             )
@@ -379,9 +383,13 @@ class FrameIOUploadManager:
             
             if processing_success:
                 logger.info(f"Upload complet réussi: {shot_id} - {filename}")
+                # 5. Enrichir avec les liens de review
+                frameio_file = await self.enrich_file_with_links(frameio_file)
                 return frameio_file
             else:
                 logger.warning(f"Upload terminé mais traitement en cours: {shot_id}")
+                # Même en cas de traitement en cours, on peut récupérer les liens
+                frameio_file = await self.enrich_file_with_links(frameio_file)
                 return frameio_file
             
         except Exception as e:
@@ -748,3 +756,112 @@ class FrameIOUploadManager:
         except Exception as e:
             logger.error(f"❌ Erreur upload remote: {e}")
             return None
+    
+    async def get_file_review_link(self, file_id: str, workspace_id: Optional[str] = None) -> Optional[str]:
+        """
+        Récupérer le lien de review pour un fichier Frame.io
+        
+        Args:
+            file_id: ID du fichier Frame.io
+            workspace_id: ID du workspace (optionnel)
+        
+        Returns:
+            str: Lien de review ou None si non trouvé
+        """
+        try:
+            # Assurer l'authentification
+            if not self.auth.is_authenticated():
+                await self.auth.authenticate()
+            
+            headers = {'Authorization': f'Bearer {self.auth.access_token}'}
+            ws_id = workspace_id or self.workspace_id
+            
+            # Récupérer les informations du fichier
+            url = f"{self.base_url}/workspaces/{ws_id}/assets/{file_id}"
+            
+            async with httpx.AsyncClient() as client:
+                response = await client.get(url, headers=headers)
+                response.raise_for_status()
+                
+                file_data = response.json()
+                
+                # Construire le lien de review
+                # Le lien Frame.io suit généralement ce format:
+                # https://app.frame.io/workspace/{workspace_id}/asset/{file_id}
+                review_url = f"https://app.frame.io/workspace/{ws_id}/asset/{file_id}"
+                
+                logger.info(f"🔗 Lien de review généré pour {file_id}: {review_url}")
+                return review_url
+                
+        except Exception as e:
+            logger.error(f"❌ Erreur récupération lien review {file_id}: {e}")
+            return None
+    
+    async def get_file_share_link(self, file_id: str, workspace_id: Optional[str] = None) -> Optional[str]:
+        """
+        Récupérer le lien de partage public pour un fichier Frame.io
+        
+        Args:
+            file_id: ID du fichier Frame.io
+            workspace_id: ID du workspace (optionnel)
+        
+        Returns:
+            str: Lien de partage ou None si non trouvé
+        """
+        try:
+            # Assurer l'authentification
+            if not self.auth.is_authenticated():
+                await self.auth.authenticate()
+            
+            headers = {'Authorization': f'Bearer {self.auth.access_token}'}
+            ws_id = workspace_id or self.workspace_id
+            
+            # Créer un lien de partage
+            url = f"{self.base_url}/workspaces/{ws_id}/assets/{file_id}/share"
+            
+            async with httpx.AsyncClient() as client:
+                response = await client.post(url, headers=headers, json={
+                    "public": True,
+                    "expires_at": None  # Pas d'expiration
+                })
+                
+                if response.status_code == 201:
+                    share_data = response.json()
+                    share_url = share_data.get('url')
+                    
+                    logger.info(f"🔗 Lien de partage créé pour {file_id}: {share_url}")
+                    return share_url
+                else:
+                    logger.warning(f"⚠️ Impossible de créer le lien de partage: {response.status_code}")
+                    return None
+                
+        except Exception as e:
+            logger.error(f"❌ Erreur création lien partage {file_id}: {e}")
+            return None
+    
+    async def enrich_file_with_links(self, frameio_file: FrameIOFile) -> FrameIOFile:
+        """
+        Enrichir un objet FrameIOFile avec ses liens de review et partage
+        
+        Args:
+            frameio_file: Objet FrameIOFile à enrichir
+        
+        Returns:
+            FrameIOFile: Objet enrichi avec les liens
+        """
+        try:
+            # Récupérer le lien de review
+            review_url = await self.get_file_review_link(frameio_file.id, frameio_file.workspace_id)
+            if review_url:
+                frameio_file.review_url = review_url
+            
+            # Récupérer le lien de partage (optionnel)
+            share_url = await self.get_file_share_link(frameio_file.id, frameio_file.workspace_id)
+            if share_url:
+                frameio_file.share_url = share_url
+            
+            return frameio_file
+            
+        except Exception as e:
+            logger.error(f"❌ Erreur enrichissement fichier {frameio_file.id}: {e}")
+            return frameio_file

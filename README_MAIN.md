@@ -68,7 +68,7 @@ RL PostFlow est un pipeline automatisé révolutionnaire qui surveille les fichi
 
 ---
 
-## � Innovations Techniques
+## 🌐 Innovations Techniques
 
 ### 🌐 **Cloudflare Tunnel + HTTP Range Server**
 
@@ -115,7 +115,7 @@ Interface web moderne avec WebSocket pour monitoring live :
 
 ---
 
-## �🚀 Démarrage rapide
+## 🚀 Démarrage rapide
 
 ### 1. Installation
 

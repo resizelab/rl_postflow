@@ -1,0 +1,227 @@
+{
+  "version": "1.1",
+  "generated_on": "2025-07-08",
+  "description": "Mapping dynamique mis à jour après réorganisation user-friendly des colonnes",
+  "worksheets": {
+    "SHOTS_TRACK": {
+      "description": "Feuille de suivi des plans - Ordre optimisé pour workflow",
+      "total_columns": 25,
+      "mapping": {
+        "shot_name": {
+          "column_index": 1,
+          "column_name": "PLAN",
+          "required": true,
+          "description": "Nom/numéro du plan"
+        },
+        "status": {
+          "column_index": 2,
+          "column_name": "STATUS",
+          "required": true,
+          "description": "Statut du plan (En cours, Terminé, etc.)"
+        },
+        "sequence_name": {
+          "column_index": 3,
+          "column_name": "NAME_SEQ",
+          "required": false,
+          "description": "Nom de la séquence"
+        },
+        "sequence_number": {
+          "column_index": 4,
+          "column_name": "NUM_SEQ",
+          "required": false,
+          "description": "Numéro de séquence"
+        },
+        "attribution": {
+          "column_index": 5,
+          "column_name": "ATTRIBUTION",
+          "required": false,
+          "description": "Attribution/assignation"
+        },
+        "priority": {
+          "column_index": 6,
+          "column_name": "PRIORITY",
+          "required": false,
+          "description": "Priorité du plan"
+        },
+        "nomenclature": {
+          "column_index": 7,
+          "column_name": "NOMENCLATURE PLAN",
+          "required": false,
+          "description": "Nomenclature du plan"
+        },
+        "source_name": {
+          "column_index": 8,
+          "column_name": "SOURCE NAME",
+          "required": false,
+          "description": "Nom du fichier source"
+        },
+        "duration": {
+          "column_index": 9,
+          "column_name": "DURÉE",
+          "required": false,
+          "description": "Durée du plan"
+        },
+        "lut": {
+          "column_index": 10,
+          "column_name": "LUT",
+          "required": false,
+          "description": "LUT à appliquer"
+        },
+        "frame_io_link": {
+          "column_index": 11,
+          "column_name": "FRAME_IO_LINK",
+          "required": false,
+          "description": "Lien Frame.io pour review"
+        },
+        "notes": {
+          "column_index": 12,
+          "column_name": "COMMENTAIRE",
+          "required": false,
+          "description": "Commentaires sur le plan"
+        },
+        "thumbnail": {
+          "column_index": 13,
+          "column_name": "VIGNETTE",
+          "required": false,
+          "description": "Vignette/thumbnail du plan"
+        },
+        "timecode_in": {
+          "column_index": 14,
+          "column_name": "TC IN",
+          "required": false,
+          "description": "Timecode d'entrée"
+        },
+        "timecode_out": {
+          "column_index": 15,
+          "column_name": "TC OUT",
+          "required": false,
+          "description": "Timecode de sortie"
+        },
+        "timecode_in_source": {
+          "column_index": 16,
+          "column_name": "TC IN SOURCE",
+          "required": false,
+          "description": "Timecode d'entrée source"
+        },
+        "timecode_out_source": {
+          "column_index": 17,
+          "column_name": "TC OUT SOURCE",
+          "required": false,
+          "description": "Timecode de sortie source"
+        },
+        "duplicates": {
+          "column_index": 18,
+          "column_name": "Doublons",
+          "required": false,
+          "description": "Information sur les doublons"
+        },
+        "graph_validated_prod": {
+          "column_index": 19,
+          "column_name": "GRAPH VALIDÉ PAR PROD",
+          "required": false,
+          "description": "Validation graphique par la production"
+        },
+        "graph_validated_vincent": {
+          "column_index": 20,
+          "column_name": "GRAPH VALIDÉ PAR VINCENT",
+          "required": false,
+          "description": "Validation graphique par Vincent"
+        },
+        "graph_retrieved_eva": {
+          "column_index": 21,
+          "column_name": "GRAPH RÉCUPÉRÉ PAR EVA",
+          "required": false,
+          "description": "Récupération graphique par Eva"
+        },
+        "technical_check": {
+          "column_index": 22,
+          "column_name": "VERIF TECHNIQUE",
+          "required": false,
+          "description": "Vérification technique"
+        },
+        "available_editing": {
+          "column_index": 23,
+          "column_name": "MISE À DISPO EN MONTAGE",
+          "required": false,
+          "description": "Mise à disposition pour le montage"
+        },
+        "created_date": {
+          "column_index": 24,
+          "column_name": "CREATED",
+          "required": false,
+          "description": "Date de création"
+        },
+        "updated_date": {
+          "column_index": 25,
+          "column_name": "UPDATED",
+          "required": false,
+          "description": "Date de dernière modification"
+        }
+      }
+    },
+    "USERS_INFOS": {
+      "description": "Feuille des informations utilisateurs",
+      "total_columns": 7,
+      "mapping": {
+        "first_name": {
+          "column_index": 1,
+          "column_name": "PRENOM",
+          "required": true,
+          "description": "Prénom de l'utilisateur"
+        },
+        "last_name": {
+          "column_index": 2,
+          "column_name": "NOMS",
+          "required": true,
+          "description": "Nom de famille de l'utilisateur"
+        },
+        "department": {
+          "column_index": 3,
+          "column_name": "DEPT",
+          "required": false,
+          "description": "Département/équipe de l'utilisateur"
+        },
+        "email": {
+          "column_index": 4,
+          "column_name": "MAIL",
+          "required": true,
+          "description": "Adresse email"
+        },
+        "phone": {
+          "column_index": 5,
+          "column_name": "TEL",
+          "required": false,
+          "description": "Numéro de téléphone"
+        },
+        "active": {
+          "column_index": 6,
+          "column_name": "ACTIF",
+          "required": false,
+          "description": "Statut actif/inactif de l'utilisateur"
+        },
+        "discord_id": {
+          "column_index": 7,
+          "column_name": "ID DISCORD",
+          "required": false,
+          "description": "ID Discord de l'utilisateur"
+        }
+      }
+    }
+  },
+  "postflow_compatibility": {
+    "shots_primary_key": "shot_name",
+    "users_primary_key": "email",
+    "notifications_user_field": "discord_id",
+    "status_tracking_enabled": true,
+    "notes": [
+      "✅ Colonne STATUS en position 2 - suivi des statuts activé",
+      "✅ Colonne FRAME_IO_LINK en position 11 - intégration Frame.io prête",
+      "✅ Colonne PRIORITY en position 6 - gestion des priorités disponible",
+      "✅ Colonne ATTRIBUTION en position 5 - assignation des tâches optimisée",
+      "✅ Colonne DEPT détectée - mapping vers department",
+      "✅ Colonne ACTIF détectée - filtrage des utilisateurs actifs",
+      "✅ Ordre des colonnes optimisé pour workflow user-friendly",
+      "✅ Structure complètement compatible avec PostFlow"
+    ]
+  }
+}

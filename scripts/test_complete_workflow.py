@@ -1,21 +1,26 @@
 #!/usr/bin/env python3
 """
-Test complet du workflow review Discord/Frame.io
-Simule le processus complet de review avec notifications
+Test du workflow complet PostFlow
+Simule le cycle de vie complet d'un plan depuis l'export jusqu'à la validation finale
 """
 
+import os
 import sys
 import json
 import time
-from pathlib import Path
+import asyncio
+import logging
 from datetime import datetime
+from pathlib import Path
 
-# Add parent directory to path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Configuration du projet
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
 
-from src.integrations.review_workflow import ReviewWorkflowManager
-from src.integrations.discord import DiscordNotifier, DiscordConfig
-from src.integrations.frameio import FrameIOClient
+from src.integrations.sheets.auth import GoogleSheetsAuth, GoogleSheetsConfig
+from src.integrations.sheets.status import SheetsStatusTracker
+from src.integrations.sheets.users import SheetsUserManager
+from src.integrations.sheets.mapper import get_column_index, map_row_to_dict
 
 def test_complete_review_workflow():
     """Test du workflow review complet"""

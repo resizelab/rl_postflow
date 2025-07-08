@@ -1,91 +1,13 @@
-# 📚 DOCUMENTATION POSTFLOW
+# PostFlow Documentation
 
-## 🎯 Vue d'ensemble
+Documentation complète du système PostFlow - Workflow automatisé de post-production.
 
-PostFlow est un système d'automatisation pour la post-production qui s'adapte automatiquement à votre Google Sheet existant. Il génère un mapping dynamique des colonnes et fournit des outils d'intégration avec Frame.io, Discord et Google Drive.
+## 📁 Structure de la Documentation
 
-## � Structure de la documentation
-
-### 🚀 Guides de démarrage
-- [**Guide utilisateur**](user-guides/README.md) - Comment utiliser PostFlow au quotidien
-- [**Installation rapide**](setup/QUICK_START.md) - Mise en route en 10 minutes
-- [**Configuration**](setup/CONFIGURATION.md) - Configuration détaillée
-
-### 🔧 Guides techniques
-- [**Google Sheets & Mapping dynamique**](technical/GOOGLE_SHEETS_MAPPING.md) - Adaptation automatique aux colonnes
-- [**Système de vignettes**](technical/THUMBNAILS_SYSTEM.md) - Génération automatique d'images
-- [**Intégrations**](integrations/README.md) - Frame.io, Discord, Google Drive
-
-### 📖 Références
-- [**API Reference**](reference/API.md) - Documentation des modules
-- [**Architecture**](reference/ARCHITECTURE.md) - Structure du projet
-- [**Troubleshooting**](reference/TROUBLESHOOTING.md) - Résolution de problèmes
-
-## ✨ Fonctionnalités principales
-
-### 🔄 **Mapping dynamique**
-- **Adaptation automatique** à votre structure Google Sheets
-- **Détection intelligente** des colonnes (PLAN, STATUS, ATTRIBUTION...)
-- **Suggestions automatiques** pour les colonnes manquantes
-
-### 🖼️ **Vignettes automatiques**
-- **Extraction automatique** de la première frame des rushs
-- **Upload organisé** vers Google Drive (PostFlow_Thumbnails/Projet/Date/)
-- **Insertion directe** dans Google Sheets avec formule `=IMAGE()`
-
-### 🔗 **Intégrations natives**
-- **Frame.io** - Synchronisation des projets et reviews
-- **Discord** - Notifications d'équipe avec filtrage par département
-- **Google Drive** - Stockage sécurisé des vignettes
-
-## 🎬 Exemple d'utilisation
-
-```bash
-# 1. Analyser votre Google Sheet
-python scripts/analyze_spreadsheet_structure.py
-
-# 2. Générer les vignettes
-python scripts/generate_drive_thumbnails.py 10
-
-# 3. Tester l'intégration
-python scripts/test_google_sheets_real.py
-```
-
-## 📊 Compatibilité Google Sheets
-
-PostFlow s'adapte à **n'importe quelle organisation** de colonnes :
-
-| Votre colonne | PostFlow comprend |
-|--------------|-------------------|
-| `PLAN` | → `shot_name` |
-| `STATUS` | → `status` |
-| `ATTRIBUTION` | → `attribution` |
-| `DEPT` | → `department` |
-| `ACTIF` | → `active` |
-
-## 🏗️ Architecture
-
-```
-rl_postflow/
-├── config/           # Configuration (mapping, credentials)
-├── src/              # Code source (modules réutilisables)
-├── scripts/          # Scripts d'automation
-├── docs/             # Documentation organisée
-└── temp/             # Fichiers temporaires (vignettes)
-```
-
-## 🚨 Support
-
-Pour toute question ou problème :
-1. Consultez [Troubleshooting](reference/TROUBLESHOOTING.md)
-2. Vérifiez les [logs](../logs/) pour les erreurs
-3. Testez avec les scripts de validation
-
----
-
-**Version actuelle :** 1.1 (Juillet 2025)  
-**Projet :** UNDLM - Post-production automatisée  
-**Dernière mise à jour :** Système de vignettes Google Drive opérationnel
+### � Core (`/core/`)
+Documentation technique fondamentale :
+- [`ARCHITECTURE.md`](core/ARCHITECTURE.md) - Architecture du système
+- [`CONFIGURATION.md`](core/CONFIGURATION.md) - Configuration générale
 - [`ERROR_HANDLING.md`](core/ERROR_HANDLING.md) - Gestion des erreurs
 
 ### � Intégrations (`/integrations/`)
@@ -164,27 +86,5 @@ Ancienne documentation conservée pour référence :
 
 ---
 
-## 🚀 Démarrage Rapide
-
-1. **Configuration initiale** : Voir [`CONFIGURATION.md`](core/CONFIGURATION.md)
-2. **Mapping Google Sheets** : Voir [`GOOGLE_SHEETS_DYNAMIC_MAPPING.md`](integrations/GOOGLE_SHEETS_DYNAMIC_MAPPING.md)
-3. **Guide utilisateur** : Voir [`POSTFLOW_USER_GUIDE.md`](user-guides/POSTFLOW_USER_GUIDE.md)
-
-## 📊 État Actuel
-
-✅ **Google Sheets** - Mapping dynamique opérationnel  
-✅ **Vignettes automatiques** - Extraction et upload vers Google Drive  
-✅ **Frame.io** - Intégration OAuth complète  
-✅ **Discord** - Notifications automatiques  
-✅ **Structure adaptive** - S'adapte à n'importe quelle organisation de colonnes  
-
-## 🔄 Dernières Mises à Jour
-
-- **2025-07-08** : Système de vignettes automatiques avec Google Drive
-- **2025-07-08** : Mapping dynamique des colonnes Google Sheets
-- **2025-07-08** : Réorganisation user-friendly des colonnes
-- **2024-12-19** : Migration Frame.io OAuth complète
-
----
-
-**PostFlow** - Automatisation intelligente pour la post-production vidéo
+**Documentation mise à jour le : 07 July 2025**  
+**Version : 4.0.0**

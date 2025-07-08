@@ -84,6 +84,9 @@ class LucidLinkWatcher:
         # Pattern pour extraire la nomenclature et version
         self.shot_pattern = re.compile(r'(UNDLM_\d{5}).*[_v](\d{3})\.(\w+)$')
         
+        # État pour éviter les logs répétitifs
+        self.last_health_state = None
+        
         # Enregistrer les health checks
         if self.error_handler:
             self.error_handler.health_monitor.register_check(
@@ -101,16 +104,28 @@ class LucidLinkWatcher:
             bool: True si au moins un chemin est accessible
         """
         accessible_paths = 0
+        current_state = {}
         
         for path in self.watch_paths:
             try:
                 is_accessible = path.exists() and path.is_dir()
-                self.path_availability[str(path)] = is_accessible
+                current_state[str(path)] = is_accessible
                 if is_accessible:
                     accessible_paths += 1
             except Exception as e:
                 logger.warning(f"Cannot check path {path}: {e}")
-                self.path_availability[str(path)] = False
+                current_state[str(path)] = False
+        
+        # Seulement logger/alerter si le state a changé
+        if self.last_health_state != current_state:
+            self.path_availability = current_state
+            self.last_health_state = current_state.copy()
+            
+            # Logger les changements
+            if accessible_paths == 0:
+                logger.error("No accessible watch paths found")
+            else:
+                logger.info(f"Health check: {accessible_paths}/{len(self.watch_paths)} paths accessible")
         
         return accessible_paths > 0
     

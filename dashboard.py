@@ -213,8 +213,15 @@ def api_health():
     """API pour la santé du système."""
     try:
         if error_handler:
-            health_results = error_handler.health_monitor.run_checks()
+            # NE PAS exécuter les checks depuis le dashboard !
+            # Juste lire l'état existant
             health_status = error_handler.health_monitor.get_status()
+            health_results = {
+                'system_health': 'good' if health_status.get('healthy', False) else 'degraded',
+                'checks_passed': len([c for c in health_status.get('checks', [])]),
+                'checks_total': len(health_status.get('checks', [])),
+                'last_check': datetime.now().isoformat()
+            }
         else:
             # Données de demo
             health_results = {

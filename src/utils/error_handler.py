@@ -411,15 +411,23 @@ class HealthMonitor:
                 if result:
                     self.failure_counts[name] = 0
                 else:
-                    self.failure_counts[name] += 1
-                    
-                    if self.failure_counts[name] >= self.alert_threshold:
-                        logger.critical(f"Health check '{name}' failed {self.failure_counts[name]} times")
+                    # Seulement incrémenter si on a un service principal actif
+                    # Éviter l'accumulation d'échecs quand le service est arrêté
+                    if hasattr(self, '_service_active') and not self._service_active:
+                        # Service arrêté, ne pas compter comme échec
+                        results[name] = None  # Indique que le check n'est pas applicable
+                    else:
+                        self.failure_counts[name] += 1
+                        
+                        if self.failure_counts[name] >= self.alert_threshold:
+                            logger.critical(f"Health check '{name}' failed {self.failure_counts[name]} times")
                         
             except Exception as e:
                 logger.error(f"Health check '{name}' threw exception: {e}")
                 results[name] = False
-                self.failure_counts[name] += 1
+                # Seulement incrémenter si le service devrait être actif
+                if not (hasattr(self, '_service_active') and not self._service_active):
+                    self.failure_counts[name] += 1
         
         return results
     
