@@ -1,33 +1,20 @@
 """
-Module d'authentification Frame.io API v4 avec Adobe IMS OAuth 2.0 Server-to-Server
+Frame.io Authentication Module - Version OAuth Autonome
+Module d'authentification utilisant le système OAuth Web App autonome
 """
 
-import asyncio
 import os
-import logging
-import jwt
-import time
+import json
+import base64
+import asyncio
+import urllib.parse
+from typing import Dict, Optional, Any
 from datetime import datetime, timedelta
-from typing import Optional, Dict, Any, List
+from pathlib import Path
+import logging
 import httpx
-from dataclasses import dataclass
-from cryptography.hazmat.primitives import serialization
 
 logger = logging.getLogger(__name__)
-
-
-@dataclass
-class TokenInfo:
-    """Informations du token d'accès"""
-    access_token: str
-    token_type: str
-    expires_in: int
-    created_at: datetime
-
-    @property
-    def is_expired(self) -> bool:
-        """Vérifie si le token est expiré"""
-        return datetime.now() >= self.created_at + timedelta(seconds=self.expires_in - 300)  # 5 min buffer
 
 
 class FrameIOAuthError(Exception):
@@ -35,199 +22,334 @@ class FrameIOAuthError(Exception):
     pass
 
 
+class TokenInfo:
+    """Informations sur le token d'accès"""
+    
+    def __init__(self, access_token: str, expires_in: int = 3600, token_type: str = "Bearer"):
+        self.access_token = access_token
+        self.expires_in = expires_in
+        self.token_type = token_type
+        self.created_at = datetime.now()
+    
+    @property
+    def is_expired(self) -> bool:
+        """Vérifie si le token a expiré"""
+        return datetime.now() > self.created_at + timedelta(seconds=self.expires_in - 300)  # 5 min buffer
+    
+    @property
+    def authorization_header(self) -> str:
+        """Retourne l'en-tête d'autorisation"""
+        return f"{self.token_type} {self.access_token}"
+
+
 class FrameIOAuth:
     """
-    Gestionnaire d'authentification Frame.io API v4 avec Adobe IMS OAuth 2.0 Server-to-Server
-    
-    Utilise l'authentification JWT avec clé privée RSA selon la documentation Adobe IMS.
+    Gestionnaire d'authentification Frame.io avec OAuth autonome
+    Basé sur le système OAuth Web App
     """
     
-    def __init__(self, 
-                 client_id: Optional[str] = None,
-                 client_secret: Optional[str] = None,
-                 org_id: Optional[str] = None,
-                 technical_account_id: Optional[str] = None,
-                 private_key_path: Optional[str] = None,
-                 base_url: Optional[str] = None,
-                 ims_host: Optional[str] = None,
-                 timeout: int = 30,
-                 max_retries: int = 3):
+    def __init__(self, project_root: Optional[Path] = None):
         """
-        Initialise le gestionnaire d'authentification Adobe IMS Server-to-Server
+        Initialise le gestionnaire d'authentification autonome.
         
         Args:
-            client_id: Client ID de l'application Adobe IMS
-            client_secret: Client Secret de l'application Adobe IMS
-            org_id: Organization ID Adobe IMS
-            technical_account_id: Technical Account ID Adobe IMS
-            private_key_path: Chemin vers la clé privée RSA
-            base_url: URL de base de l'API Frame.io
-            ims_host: URL du serveur IMS Adobe
-            timeout: Timeout des requêtes en secondes
-            max_retries: Nombre maximum de tentatives
+            project_root: Chemin racine du projet (détecté automatiquement si None)
         """
-        self.client_id = client_id or os.getenv('FRAMEIO_CLIENT_ID')
-        self.client_secret = client_secret or os.getenv('FRAMEIO_CLIENT_SECRET')
-        self.org_id = org_id or os.getenv('FRAMEIO_ORG_ID')
-        self.technical_account_id = technical_account_id or os.getenv('FRAMEIO_TECHNICAL_ACCOUNT_ID')
-        self.private_key_path = private_key_path or os.getenv('FRAMEIO_PRIVATE_KEY_PATH')
-        self.base_url = base_url or os.getenv('FRAMEIO_BASE_URL', 'https://api.frame.io/v4')
-        self.ims_host = ims_host or os.getenv('FRAMEIO_IMS_HOST', 'https://ims-na1.adobelogin.com')
-        self.timeout = timeout
-        self.max_retries = max_retries
+        self.project_root = project_root or Path(__file__).parent.parent.parent.parent
+        self.oauth_config = self._load_oauth_config()
         
-        # Validation des paramètres requis
-        required_params = [
-            ('FRAMEIO_CLIENT_ID', self.client_id),
-            ('FRAMEIO_CLIENT_SECRET', self.client_secret),
-            ('FRAMEIO_ORG_ID', self.org_id),
-            ('FRAMEIO_TECHNICAL_ACCOUNT_ID', self.technical_account_id),
-            ('FRAMEIO_PRIVATE_KEY_PATH', self.private_key_path)
+        # Endpoints Adobe IMS
+        self.auth_endpoint = "https://ims-na1.adobelogin.com/ims/authorize/v2"
+        self.token_endpoint = "https://ims-na1.adobelogin.com/ims/token/v3"
+        self.userinfo_endpoint = "https://ims-na1.adobelogin.com/ims/userinfo/v2"
+        
+        # Endpoints Frame.io
+        self.base_url = "https://api.frame.io/v4"
+        
+        # Scopes requis pour Frame.io
+        self.required_scopes = [
+            'email',
+            'openid', 
+            'offline_access',
+            'profile',
+            'additional_info.roles'
         ]
         
-        missing_params = [name for name, value in required_params if not value]
-        if missing_params:
-            raise FrameIOAuthError(f"Paramètres requis manquants: {', '.join(missing_params)}")
-        
-        # Cache du token
+        # Configuration
+        self.timeout = 15  # Optimisé: 30s → 15s (authentification rapide)
+        self.max_retries = 3
         self._token_info: Optional[TokenInfo] = None
-        self._http_client: Optional[httpx.AsyncClient] = None
-        self._private_key = None
+        
+        logger.info("✅ FrameIOAuth autonome initialisé")
     
-    def _load_private_key(self):
-        """Charge la clé privée RSA"""
-        if self._private_key is None:
-            try:
-                with open(self.private_key_path, 'rb') as key_file:
-                    self._private_key = serialization.load_pem_private_key(
-                        key_file.read(),
-                        password=None
-                    )
-            except Exception as e:
-                raise FrameIOAuthError(f"Impossible de charger la clé privée: {e}")
-        return self._private_key
-    
-    def _create_jwt_assertion(self) -> str:
-        """Crée une assertion JWT pour l'authentification Adobe IMS"""
-        try:
-            private_key = self._load_private_key()
-            
-            # Payload JWT selon la spec Adobe IMS
-            payload = {
-                'iss': self.org_id,  # Issuer (Organization ID)
-                'sub': self.technical_account_id,  # Subject (Technical Account ID)
-                'aud': f"{self.ims_host}/c/{self.client_id}",  # Audience
-                'exp': int(time.time()) + 86400,  # Expiration (24h)
-                'iat': int(time.time()),  # Issued at
-                'https://ims-na1.adobelogin.com/s/ent_frame_sdk': True  # Frame.io scope
-            }
-            
-            # Signer le JWT avec la clé privée
-            token = jwt.encode(
-                payload,
-                private_key,
-                algorithm='RS256'
-            )
-            
-            return token
-            
-        except Exception as e:
-            raise FrameIOAuthError(f"Erreur lors de la création du JWT: {e}")
-    
-    async def _request_token(self) -> TokenInfo:
+    def _load_oauth_config(self) -> Dict[str, str]:
         """
-        Demande un nouveau token d'accès via Adobe IMS Server-to-Server JWT
+        Charge la configuration OAuth depuis le fichier Adobe
         
         Returns:
-            TokenInfo: Informations du token d'accès
-            
-        Raises:
-            FrameIOAuthError: En cas d'erreur d'authentification
+            Dict contenant client_id, client_secret et redirect_uri
         """
-        client = await self._get_http_client()
+        oauth_file = self.project_root / "data" / "890CarmineWhitefish-1845895-OAuth Web App.json"
         
-        # Créer l'assertion JWT
-        jwt_assertion = self._create_jwt_assertion()
+        if not oauth_file.exists():
+            raise FrameIOAuthError(f"Fichier de configuration OAuth non trouvé: {oauth_file}")
         
-        # Données pour la requête Adobe IMS Server-to-Server
-        data = {
-            'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-            'client_id': self.client_id,
-            'client_secret': self.client_secret,
-            'assertion': jwt_assertion
+        try:
+            with open(oauth_file, 'r') as f:
+                oauth_data = json.load(f)
+            
+            return {
+                'client_id': oauth_data['API_KEY'],
+                'client_secret': oauth_data['CLIENT_SECRET'],
+                'redirect_uri': oauth_data['DEF_REDIRECT_URI']
+            }
+        except (json.JSONDecodeError, KeyError) as e:
+            raise FrameIOAuthError(f"Configuration OAuth invalide: {e}")
+    
+    def _load_current_tokens(self) -> Dict[str, Any]:
+        """
+        Charge les tokens actuels depuis integrations.json
+        
+        Returns:
+            Dict avec la configuration Frame.io actuelle
+        """
+        integrations_file = self.project_root / "config" / "integrations.json"
+        
+        if not integrations_file.exists():
+            return {}
+        
+        try:
+            with open(integrations_file, 'r') as f:
+                integrations = json.load(f)
+            
+            return integrations.get('frameio', {})
+            
+        except (json.JSONDecodeError, KeyError):
+            return {}
+    
+    def _save_tokens(self, token_data: Dict[str, Any]) -> None:
+        """
+        Sauvegarde les tokens dans integrations.json
+        
+        Args:
+            token_data: Données du token reçues d'Adobe IMS
+        """
+        integrations_file = self.project_root / "config" / "integrations.json"
+        integrations_file.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Charger la config existante ou créer une nouvelle
+        try:
+            with open(integrations_file, 'r') as f:
+                integrations = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            integrations = {}
+        
+        # Mettre à jour la section Frame.io
+        if 'frameio' not in integrations:
+            integrations['frameio'] = {}
+        
+        integrations['frameio'].update({
+            'client_id': self.oauth_config['client_id'],
+            'client_secret': self.oauth_config['client_secret'],
+            'redirect_uri': self.oauth_config['redirect_uri'],
+            'access_token': token_data['access_token'],
+            'refresh_token': token_data.get('refresh_token'),
+            'token_type': token_data.get('token_type', 'Bearer'),
+            'expires_in': token_data.get('expires_in'),
+            'scope': token_data.get('scope'),
+            'id_token': token_data.get('id_token'),
+            'last_updated': datetime.now().isoformat(),
+            'method': 'oauth_web_app'
+        })
+        
+        # Sauvegarder
+        with open(integrations_file, 'w') as f:
+            json.dump(integrations, f, indent=2)
+        
+        logger.debug(f"Tokens sauvegardés dans {integrations_file}")
+    
+    def is_token_valid(self) -> bool:
+        """
+        Vérifie si le token actuel est valide (non expiré)
+        
+        Returns:
+            True si le token est valide, False sinon
+        """
+        config = self._load_current_tokens()
+        
+        if not config.get('access_token') or not config.get('last_updated'):
+            return False
+        
+        try:
+            last_updated = datetime.fromisoformat(config['last_updated'])
+            expires_in = config.get('expires_in', 86400)  # Défaut 24h
+            expiry_time = last_updated + timedelta(seconds=expires_in)
+            
+            return datetime.now() < expiry_time
+            
+        except (ValueError, TypeError):
+            return False
+    
+    def generate_auth_url(self, state: Optional[str] = None) -> str:
+        """
+        Génère l'URL d'autorisation Adobe IMS pour Frame.io
+        
+        Args:
+            state: État optionnel pour la sécurité CSRF
+            
+        Returns:
+            URL d'autorisation complète
+        """
+        params = {
+            'client_id': self.oauth_config['client_id'],
+            'redirect_uri': self.oauth_config['redirect_uri'],
+            'response_type': 'code',
+            'scope': ' '.join(self.required_scopes)
         }
         
+        if state:
+            params['state'] = state
+        
+        query_string = urllib.parse.urlencode(params)
+        auth_url = f"{self.auth_endpoint}?{query_string}"
+        
+        logger.info(f"URL d'autorisation générée pour client_id: {self.oauth_config['client_id']}")
+        return auth_url
+    
+    async def exchange_code(self, authorization_code: str) -> Dict[str, Any]:
+        """
+        Échange un code d'autorisation contre un access token
+        
+        Args:
+            authorization_code: Code d'autorisation reçu d'Adobe IMS
+            
+        Returns:
+            Dict contenant access_token, refresh_token, expires_in, etc.
+        """
+        # Préparation de l'authentification Basic Auth (OAuth Web App)
+        credentials = f"{self.oauth_config['client_id']}:{self.oauth_config['client_secret']}"
+        credentials_b64 = base64.b64encode(credentials.encode()).decode()
+        
         headers = {
+            'Authorization': f'Basic {credentials_b64}',
             'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'application/json'
         }
         
-        url = f"{self.ims_host}/ims/token/v3"
+        data = {
+            'grant_type': 'authorization_code',
+            'code': authorization_code,
+            'redirect_uri': self.oauth_config['redirect_uri']
+        }
         
-        try:
-            response = await client.post(url, data=data, headers=headers)
-            response.raise_for_status()
-            
-            token_data = response.json()
-            
-            # Vérification des champs requis
-            required_fields = ['access_token', 'token_type', 'expires_in']
-            if not all(field in token_data for field in required_fields):
-                raise FrameIOAuthError(f"Réponse de token invalide: {token_data}")
-            
-            return TokenInfo(
-                access_token=token_data['access_token'],
-                token_type=token_data['token_type'],
-                expires_in=token_data['expires_in'],
-                created_at=datetime.now()
-            )
-            
-        except httpx.HTTPStatusError as e:
-            error_text = ""
+        logger.info("Échange du code d'autorisation en cours...")
+        
+        async with httpx.AsyncClient(timeout=self.timeout) as client:
             try:
-                error_data = e.response.json()
-                error_text = f": {error_data.get('error_description', error_data)}"
-            except:
-                error_text = f": {e.response.text}"
+                response = await client.post(self.token_endpoint, headers=headers, data=data)
+                response.raise_for_status()
                 
-            if e.response.status_code == 400:
-                raise FrameIOAuthError(f"Paramètres d'authentification invalides{error_text}")
-            elif e.response.status_code == 401:
-                raise FrameIOAuthError(f"Authentification échouée: vérifiez vos identifiants{error_text}")
-            elif e.response.status_code == 429:
-                retry_after = e.response.headers.get('retry-after', '60')
-                raise FrameIOAuthError(f"Limite de taux dépassée, réessayez dans {retry_after}s")
-            else:
-                raise FrameIOAuthError(f"Erreur HTTP {e.response.status_code}{error_text}")
-        except Exception as e:
-            raise FrameIOAuthError(f"Erreur lors de la demande de token: {str(e)}")
+                token_data = response.json()
+                
+                # Sauvegarder automatiquement
+                self._save_tokens(token_data)
+                
+                logger.info("Token obtenu et sauvegardé avec succès")
+                return token_data
+                
+            except httpx.RequestError as e:
+                error_msg = f"Erreur lors de l'échange du code: {e}"
+                logger.error(error_msg)
+                raise FrameIOAuthError(error_msg)
     
-    async def get_access_token(self, force_refresh: bool = False) -> str:
+    async def refresh_token(self) -> Dict[str, Any]:
         """
-        Obtient un token d'accès valide
+        Rafraîchit le token d'accès actuel
         
-        Args:
-            force_refresh: Force le renouvellement du token
-            
         Returns:
-            str: Token d'accès
+            Dict contenant le nouveau access_token, refresh_token, etc.
+        """
+        current_config = self._load_current_tokens()
+        
+        if not current_config.get('refresh_token'):
+            raise FrameIOAuthError("Aucun refresh token disponible")
+        
+        credentials = f"{self.oauth_config['client_id']}:{self.oauth_config['client_secret']}"
+        credentials_b64 = base64.b64encode(credentials.encode()).decode()
+        
+        headers = {
+            'Authorization': f'Basic {credentials_b64}',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+        
+        data = {
+            'grant_type': 'refresh_token',
+            'refresh_token': current_config['refresh_token']
+        }
+        
+        logger.info("Rafraîchissement du token en cours...")
+        
+        async with httpx.AsyncClient(timeout=self.timeout) as client:
+            try:
+                response = await client.post(self.token_endpoint, headers=headers, data=data)
+                response.raise_for_status()
+                
+                token_data = response.json()
+                
+                # Sauvegarder le nouveau token
+                self._save_tokens(token_data)
+                
+                logger.info("Token rafraîchi avec succès")
+                return token_data
+                
+            except httpx.RequestError as e:
+                error_msg = f"Erreur lors du rafraîchissement: {e}"
+                logger.error(error_msg)
+                raise FrameIOAuthError(error_msg)
+    
+    async def ensure_valid_token(self) -> bool:
+        """
+        S'assure qu'un token valide est disponible, le rafraîchit si nécessaire
+        
+        Returns:
+            True si un token valide est disponible, False sinon
+        """
+        if self.is_token_valid():
+            return True
+        
+        config = self._load_current_tokens()
+        if config.get('refresh_token'):
+            try:
+                await self.refresh_token()
+                return True
+            except FrameIOAuthError:
+                logger.warning("Échec du rafraîchissement automatique")
+                return False
+        
+        return False
+    
+    async def get_access_token(self) -> str:
+        """
+        Récupère un token d'accès valide
+        
+        Returns:
+            Token d'accès valide
             
         Raises:
-            FrameIOAuthError: En cas d'erreur d'authentification
+            FrameIOAuthError: Si aucun token valide n'est disponible
         """
-        if self._token_info is None or self._token_info.is_expired or force_refresh:
-            logger.info("Demande d'un nouveau token d'accès")
-            self._token_info = await self._request_token()
-            logger.info("Token d'accès obtenu avec succès")
+        if not await self.ensure_valid_token():
+            raise FrameIOAuthError("Aucun token d'accès valide disponible")
         
-        return self._token_info.access_token
+        config = self._load_current_tokens()
+        return config['access_token']
     
-    async def get_auth_headers(self) -> Dict[str, str]:
+    async def get_headers(self) -> Dict[str, str]:
         """
-        Obtient les headers d'authentification pour les requêtes API
+        Récupère les en-têtes d'authentification
         
         Returns:
-            Dict[str, str]: Headers d'authentification
+            Dict avec les en-têtes pour les requêtes API
         """
         token = await self.get_access_token()
         return {
@@ -236,188 +358,121 @@ class FrameIOAuth:
             'Accept': 'application/json'
         }
     
-    async def is_token_valid(self) -> bool:
+    async def test_connection(self) -> bool:
         """
-        Vérifie si le token actuel est valide
+        Teste la connexion à l'API Frame.io
         
         Returns:
-            bool: True si le token est valide
-        """
-        if self._token_info is None or self._token_info.is_expired:
-            return False
-        
-        try:
-            # Test avec un endpoint simple
-            headers = await self.get_auth_headers()
-            client = await self._get_http_client()
-            
-            response = await client.get(
-                f"{self.base_url}/accounts",
-                headers=headers
-            )
-            
-            return response.status_code == 200
-            
-        except Exception as e:
-            logger.warning(f"Erreur lors de la validation du token: {e}")
-            return False
-    
-    async def validate_credentials(self) -> Dict[str, Any]:
-        """
-        Valide les identifiants et retourne les informations du compte
-        
-        Returns:
-            Dict[str, Any]: Informations du compte
-            
-        Raises:
-            FrameIOAuthError: En cas d'erreur de validation
+            True si la connexion fonctionne, False sinon
         """
         try:
-            headers = await self.get_auth_headers()
-            client = await self._get_http_client()
+            headers = await self.get_headers()
             
-            response = await client.get(
-                f"{self.base_url}/accounts",
-                headers=headers
-            )
-            response.raise_for_status()
-            
-            data = response.json()
-            logger.info("Identifiants validés avec succès")
-            
-            return data
-            
-        except httpx.HTTPStatusError as e:
-            if e.response.status_code == 401:
-                raise FrameIOAuthError("Identifiants invalides")
-            elif e.response.status_code == 403:
-                raise FrameIOAuthError("Accès refusé - vérifiez les permissions")
-            else:
-                raise FrameIOAuthError(f"Erreur HTTP {e.response.status_code}: {e.response.text}")
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                response = await client.get(f"{self.base_url}/me", headers=headers)
+                
+                if response.status_code == 200:
+                    logger.info("✅ Connexion Frame.io réussie")
+                    return True
+                else:
+                    logger.warning(f"❌ Connexion Frame.io échouée: {response.status_code}")
+                    return False
+                    
         except Exception as e:
-            raise FrameIOAuthError(f"Erreur lors de la validation: {str(e)}")
+            logger.error(f"❌ Erreur lors du test de connexion: {e}")
+            return False
     
-    async def make_authenticated_request(self, 
-                                       method: str, 
-                                       url: str, 
-                                       **kwargs) -> httpx.Response:
+    async def _request_with_retry(self, method: str, url: str, **kwargs) -> httpx.Response:
         """
-        Effectue une requête authentifiée avec gestion des erreurs et retry
+        Effectue une requête avec retry automatique et gestion des tokens
         
         Args:
-            method: Méthode HTTP
-            url: URL de la requête
-            **kwargs: Arguments supplémentaires pour la requête
+            method: Méthode HTTP (GET, POST, etc.)
+            url: URL complète
+            **kwargs: Arguments pour httpx
             
         Returns:
-            httpx.Response: Réponse de la requête
-            
-        Raises:
-            FrameIOAuthError: En cas d'erreur d'authentification
+            Réponse HTTP
         """
-        headers = await self.get_auth_headers()
-        if 'headers' in kwargs:
-            headers.update(kwargs.pop('headers'))
+        headers = kwargs.get('headers', {})
         
-        client = await self._get_http_client()
+        # Ajouter l'authentification si pas déjà présente
+        if 'Authorization' not in headers:
+            auth_headers = await self.get_headers()
+            headers.update(auth_headers)
+            kwargs['headers'] = headers
         
-        for attempt in range(self.max_retries + 1):
-            try:
-                response = await client.request(
-                    method=method,
-                    url=url,
-                    headers=headers,
-                    **kwargs
-                )
-                
-                if response.status_code == 401:
-                    # Token expiré, on essaie de le renouveler
-                    if attempt < self.max_retries:
-                        logger.warning("Token expiré, renouvellement...")
-                        await self.get_access_token(force_refresh=True)
-                        headers = await self.get_auth_headers()
-                        continue
-                    else:
-                        raise FrameIOAuthError("Token invalide après renouvellement")
-                
-                elif response.status_code == 429:
-                    # Rate limit
-                    if attempt < self.max_retries:
-                        wait_time = 2 ** attempt
-                        logger.warning(f"Rate limit atteint, attente {wait_time}s...")
-                        await asyncio.sleep(wait_time)
-                        continue
-                    else:
-                        raise FrameIOAuthError("Limite de taux dépassée")
-                
-                return response
-                
-            except httpx.RequestError as e:
-                if attempt < self.max_retries:
-                    wait_time = 2 ** attempt
-                    logger.warning(f"Erreur réseau, retry dans {wait_time}s: {e}")
-                    await asyncio.sleep(wait_time)
-                    continue
-                else:
-                    raise FrameIOAuthError(f"Erreur réseau après {self.max_retries} tentatives: {e}")
+        async with httpx.AsyncClient(timeout=self.timeout) as client:
+            for attempt in range(self.max_retries):
+                try:
+                    response = await client.request(method, url, **kwargs)
+                    
+                    # Si token expiré, essayer de le rafraîchir
+                    if response.status_code == 401 and attempt < self.max_retries - 1:
+                        logger.info("Token expiré, tentative de rafraîchissement...")
+                        if await self.ensure_valid_token():
+                            # Mettre à jour les en-têtes avec le nouveau token
+                            new_headers = await self.get_headers()
+                            kwargs['headers'].update(new_headers)
+                            continue
+                    
+                    return response
+                    
+                except httpx.RequestError as e:
+                    if attempt == self.max_retries - 1:
+                        raise
+                    logger.warning(f"Tentative {attempt + 1} échouée: {e}")
+                    await asyncio.sleep(2 ** attempt)  # Backoff exponentiel
         
-        raise FrameIOAuthError("Nombre maximum de tentatives atteint")
+        raise FrameIOAuthError(f"Échec après {self.max_retries} tentatives")
     
-    async def refresh_token(self) -> str:
+    async def request(self, method: str, url: str, **kwargs) -> httpx.Response:
         """
-        Rafraîchit le token d'accès
+        Effectue une requête HTTP authentifiée avec gestion automatique des tokens
         
+        Args:
+            method: Méthode HTTP (GET, POST, PUT, DELETE, etc.)
+            url: URL complète ou chemin relatif (sera ajouté à base_url)
+            **kwargs: Arguments pour httpx (json, data, params, etc.)
+            
         Returns:
-            str: Nouveau token d'accès
+            Réponse HTTP
             
         Raises:
-            FrameIOAuthError: En cas d'erreur de rafraîchissement
+            FrameIOAuthError: Si la requête échoue après tous les essais
         """
-        logger.info("Rafraîchissement du token d'accès")
-        return await self.get_access_token(force_refresh=True)
-    
-    def get_jwt_assertion(self) -> str:
-        """
-        Retourne l'assertion JWT pour l'authentification Adobe IMS
+        # Si l'URL est relative, l'ajouter à base_url
+        if not url.startswith('http'):
+            url = f"{self.base_url}/{url.lstrip('/')}"
         
-        Returns:
-            str: Assertion JWT signée
-            
-        Raises:
-            FrameIOAuthError: En cas d'erreur de génération JWT
-        """
-        return self._create_jwt_assertion()
+        return await self._request_with_retry(method, url, **kwargs)
     
-    async def _get_http_client(self) -> httpx.AsyncClient:
-        """
-        Obtient un client HTTP configuré
-        
-        Returns:
-            httpx.AsyncClient: Client HTTP
-        """
-        if self._http_client is None:
-            self._http_client = httpx.AsyncClient(
-                timeout=httpx.Timeout(self.timeout),
-                limits=httpx.Limits(max_keepalive_connections=5, max_connections=10)
-            )
-        return self._http_client
+    async def get(self, url: str, **kwargs) -> httpx.Response:
+        """Effectue une requête GET authentifiée"""
+        return await self.request('GET', url, **kwargs)
     
-    async def close(self):
-        """Ferme le client HTTP"""
-        if self._http_client:
-            await self._http_client.aclose()
-            self._http_client = None
+    async def post(self, url: str, **kwargs) -> httpx.Response:
+        """Effectue une requête POST authentifiée"""
+        return await self.request('POST', url, **kwargs)
+    
+    async def put(self, url: str, **kwargs) -> httpx.Response:
+        """Effectue une requête PUT authentifiée"""
+        return await self.request('PUT', url, **kwargs)
+    
+    async def delete(self, url: str, **kwargs) -> httpx.Response:
+        """Effectue une requête DELETE authentifiée"""
+        return await self.request('DELETE', url, **kwargs)
 
 
-# Fonction utilitaire pour créer une instance d'authentification
-def create_frameio_auth(**kwargs) -> FrameIOAuth:
+# Fonction utilitaire pour compatibilité
+def create_frameio_auth(project_root: Optional[Path] = None) -> FrameIOAuth:
     """
-    Créé une instance d'authentification Frame.io
+    Fonction utilitaire pour créer une instance d'authentification Frame.io
     
     Args:
-        **kwargs: Arguments pour FrameIOAuth
+        project_root: Chemin racine du projet
         
     Returns:
-        FrameIOAuth: Instance d'authentification
+        Instance de FrameIOAuth configurée
     """
-    return FrameIOAuth(**kwargs)
+    return FrameIOAuth(project_root=project_root)

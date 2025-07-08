@@ -1,0 +1,29 @@
+{
+  "frameio": {
+    "account_id": "1845895",
+    "workspace_id": "4566206088345487626",
+    "project_id": "f8e14a61-7b1b-4242-9f06-5847d6f8ca02",
+    "base_url": "https://api.frame.io/v4",
+    "oauth": {
+      "client_id": "1b9748d7b40a408d97f943a75b6a9f18",
+      "client_secret": "p8e-g7Car3_nUyAiD9bD6AzhL3VoB0l7fvmW",
+      "auth_code": "eyJhbGciOiJSUzI1NiIsIng1dSI6Imltc19uYTEta2V5LWF0LTEuY2VyIiwia2lkIjoiaW1zX25hMS1rZXktYXQtMSIsIml0dCI6ImF0In0.eyJpZCI6IjE3NTE4MDkzMzk0NDZfZDljYWIwN2UtM2M3ZS00YmJiLThmZjItZGY1NzEwMDcwNzY2X3ZhNmMyIiwidHlwZSI6ImF1dGhvcml6YXRpb25fY29kZSIsImNsaWVudF9pZCI6IjFiOTc0OGQ3YjQwYTQwOGQ5N2Y5NDNhNzViNmE5ZjE4IiwidXNlcl9pZCI6IjgxQzYwMjU5NEJCREI3REYwQTA0QjgzN0BBZG9iZUlEIiwic3RhdGUiOiJzdGF0ZTEyMyIsImFzIjoiaW1zLW5hMSIsImFhX2lkIjoiODFDNjAyNTk0QkJEQjdERjBBMDRCODM3QEFkb2JlSUQiLCJmZyI6IlpUQVBMVlZNVlBQNU1IVUtGTVFWWUhBQUNBIiwic2lkIjoiMTc1MTgwOTMzOTQ0MF9kZWZjMjQ3Mi1jN2MxLTRlYmMtYTcwMC1mZGVhOTA1YmIzZjZfdmE2YzIiLCJvdG8iOnRydWUsImV4cGlyZXNfaW4iOiIxODAwMDAwIiwic2NvcGUiOiJlbWFpbCxwcm9maWxlLG9wZW5pZCxhZGRpdGlvbmFsX2luZm8ucm9sZXMsb2ZmbGluZV9hY2Nlc3MsQWRvYmVJRCIsImNyZWF0ZWRfYXQiOiIxNzUxODA5MzM5NDQ2In0.CA6M7mchQY5PD1FWI2RE20ylWrF0g4MD73CKt5vF_us2N2t9cMN-Jul-RJK-kaABzwsAUur1ZUP6jUXN-mAdCsmjbBM2eFG4UfLgWSZqWSgBxW7AFTUU2BI7Uv1vReFg7nie4BKnH2P_nXaeHwtK6gLQhxKqHa0ezo_maqCXBDl7BfuJ02Ff8l1mCyZCR4EY7Eg6uqROyWEborNk4t2QQvF-ADRUR4Tia8HtIPWgrWN8CIOLSs6RozrJ_bzE_lkDTEXWu7rePrS4sRmYtrpHTdrbSiOaX0pEyGBGVj_KG6gOMaWQcNsLsqVGZavj_zhNZVPC8HsbHlzTRb3K6wU0Qg",
+      "ims_host": "https://ims-na1.adobelogin.com"
+    }
+  },
+  "discord": {
+    "enable_notifications": false,
+    "webhook_url": "",
+    "bot_name": "RL PostFlow Bot"
+  },
+  "lucidlink": {
+    "by_shot_path": "/tmp/test_by_shot",
+    "scan_interval": 5,
+    "enable_watcher": true
+  },
+  "upload": {
+    "chunk_size": 8388608,
+    "parallel_uploads": 2,
+    "max_retries": 3
+  }
+}

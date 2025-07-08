@@ -1,0 +1,19 @@
+{
+  "projects_a4374a0f-1a78-4d37-aa83-ccb07189796d": {
+    "data": [
+      {
+        "id": "c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f",
+        "name": "UNDLM_DOCU",
+        "workspace_id": "a4374a0f-1a78-4d37-aa83-ccb07189796d",
+        "account_id": "60b535d5-8508-459a-8dd6-98ffb0c3eb78",
+        "root_folder_id": "d1788dd0-6bcb-4aaf-8d0b-2cda65359438",
+        "description": null,
+        "created_at": "2025-07-06T13:22:20.602535Z",
+        "updated_at": "2025-07-08T01:07:03.492111Z"
+      }
+    ],
+    "timestamp": "2025-07-08T03:07:13.006181",
+    "ttl_seconds": 1800,
+    "hash_key": "4acd1ce975e70668987360c0f1cf22eb"
+  }
+}

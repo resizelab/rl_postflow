@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyc
 *.so
 .Python
 build/
@@ -18,16 +19,15 @@ var/
 wheels/
 *.egg-info/
 .installed.cfg
-*.egg
-MANIFEST
 
-# Virtual environments
-venv/
-env/
-ENV/
-env.bak/
-venv.bak/
-.venv/
+# Fichiers temporaires et de debug
+temp/
+tmp/
+debug_*.py
+debug_*.json
+test_*.log
+*.tmp
+*.temp
 
 # IDE
 .vscode/
@@ -48,13 +48,6 @@ Thumbs.db
 # Logs
 *.log
 logs/*.log
-
-# Temporary files
-*.tmp
-*.temp
-.cache/
-temp/
-tmp/
 
 # Test files
 test_*.mov
@@ -86,9 +79,13 @@ docs/_build/
 
 # Données sensibles
 data/sensitive/
+data/private/
 *.key
 *.pem
 credentials.json
+
+# Configuration privée
+config/private/
 
 # Backup files
 *.bak

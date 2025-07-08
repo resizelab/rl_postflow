@@ -20,5 +20,28 @@
     "/test/path/UNDLM_00002.mov:1234567891:1000000",
     "/Volumes/resizelab/o2b-undllm/4_OUT/2_FROM_VFX/BY_SHOT/UNDLM_00001/UNDLM_00001_v004.mov:1749193107.327051:1057911"
   ],
-  "last_scan": "2025-07-06T17:31:09.396907"
+  "last_scan": "2025-07-06T17:31:09.396907",
+  "lucidlink_detection": {
+    "enabled": true,
+    "last_check": null,
+    "mount_points": [],
+    "sync_stats": {
+      "total_files": 0,
+      "sync_failures": 0,
+      "avg_sync_time": 0
+    }
+  },
+  "file_processing": {
+    "pre_upload_checks": [
+      "file_exists",
+      "file_accessible",
+      "file_stable",
+      "lucidlink_synced"
+    ],
+    "lucidlink_specific_checks": [
+      "size_verification",
+      "hash_verification",
+      "partial_file_detection"
+    ]
+  }
 }

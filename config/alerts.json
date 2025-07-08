@@ -1,0 +1,82 @@
+{
+  "enabled": true,
+  "channels": {
+    "discord": {
+      "enabled": false,
+      "webhook_url": "",
+      "mention_role": "",
+      "username": "RL PostFlow Bot"
+    },
+    "email": {
+      "enabled": false,
+      "smtp_server": "smtp.gmail.com",
+      "smtp_port": 587,
+      "username": "",
+      "password": "",
+      "from_email": "",
+      "to_emails": []
+    },
+    "file": {
+      "enabled": true,
+      "log_file": "logs/alerts.log",
+      "max_size_mb": 10,
+      "backup_count": 5
+    }
+  },
+  "rules": {
+    "high_error_rate": {
+      "enabled": true,
+      "threshold": 0.05,
+      "cooldown_minutes": 30,
+      "description": "Taux d'erreur API supérieur à 5%"
+    },
+    "slow_api_response": {
+      "enabled": true,
+      "threshold": 5.0,
+      "cooldown_minutes": 15,
+      "description": "Temps de réponse API supérieur à 5 secondes"
+    },
+    "low_cache_hit_rate": {
+      "enabled": true,
+      "threshold": 0.7,
+      "cooldown_minutes": 60,
+      "description": "Taux de cache hit inférieur à 70%"
+    },
+    "high_memory_usage": {
+      "enabled": true,
+      "threshold": 500,
+      "cooldown_minutes": 30,
+      "description": "Utilisation mémoire supérieure à 500MB"
+    },
+    "upload_failure": {
+      "enabled": true,
+      "threshold": 0.1,
+      "cooldown_minutes": 15,
+      "description": "Taux d'échec upload supérieur à 10%"
+    },
+    "ngrok_tunnel_down": {
+      "enabled": true,
+      "threshold": 1,
+      "cooldown_minutes": 5,
+      "description": "Tunnel ngrok inaccessible"
+    },
+    "frameio_api_down": {
+      "enabled": true,
+      "threshold": 1,
+      "cooldown_minutes": 10,
+      "description": "API Frame.io inaccessible"
+    }
+  },
+  "escalation": {
+    "enabled": false,
+    "critical_threshold": 5,
+    "critical_window_minutes": 60,
+    "critical_channels": ["discord", "email"]
+  },
+  "maintenance_mode": {
+    "enabled": false,
+    "start_time": "02:00",
+    "end_time": "04:00",
+    "suppress_alerts": ["low_cache_hit_rate", "slow_api_response"]
+  }
+}

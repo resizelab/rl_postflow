@@ -5,32 +5,27 @@ Intégration complète avec Adobe IMS OAuth 2.0 pour PostFlow
 
 from .auth import FrameIOAuth, FrameIOAuthError, TokenInfo
 from .structure import FrameIOStructureManager, FrameIOProject, FrameIOFolder
-from .upload import FrameIOUploadManager, FrameIOUploadError, UploadResult
+from .upload import FrameIOUploadManager, FrameIOUploadError, UploadResult, UploadMetadata
 from .comments import FrameIOCommentManager, FrameIOComment, CommentAnnotation
+from .parser import FrameIOFileParser, FileMetadata
+from .notifier import FrameIODiscordNotifier, FrameIONotificationData
+from .integration import FrameIOIntegrationManager, create_frameio_integration
+from .production_upload import FrameIOProductionUploader, upload_file_to_frameio
 
 # Fonction utilitaire pour créer l'auth
-def create_frameio_auth(config=None):
+def create_frameio_auth(project_root=None):
     """
     Crée une instance d'authentification Frame.io
     
     Args:
-        config (dict, optional): Configuration personnalisée
+        project_root (Path, optional): Chemin racine du projet
         
     Returns:
         FrameIOAuth: Instance d'authentification
     """
-    import os
+    from pathlib import Path
     
-    # Utiliser les variables d'environnement ou la config
-    cfg = config or {}
-    
-    return FrameIOAuth(
-        client_id=cfg.get('client_id') or os.getenv('FRAMEIO_CLIENT_ID'),
-        client_secret=cfg.get('client_secret') or os.getenv('FRAMEIO_CLIENT_SECRET'),
-        ims_host=cfg.get('ims_host') or os.getenv('FRAMEIO_IMS_HOST', 'https://ims-na1.adobelogin.com'),
-        timeout=cfg.get('timeout', 30),
-        max_retries=cfg.get('max_retries', 3),
-    )
+    return FrameIOAuth(project_root=project_root)
 
 __version__ = "4.0.0"
 __author__ = "PostFlow Team"

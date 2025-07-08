@@ -1,0 +1,41 @@
+{
+  "cache_ttl": {
+    "projects": 1800,
+    "folders": 900,
+    "structure": 3600,
+    "nomenclature": 7200
+  },
+  "rate_limiting": {
+    "requests_per_second": 10,
+    "burst_size": 20,
+    "backoff_factor": 2.0,
+    "max_retries": 3
+  },
+  "upload_optimization": {
+    "chunk_size": 5242880,
+    "max_concurrent_uploads": 3,
+    "timeout_seconds": 300,
+    "use_ngrok": true,
+    "ngrok_timeout": 600
+  },
+  "monitoring": {
+    "system_metrics_interval": 30,
+    "report_interval": 300,
+    "log_slow_operations": true,
+    "slow_operation_threshold": 5.0,
+    "enable_performance_logging": true
+  },
+  "error_handling": {
+    "max_retries": 3,
+    "retry_delay_base": 1.0,
+    "exponential_backoff": true,
+    "circuit_breaker_threshold": 5,
+    "circuit_breaker_timeout": 60
+  },
+  "cache_invalidation": {
+    "auto_invalidate_on_error": true,
+    "invalidate_on_structure_change": true,
+    "max_cache_age_hours": 24,
+    "cleanup_interval_hours": 6
+  }
+}

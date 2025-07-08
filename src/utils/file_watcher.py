@@ -77,6 +77,10 @@ class LucidLinkWatcher:
         self.last_path_check = datetime.now()
         self.path_availability: Dict[str, bool] = {}
         
+        # Cache pour éviter les logs répétitifs
+        self.last_scan_results: Dict[str, int] = {}  # directory_name -> file_count
+        self.initial_scan_done = False
+        
         # Pattern pour extraire la nomenclature et version
         self.shot_pattern = re.compile(r'(UNDLM_\d{5}).*[_v](\d{3})\.(\w+)$')
         
@@ -188,6 +192,7 @@ class LucidLinkWatcher:
                     })
         
         logger.info(f"Initial scan complete, tracking {len(self.known_files)} files")
+        self.initial_scan_done = True
     
     def _watch_loop(self):
         """Boucle principale de surveillance."""
@@ -266,16 +271,69 @@ class LucidLinkWatcher:
     def _scan_directory(self, directory: Path) -> List[Path]:
         """Scan récursif d'un dossier pour trouver les fichiers vidéo."""
         files = []
+        rejected_files = []
         try:
             for item in directory.rglob("*"):
-                if (item.is_file() and 
-                    item.suffix.lower() in self.supported_extensions and
-                    not item.name.startswith('.') and
-                    self._is_valid_shot_file(item.name)):
+                if item.is_file():
+                    filename = item.name
+                    
+                    # Ignorer les fichiers cachés
+                    if filename.startswith('.'):
+                        continue
+                    
+                    # Vérifier l'extension
+                    if item.suffix.lower() not in self.supported_extensions:
+                        # Log seulement pour les fichiers qui pourraient être des vidéos
+                        potential_video_extensions = {'.mp4', '.mov', '.avi', '.mkv', '.mxf', '.wmv', '.flv', '.webm', '.m4v'}
+                        if item.suffix.lower() in potential_video_extensions or item.suffix.lower() in ['.tmp', '.part']:
+                            rejected_files.append(f"❌ Extension non supportée: {filename} (extension: {item.suffix})")
+                        continue
+                    
+                    # Vérifier la nomenclature
+                    if not self._is_valid_shot_file(filename):
+                        # Analyser pourquoi le fichier est rejeté
+                        shot_info = self._extract_shot_info(filename)
+                        if not shot_info:
+                            # Essayer d'extraire au moins la nomenclature
+                            nomenclature = self._extract_shot_nomenclature(filename)
+                            if nomenclature:
+                                rejected_files.append(f"⚠️ Nomenclature détectée mais pattern invalide: {filename} (nomenclature: {nomenclature})")
+                            else:
+                                rejected_files.append(f"❌ Aucune nomenclature détectée: {filename} (attendu: UNDLM_##### ou format similaire)")
+                        continue
+                    
+                    # Fichier valide
                     files.append(item)
+                    
         except Exception as e:
             logger.error(f"Error scanning directory {directory}: {e}")
             raise  # Re-lancer pour être gérée par le niveau supérieur
+        
+        # Logger les fichiers rejetés de manière groupée
+        dir_name = directory.name
+        current_count = len(files)
+        previous_count = self.last_scan_results.get(dir_name, -1)
+        
+        if rejected_files:
+            logger.info(f"📁 Scan terminé dans {dir_name}: {current_count} fichiers valides, {len(rejected_files)} rejetés")
+            for rejection in rejected_files[:10]:  # Limiter à 10 pour éviter le spam
+                logger.warning(rejection)
+            if len(rejected_files) > 10:
+                logger.warning(f"... et {len(rejected_files) - 10} autres fichiers rejetés")
+        elif not self.initial_scan_done or current_count != previous_count:
+            # Logger seulement si c'est le premier scan ou s'il y a un changement dans le nombre de fichiers
+            if not self.initial_scan_done:
+                logger.info(f"📁 Scan initial dans {dir_name}: {current_count} fichiers valides trouvés")
+            elif current_count > previous_count:
+                logger.info(f"📁 Nouveaux fichiers dans {dir_name}: {current_count} fichiers (+{current_count - previous_count})")
+            elif current_count < previous_count:
+                logger.info(f"📁 Fichiers supprimés dans {dir_name}: {current_count} fichiers (-{previous_count - current_count})")
+        else:
+            # Scan silencieux - pas de changement
+            logger.debug(f"📁 Scan silencieux dans {dir_name}: {current_count} fichiers (aucun changement)")
+        
+        # Mettre à jour le cache
+        self.last_scan_results[dir_name] = current_count
         
         return files
     
@@ -303,18 +361,56 @@ class LucidLinkWatcher:
     
     def _is_valid_shot_file(self, filename: str) -> bool:
         """Vérifie si le nom de fichier correspond au pattern attendu."""
-        match = self.shot_pattern.match(filename)
-        return match is not None
+        # Utiliser la méthode d'extraction améliorée
+        shot_info = self._extract_shot_info(filename)
+        return shot_info is not None
     
     def _extract_shot_info(self, filename: str) -> Optional[Dict[str, Any]]:
         """Extrait les informations du plan depuis le nom de fichier."""
-        match = self.shot_pattern.match(filename)
-        if match:
+        import re
+        
+        # Pattern strict pour UNDLM_#####_v###.ext
+        strict_pattern = re.compile(r'^(UNDLM_\d{5})_v(\d{3})\.(\w+)$')
+        strict_match = strict_pattern.match(filename)
+        if strict_match:
             return {
-                'nomenclature': match.group(1),
-                'version': int(match.group(2)),
-                'extension': match.group(3)
+                'nomenclature': strict_match.group(1),
+                'version': int(strict_match.group(2)),
+                'extension': strict_match.group(3)
             }
+        
+        # Pattern pour UNDLM_#####.ext (sans version explicite)
+        simple_pattern = re.compile(r'^(UNDLM_\d{5})\.(\w+)$')
+        simple_match = simple_pattern.match(filename)
+        if simple_match:
+            # Extraire le numéro de shot comme version
+            shot_number = simple_match.group(1).split('_')[1]  # Récupérer les 5 chiffres
+            return {
+                'nomenclature': simple_match.group(1),
+                'version': int(shot_number),  # Utiliser le numéro de shot comme version
+                'extension': simple_match.group(2)
+            }
+        
+        # Pattern pour UNDLM_#####_[texte].ext (comme draft, final, etc.)
+        text_version_pattern = re.compile(r'^(UNDLM_\d{5})_([a-zA-Z]+)\.(\w+)$')
+        text_match = text_version_pattern.match(filename)
+        if text_match:
+            version_text = text_match.group(2).lower()
+            # Convertir certains mots en versions numériques
+            version_map = {
+                'draft': 1,
+                'final': 999,
+                'master': 1000,
+                'approved': 500
+            }
+            version = version_map.get(version_text, 1)
+            return {
+                'nomenclature': text_match.group(1),
+                'version': version,
+                'extension': text_match.group(3)
+            }
+        
+        # Tous les autres formats sont rejetés
         return None
     
     def _extract_shot_nomenclature(self, filename: str) -> str:
@@ -325,23 +421,28 @@ class LucidLinkWatcher:
             filename: Nom du fichier
             
         Returns:
-            Nomenclature du shot (ex: UNDLM_12345)
+            Nomenclature du shot (ex: UNDLM_12345) ou chaîne vide si non trouvée
         """
         import re
         
-        # Pattern pour extraire la nomenclature (ex: UNDLM_12345, PROJECT_ABC123)
-        pattern = r'([A-Z]+_[A-Z0-9]+)'
-        match = re.search(pattern, filename)
+        # Pattern strict pour UNDLM_##### (5 chiffres exactement)
+        strict_pattern = r'(UNDLM_\d{5})'
+        strict_match = re.search(strict_pattern, filename)
+        if strict_match:
+            return strict_match.group(1)
         
-        if match:
-            return match.group(1)
+        # Pattern pour détecter des tentatives de nomenclature UNDLM mais incorrectes
+        partial_pattern = r'(UNDLM_\d{1,4}|UNDLM_\d{6,}|UNDL_\d+|UND_\d+)'
+        partial_match = re.search(partial_pattern, filename)
+        if partial_match:
+            # Retourner la nomenclature partielle pour les logs
+            return partial_match.group(1)
         
-        # Pattern alternatif pour d'autres formats
-        pattern_alt = r'([A-Z][A-Z0-9]{2,}_[A-Z0-9]{3,})'
-        match_alt = re.search(pattern_alt, filename)
-        
-        if match_alt:
-            return match_alt.group(1)
+        # Pattern pour d'autres formats qui pourraient être des tentatives
+        other_pattern = r'([A-Z]{3,6}_\d{3,6})'
+        other_match = re.search(other_pattern, filename)
+        if other_match:
+            return other_match.group(1)
             
         return ""
     
@@ -410,10 +511,14 @@ class LucidLinkWatcher:
         shot_info = self._extract_shot_info(filename)
         
         if not shot_info:
-            logger.warning(f"Could not extract shot info from {filename}")
+            logger.warning(f"❌ Impossible d'extraire les informations de shot: {filename}")
+            logger.warning(f"   Pattern attendu: UNDLM_##### ou UNDLM_#####_v### ou similaire")
             return
         
-        logger.info(f"New file detected: {filename} ({shot_info['nomenclature']} v{shot_info['version']:03d})")
+        logger.info(f"🎬 Nouveau fichier détecté: {filename}")
+        logger.info(f"   📝 Shot: {shot_info['nomenclature']}")
+        logger.info(f"   🔢 Version: {shot_info['version']}")
+        logger.info(f"   📦 Taille: {file_info['size']:,} bytes")
         
         # Créer l'événement
         event = FileEvent(

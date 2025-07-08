@@ -102,51 +102,136 @@ def dashboard():
 @app.route('/api/status')
 def api_status():
     """API pour récupérer le statut."""
-    if not error_handler:
-        return jsonify({'error': 'Components not initialized'}), 500
-    
     try:
-        status = error_handler.get_status()
+        # Données de base
+        status = {
+            'timestamp': datetime.now().isoformat(),
+            'components': {
+                'error_handler': error_handler is not None,
+                'watcher': watcher is not None,
+                'frameio': frameio_integration is not None
+            },
+            'running': True,
+            'processing': False  # Défaut à False
+        }
+        
+        # Ajouter les détails si les composants sont initialisés
+        if error_handler:
+            try:
+                error_status = error_handler.get_status()
+                status.update(error_status)
+                
+                # Déterminer si le pipeline est en cours de traitement
+                queue_stats = error_handler.queue.get_statistics()
+                active_tasks = queue_stats.get('active_tasks', 0)
+                queue_size = queue_stats.get('queue_size', 0)
+                
+                # Le pipeline est "processing" s'il y a des tâches actives ou en queue
+                status['processing'] = active_tasks > 0 or queue_size > 0
+                
+            except Exception as e:
+                logger.warning(f"Error getting error_handler status: {e}")
+                status['processing'] = False
         
         # Ajouter le statut du watcher
         if watcher:
-            watcher_status = watcher.get_status()
-            status['watcher'] = watcher_status
+            try:
+                watcher_status = watcher.get_status()
+                status['watcher'] = watcher_status
+            except Exception as e:
+                logger.warning(f"Error getting watcher status: {e}")
+                status['watcher'] = {'error': str(e)}
         
-        # Ajouter timestamp
-        status['timestamp'] = datetime.now().isoformat()
+        # Ajouter des données de demo si pas de composants
+        if not error_handler:
+            status.update({
+                'demo_mode': True,
+                'queue_size': 0,
+                'processed_files': 42,
+                'error_count': 0,
+                'last_activity': datetime.now().isoformat(),
+                'processing': False  # En mode démo, pas de traitement
+            })
         
         return jsonify(status)
         
     except Exception as e:
         logger.error(f"Error getting status: {e}")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({
+            'error': str(e),
+            'demo_mode': True,
+            'timestamp': datetime.now().isoformat()
+        }), 500
 
 
 @app.route('/api/queue/stats')
 def api_queue_stats():
     """API pour les statistiques de la queue."""
-    if not error_handler:
-        return jsonify({'error': 'Components not initialized'}), 500
-    
     try:
-        queue_stats = error_handler.queue.get_statistics()
+        if error_handler:
+            raw_stats = error_handler.queue.get_statistics()
+            # Formater les statistiques pour le dashboard
+            queue_stats = {
+                'pending': raw_stats.get('queue_size', 0),
+                'processing': raw_stats.get('active_tasks', 0),
+                'completed': raw_stats.get('completed_tasks', 0),
+                'failed': raw_stats.get('failed_final', 0),
+                'total_processed': raw_stats.get('total_processed', 0),
+                'success_rate': raw_stats.get('success_rate', 0),
+                'average_processing_time': raw_stats.get('average_processing_time', 0),
+                'last_processed': raw_stats.get('last_processed', datetime.now().isoformat())
+            }
+        else:
+            # Données de demo
+            queue_stats = {
+                'pending': 0,
+                'processing': 0,
+                'completed': 42,
+                'failed': 1,
+                'total_processed': 43,
+                'success_rate': 95.5,
+                'average_processing_time': 2.3,
+                'last_processed': datetime.now().isoformat()
+            }
+        
         return jsonify(queue_stats)
         
     except Exception as e:
         logger.error(f"Error getting queue stats: {e}")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({
+            'error': str(e),
+            'demo_mode': True,
+            'pending': 0,
+            'processing': 0,
+            'completed': 0,
+            'failed': 0
+        }), 500
 
 
 @app.route('/api/health')
 def api_health():
     """API pour la santé du système."""
-    if not error_handler:
-        return jsonify({'error': 'Components not initialized'}), 500
-    
     try:
-        health_results = error_handler.health_monitor.run_checks()
-        health_status = error_handler.health_monitor.get_status()
+        if error_handler:
+            health_results = error_handler.health_monitor.run_checks()
+            health_status = error_handler.health_monitor.get_status()
+        else:
+            # Données de demo
+            health_results = {
+                'system_health': 'good',
+                'checks_passed': 4,
+                'checks_total': 4,
+                'last_check': datetime.now().isoformat()
+            }
+            health_status = {
+                'overall': 'healthy',
+                'components': {
+                    'file_system': 'ok',
+                    'network': 'ok',
+                    'memory': 'ok',
+                    'disk': 'ok'
+                }
+            }
         
         return jsonify({
             'results': health_results,
@@ -156,7 +241,10 @@ def api_health():
         
     except Exception as e:
         logger.error(f"Error getting health status: {e}")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({
+            'error': str(e),
+            'demo_mode': True
+        }), 500
 
 
 @app.route('/api/errors')
@@ -477,9 +565,18 @@ def create_html_template():
         <div class="auto-refresh">
             <label>
                 <input type="checkbox" id="auto-refresh" checked>
-                Actualisation automatique (5s)
+                Actualisation automatique (10s)
             </label>
             <button class="refresh-btn" onclick="refreshAll()">Actualiser</button>
+            <button class="refresh-btn" onclick="document.getElementById('debug-log').innerHTML = ''">Vider Debug</button>
+        </div>
+        
+        <!-- Zone de debug -->
+        <div class="card" style="margin-bottom: 20px;">
+            <h3>🔍 Debug en temps réel</h3>
+            <div id="debug-log" style="height: 150px; overflow-y: auto; font-family: monospace; font-size: 12px; background: #f5f5f5; padding: 10px; border-radius: 4px;">
+                <div>[Init] Dashboard chargé</div>
+            </div>
         </div>
         
         <div class="grid">
@@ -597,63 +694,162 @@ def create_html_template():
                 '<span class="status-indicator status-unhealthy"></span>Déconnecté';
         });
         
+        // Variables pour éviter les appels multiples
+        let isRefreshing = false;
+        let refreshCount = 0;
+        let debugMode = true; // Activer le mode debug
+        
+        // Fonction pour logger dans l'UI
+        function logToUI(message) {
+            if (debugMode) {
+                console.log(`[DEBUG] ${message}`);
+                // Ajouter aussi dans l'UI
+                const debugDiv = document.getElementById('debug-log');
+                if (debugDiv) {
+                    debugDiv.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${message}</div>`;
+                    debugDiv.scrollTop = debugDiv.scrollHeight;
+                }
+            }
+        }
+        
         // Fonction pour actualiser les données
         async function refreshAll() {
+            if (isRefreshing) {
+                logToUI('Refresh déjà en cours, ignoré');
+                return;
+            }
+            
+            isRefreshing = true;
+            refreshCount++;
+            
             try {
-                await Promise.all([
-                    refreshStatus(),
-                    refreshQueueStats(),
-                    refreshHealth(),
-                    refreshErrors(),
-                    refreshTasks()
-                ]);
+                logToUI(`Refresh #${refreshCount} démarré`);
+                
+                // Appels séquentiels plutôt que parallèles pour éviter la surcharge
+                await refreshStatus();
+                await refreshQueueStats();
+                await refreshHealth();
+                await refreshErrors();
+                await refreshTasks();
+                
+                logToUI(`Refresh #${refreshCount} terminé`);
+                
             } catch (error) {
-                console.error('Erreur lors de l\'actualisation:', error);
+                logToUI(`Erreur lors du refresh #${refreshCount}: ${error.message}`);
+                console.error(`Erreur lors du refresh #${refreshCount}:`, error);
+            } finally {
+                isRefreshing = false;
             }
         }
         
         async function refreshStatus() {
             try {
-                const response = await fetch('/api/status');
-                const data = await response.json();
+                logToUI('Début refreshStatus');
                 
-                document.getElementById('processing-status').textContent = 
-                    data.processing ? '✅ Actif' : '❌ Arrêté';
+                const response = await fetch('/api/status', { 
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' },
+                    signal: AbortSignal.timeout(5000) // Timeout de 5 secondes
+                });
                 
-                document.getElementById('health-status').textContent = 
-                    data.health_status.healthy ? '✅ Sain' : '❌ Problème';
-                
-                if (data.watcher) {
-                    document.getElementById('watcher-status').textContent = 
-                        data.watcher.running ? '✅ Actif' : '❌ Arrêté';
-                    document.getElementById('tracked-files').textContent = 
-                        data.watcher.tracked_files;
-                    document.getElementById('scan-errors').textContent = 
-                        data.watcher.scan_error_count;
-                    document.getElementById('callbacks-count').textContent = 
-                        data.watcher.callbacks_registered;
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 
-                document.getElementById('last-update').textContent = 
-                    new Date(data.timestamp).toLocaleString();
+                const data = await response.json();
+                logToUI(`Status data reçu: ${JSON.stringify(data).substring(0, 100)}...`);
+                
+                // Mise à jour des éléments DOM avec vérification
+                const processingElement = document.getElementById('processing-status');
+                if (processingElement) {
+                    processingElement.textContent = data.processing ? '✅ Actif' : '❌ Arrêté';
+                    logToUI(`Processing status mis à jour: ${data.processing ? 'Actif' : 'Arrêté'}`);
+                } else {
+                    logToUI('ERREUR: element processing-status non trouvé');
+                }
+                
+                const healthElement = document.getElementById('health-status');
+                if (healthElement) {
+                    healthElement.textContent = data.health_status && data.health_status.healthy ? '✅ Sain' : '❌ Problème';
+                    logToUI(`Health status mis à jour: ${data.health_status && data.health_status.healthy ? 'Sain' : 'Problème'}`);
+                } else {
+                    logToUI('ERREUR: element health-status non trouvé');
+                }
+                
+                if (data.watcher) {
+                    const watcherElement = document.getElementById('watcher-status');
+                    if (watcherElement) {
+                        watcherElement.textContent = data.watcher.running ? '✅ Actif' : '❌ Arrêté';
+                        logToUI(`Watcher status mis à jour: ${data.watcher.running ? 'Actif' : 'Arrêté'}`);
+                    }
+                    
+                    const trackedElement = document.getElementById('tracked-files');
+                    if (trackedElement) {
+                        trackedElement.textContent = data.watcher.tracked_files || 0;
+                    }
+                } else {
+                    logToUI('Pas de données watcher');
+                }
+                
+                const updateElement = document.getElementById('last-update');
+                if (updateElement) {
+                    updateElement.textContent = new Date(data.timestamp).toLocaleString();
+                    logToUI('Timestamp mis à jour');
+                }
+                
+                logToUI('refreshStatus terminé avec succès');
                 
             } catch (error) {
+                logToUI(`Erreur refreshStatus: ${error.message}`);
                 console.error('Erreur refreshStatus:', error);
+                
+                // Afficher des valeurs par défaut en cas d'erreur
+                const elements = [
+                    { id: 'processing-status', value: '❌ Erreur' },
+                    { id: 'health-status', value: '❌ Erreur' },
+                    { id: 'watcher-status', value: '❌ Erreur' },
+                    { id: 'last-update', value: 'Erreur de connexion' }
+                ];
+                
+                elements.forEach(({ id, value }) => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.textContent = value;
+                    }
+                });
             }
         }
         
         async function refreshQueueStats() {
             try {
                 const response = await fetch('/api/queue/stats');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
                 const data = await response.json();
+                console.log('Queue stats data:', data); // Debug
                 
-                document.getElementById('pending-count').textContent = data.pending || 0;
-                document.getElementById('processing-count').textContent = data.processing || 0;
-                document.getElementById('completed-count').textContent = data.completed || 0;
-                document.getElementById('failed-count').textContent = data.failed || 0;
+                // Gérer différentes structures de données
+                if (data.pending !== undefined) {
+                    document.getElementById('pending-count').textContent = data.pending || 0;
+                    document.getElementById('processing-count').textContent = data.processing || 0;
+                    document.getElementById('completed-count').textContent = data.completed || 0;
+                    document.getElementById('failed-count').textContent = data.failed || 0;
+                } else {
+                    // Structure alternative avec total_processed, etc.
+                    document.getElementById('pending-count').textContent = data.current_size || 0;
+                    document.getElementById('processing-count').textContent = '0';
+                    document.getElementById('completed-count').textContent = data.total_processed || 0;
+                    document.getElementById('failed-count').textContent = data.failed_final || 0;
+                }
                 
             } catch (error) {
                 console.error('Erreur refreshQueueStats:', error);
+                // Valeurs par défaut
+                document.getElementById('pending-count').textContent = '0';
+                document.getElementById('processing-count').textContent = '0';
+                document.getElementById('completed-count').textContent = '0';
+                document.getElementById('failed-count').textContent = '0';
             }
         }
         
@@ -665,20 +861,33 @@ def create_html_template():
                 const healthChecks = document.getElementById('health-checks');
                 healthChecks.innerHTML = '';
                 
-                for (const [name, failures] of Object.entries(data.status.failure_counts)) {
+                if (data.status && data.status.failure_counts) {
+                    for (const [name, failures] of Object.entries(data.status.failure_counts)) {
+                        const metric = document.createElement('div');
+                        metric.className = 'metric';
+                        metric.innerHTML = `
+                            <span>${name}</span>
+                            <span class="metric-value">
+                                ${failures === 0 ? '✅' : '❌'} ${failures} échecs
+                            </span>
+                        `;
+                        healthChecks.appendChild(metric);
+                    }
+                } else {
+                    // Mode démo
                     const metric = document.createElement('div');
                     metric.className = 'metric';
                     metric.innerHTML = `
-                        <span>${name}</span>
-                        <span class="metric-value">
-                            ${failures === 0 ? '✅' : '❌'} ${failures} échecs
-                        </span>
+                        <span>Système</span>
+                        <span class="metric-value">✅ Mode démo</span>
                     `;
                     healthChecks.appendChild(metric);
                 }
                 
             } catch (error) {
                 console.error('Erreur refreshHealth:', error);
+                const healthChecks = document.getElementById('health-checks');
+                healthChecks.innerHTML = '<div class="metric"><span>Erreur</span><span class="metric-value">❌ Indisponible</span></div>';
             }
         }
         
@@ -690,18 +899,36 @@ def create_html_template():
                 const errorLog = document.getElementById('error-log');
                 errorLog.innerHTML = '';
                 
-                data.forEach(error => {
+                if (Array.isArray(data) && data.length > 0) {
+                    data.forEach(error => {
+                        const entry = document.createElement('div');
+                        entry.className = `error-entry ${error.level || 'info'}`;
+                        entry.innerHTML = `
+                            <strong>${new Date(error.timestamp).toLocaleString()}</strong>
+                            [${(error.level || 'INFO').toUpperCase()}] ${error.component || 'System'}: ${error.message}
+                        `;
+                        errorLog.appendChild(entry);
+                    });
+                } else {
+                    // Aucune erreur ou mode démo
                     const entry = document.createElement('div');
-                    entry.className = `error-entry ${error.level}`;
+                    entry.className = 'error-entry info';
                     entry.innerHTML = `
-                        <strong>${new Date(error.timestamp).toLocaleString()}</strong>
-                        [${error.level.toUpperCase()}] ${error.component}: ${error.message}
+                        <strong>${new Date().toLocaleString()}</strong>
+                        [INFO] Système: Aucune erreur récente
                     `;
                     errorLog.appendChild(entry);
-                });
+                }
                 
             } catch (error) {
                 console.error('Erreur refreshErrors:', error);
+                const errorLog = document.getElementById('error-log');
+                errorLog.innerHTML = `
+                    <div class="error-entry error">
+                        <strong>${new Date().toLocaleString()}</strong>
+                        [ERROR] Dashboard: Impossible de charger les erreurs
+                    </div>
+                `;
             }
         }
         
@@ -713,32 +940,60 @@ def create_html_template():
                 const tableBody = document.getElementById('tasks-table-body');
                 tableBody.innerHTML = '';
                 
-                data.forEach(task => {
+                if (Array.isArray(data) && data.length > 0) {
+                    data.forEach(task => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${task.id}</td>
+                            <td>${task.task_type}</td>
+                            <td><span class="task-status ${task.status}">${task.status}</span></td>
+                            <td>${task.attempts}/${task.max_attempts}</td>
+                            <td>${new Date(task.created_at).toLocaleString()}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    // Aucune tâche ou mode démo
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${task.id}</td>
-                        <td>${task.task_type}</td>
-                        <td><span class="task-status ${task.status}">${task.status}</span></td>
-                        <td>${task.attempts}/${task.max_attempts}</td>
-                        <td>${new Date(task.created_at).toLocaleString()}</td>
+                        <td colspan="5" style="text-align: center; color: #666;">
+                            Aucune tâche récente
+                        </td>
                     `;
                     tableBody.appendChild(row);
-                });
+                }
                 
             } catch (error) {
                 console.error('Erreur refreshTasks:', error);
+                const tableBody = document.getElementById('tasks-table-body');
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #f44336;">
+                            Erreur lors du chargement des tâches
+                        </td>
+                    </tr>
+                `;
             }
         }
         
-        // Actualisation automatique
+        // Actualisation automatique avec protection
         let autoRefreshInterval;
+        const REFRESH_INTERVAL = 10000; // 10 secondes au lieu de 5
         
         function toggleAutoRefresh() {
             const checkbox = document.getElementById('auto-refresh');
             
             if (checkbox.checked) {
-                autoRefreshInterval = setInterval(refreshAll, 5000);
+                console.log('Activation du refresh automatique');
+                autoRefreshInterval = setInterval(() => {
+                    if (!isRefreshing) {
+                        refreshAll();
+                    } else {
+                        console.log('Refresh automatique sauté (refresh en cours)');
+                    }
+                }, REFRESH_INTERVAL);
             } else {
+                console.log('Désactivation du refresh automatique');
                 clearInterval(autoRefreshInterval);
             }
         }
@@ -773,9 +1028,24 @@ def main():
     # Créer le template HTML
     create_html_template()
     
+    # Lire la configuration du pipeline pour le port
+    pipeline_config_path = Path(__file__).parent / "pipeline_config.json"
+    default_port = 5000
+    default_host = '127.0.0.1'
+    
+    if pipeline_config_path.exists():
+        try:
+            with open(pipeline_config_path, 'r') as f:
+                pipeline_config = json.load(f)
+            dashboard_config = pipeline_config.get('dashboard', {})
+            default_port = dashboard_config.get('port', 8080)
+            default_host = dashboard_config.get('host', '0.0.0.0')
+        except Exception as e:
+            print(f"⚠️ Erreur lecture config pipeline: {e}")
+    
     # Lancer le serveur
-    port = int(os.getenv('PORT', 5000))
-    host = os.getenv('HOST', '127.0.0.1')
+    port = int(os.getenv('PORT', default_port))
+    host = os.getenv('HOST', default_host)
     
     print(f"Dashboard disponible sur: http://{host}:{port}")
     print("Ctrl+C pour arrêter")

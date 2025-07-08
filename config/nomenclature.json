@@ -1,0 +1,91 @@
+{
+  "file_naming": {
+    "description": "Configuration de la nomenclature des fichiers pour le pipeline RL PostFlow",
+    "version": "1.0",
+    "patterns": {
+      "current": {
+        "name": "UNDLM Standard",
+        "description": "Format standard UNDLM avec shot et version",
+        "regex": "^UNDLM_(?P<shot>\\d{5})_v(?P<version>\\d{3})\\.(mov|mp4|avi|mkv)$",
+        "format": "UNDLM_{shot:05d}_v{version:03d}.{ext}",
+        "components": {
+          "project": "UNDLM",
+          "shot": "5 digits (00001-99999)",
+          "version": "3 digits (001-999)",
+          "extensions": [".mov", ".mp4", ".avi", ".mkv"]
+        },
+        "examples": [
+          "UNDLM_00001_v001.mov",
+          "UNDLM_00042_v002.mp4",
+          "UNDLM_01234_v015.avi"
+        ]
+      },
+      "with_sequence": {
+        "name": "UNDLM avec séquence",
+        "description": "Format UNDLM avec séquence, shot et version",
+        "regex": "^UNDLM_(?P<sequence>[A-Z0-9]+)_(?P<shot>\\d{5})_v(?P<version>\\d{3})\\.(mov|mp4|avi|mkv)$",
+        "format": "UNDLM_{sequence}_{shot:05d}_v{version:03d}.{ext}",
+        "components": {
+          "project": "UNDLM",
+          "sequence": "Alphanumeric sequence identifier",
+          "shot": "5 digits (00001-99999)",
+          "version": "3 digits (001-999)",
+          "extensions": [".mov", ".mp4", ".avi", ".mkv"]
+        },
+        "examples": [
+          "UNDLM_SEQ01_00001_v001.mov",
+          "UNDLM_INTRO_00042_v002.mp4",
+          "UNDLM_OUTRO_01234_v015.avi"
+        ]
+      },
+      "flexible": {
+        "name": "Format flexible",
+        "description": "Format personnalisable avec préfixe configurable",
+        "regex": "^(?P<project>[A-Z0-9]+)_(?P<shot>\\d{4,6})_v(?P<version>\\d{2,4})\\.(mov|mp4|avi|mkv)$",
+        "format": "{project}_{shot:05d}_v{version:03d}.{ext}",
+        "components": {
+          "project": "Configurable project prefix",
+          "shot": "4-6 digits shot number",
+          "version": "2-4 digits version number",
+          "extensions": [".mov", ".mp4", ".avi", ".mkv"]
+        },
+        "examples": [
+          "PROJ_00001_v001.mov",
+          "SHORT_0042_v02.mp4",
+          "FILM_123456_v1234.avi"
+        ]
+      }
+    },
+    "active_pattern": "with_sequence",
+    "validation": {
+      "strict_mode": true,
+      "allow_case_insensitive": false,
+      "require_leading_zeros": true
+    },
+    "frameio_mapping": {
+      "folder_structure": {
+        "use_sequence": true,
+        "use_shot_folders": true,
+        "use_version_folders": false,
+        "root_folder": "WIP_BYSHOT",
+        "sequence_template": "SC{sequence_number:02d}_{sequence_name}",
+        "shot_template": "{project}_{shot:05d}",
+        "full_path_template": "{root_folder}/{sequence_folder}/{shot_folder}"
+      },
+      "asset_naming": {
+        "use_original_name": true,
+        "add_metadata": false,
+        "metadata_template": "{project}_{shot}_{version}"
+      },
+      "sequence_mapping": {
+        "default_sequences": {
+          "INTRO": {"number": 1, "name": "SEQ_INTRO"},
+          "ACTION": {"number": 2, "name": "SEQ_ACTION"},
+          "OUTRO": {"number": 3, "name": "SEQ_OUTRO"}
+        },
+        "auto_detect": true,
+        "fallback_sequence": {"number": 1, "name": "SEQ_GENERAL"}
+      }
+    }
+  }
+}

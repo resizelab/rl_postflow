@@ -5,7 +5,7 @@
     "channel_name": "postproduction",
     "notifications_enabled": false,
     "bot_name": "RL PostFlow Bot",
-    "avatar_url": "https://cdn.discordapp.com/emojis/🎬.png"
+    "avatar_url": "https://cdn.discordapp.com/emojis/\ud83c\udfac.png"
   },
   "lucidlink": {
     "base_path": "/Volumes/resizelab/o2b-undllm",
@@ -47,5 +47,51 @@
     "enabled": false,
     "batch_size": 5,
     "delay_between_batches": 30
+  },
+  "file_watcher": {
+    "enabled": true,
+    "watch_directories": [
+      "/Volumes/LucidLink",
+      "/mnt/lucidlink",
+      "~/LucidLink"
+    ],
+    "file_extensions": [
+      ".mp4",
+      ".mov",
+      ".avi",
+      ".mkv",
+      ".mxf",
+      ".prores"
+    ],
+    "min_file_size": 1048576,
+    "min_file_age": 60,
+    "max_file_age": 3600,
+    "stability_check": {
+      "enabled": true,
+      "max_wait": 300,
+      "check_interval": 5,
+      "required_stable_checks": 3
+    },
+    "lucidlink_specific": {
+      "enabled": true,
+      "sync_timeout": 600,
+      "integrity_check": true,
+      "hash_verification": true,
+      "partial_file_detection": true
+    }
+  },
+  "frameio_integration": {
+    "upload_timeout": 1800,
+    "retry_attempts": 5,
+    "retry_delay": 30,
+    "chunk_size": 8388608,
+    "concurrent_uploads": 2
+  },
+  "error_handling": {
+    "lucidlink_errors": {
+      "sync_timeout": "retry_with_longer_wait",
+      "partial_file": "wait_and_retry",
+      "access_denied": "retry_with_backoff"
+    }
   }
 }

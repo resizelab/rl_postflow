@@ -1,0 +1,48 @@
+[Unit]
+Description=RL PostFlow - LucidLink to Frame.io Integration Bridge
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=postflow
+Group=postflow
+WorkingDirectory=/opt/rl_postflow
+ExecStart=/opt/rl_postflow/venv/bin/python /opt/rl_postflow/src/workflows/lucidlink_frameio_bridge.py
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+
+# Variables d'environnement
+Environment=FRAMEIO_ACCOUNT_ID=your_account_id
+Environment=FRAMEIO_WORKSPACE_ID=your_workspace_id
+Environment=FRAMEIO_PROJECT_ID=your_project_id
+Environment=FRAMEIO_CLIENT_ID=your_client_id
+Environment=FRAMEIO_CLIENT_SECRET=your_client_secret
+Environment=FRAMEIO_JWT_KEY=your_jwt_key
+Environment=DISCORD_WEBHOOK_URL=your_discord_webhook_url
+Environment=LUCIDLINK_BY_SHOT_PATH=/path/to/lucidlink/BY_SHOT
+Environment=CONFIG_FILE=/opt/rl_postflow/config/frameio_integration.json
+Environment=LOG_LEVEL=INFO
+Environment=MAX_CONCURRENT_UPLOADS=3
+Environment=ENABLE_DISCORD_NOTIFICATIONS=true
+
+# Sécurité
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/rl_postflow/logs /opt/rl_postflow/data /opt/rl_postflow/config
+PrivateTmp=true
+
+# Limites de ressources
+LimitNOFILE=4096
+MemoryMax=2G
+CPUQuota=200%
+
+# Santé du service
+WatchdogSec=300
+NotifyAccess=main
+
+[Install]
+WantedBy=multi-user.target

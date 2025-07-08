@@ -1,86 +1,83 @@
-# Docu### 🎬 Frame.io Integration (Nouveau)
-- `FRAMEIO_QUICKSTART.md` - 🚀 Démarrage rapide Frame.io (5 minutes)
-- `FRAMEIO_INTEGRATION.md` - 📖 Guide complet de l'intégration Frame.io
-  - Developer Token (solution immédiate)
-  - OAuth Adobe IMS (solution avancée)
-  - Client unifié et architecturetion UNDLM PostFlow
+# 📚 Documentation RL PostFlow
 
-Ce dossier contient toute la documentation du projet UNDLM PostFlow.
+## 🏠 Index de la Documentation
 
-## 📁 Structure de la documentation
+### 🚀 Démarrage Rapide
+- [🏠 README Principal](../README.md)
 
-### 🎬 Frame.io Integration (Nouveau)
-- `FRAMEIO_INTEGRATION.md` - � Guide complet de l'intégration Frame.io
-  - Developer Token (solution immédiate)
-  - OAuth Adobe IMS (solution avancée)
-  - Client unifié et architecture
+### 📖 Guides d'utilisation
+- [🚀 🚀 Guide de Démarrage Rapide - RL PostFlow](guides/QUICK_START.md)
 
-### 📋 Configuration du projet
-- `CONFIGURATION.md` - Configuration générale du pipeline
-- `INTEGRATIONS_SETUP.md` - Setup des intégrations (Google Sheets, Discord)
-- `ERROR_HANDLING.md` - Gestion d'erreurs et monitoring
-- `SETUP_SUMMARY.md` - Résumé complet de la configuration et du setup
+### 🔌 Intégrations
+- [🎬 🎬 Frame.io OAuth Configuration](integrations/FRAMEIO_OAUTH.md)
 
-### 📊 Structure et données
-- `arbo_undlm_proposed.txt` - Arborescence proposée pour le serveur LucidLink
-- Les données générées se trouvent dans [`../data/`](../data/)
-- `pipeline_status.json` - État du pipeline et statistiques (dans `data/`)
+### 📦 Releases
+- [📖 📖 Changelog - RL PostFlow](releases/CHANGELOG.md)
+- [📄 🎉 Git Update Complete - Version 2.1.0](releases/GIT_UPDATE_v2.1.0_SUMMARY.md)
+- [📄 🎉 GitHub Update Complete - RL PostFlow](releases/GITHUB_UPDATE_SUMMARY.md)
+- [📄 🎯 Résumé Final - Réorganisation PostFlow](releases/FINAL_SUMMARY.md)
+- [📄 🔧 Corrections des Erreurs d'API - Résumé](releases/API_FIXES_SUMMARY.md)
 
-### 🎯 Guides et procédures
-- Configuration du volume LucidLink `o2b-undllm`
-- Convention de nommage UNDLM_XXXXX
-- Workflow de post-production
+### 📁 Archive
+- [📄 Test de l'Intégration Frame.io - Résumé des Capacités](archive/FRAMEIO_TESTING_SUMMARY.md)
+- [📄 🎬 Frame.io OAuth Authentication - Guide Final](archive/README_FRAMEIO_OAUTH_FINAL.md)
+- [📄 🎬 RL PostFlow - Intégration LucidLink → Frame.io](archive/README_FRAMEIO_INTEGRATION.md)
+- [📁 📁 Archive de Documentation](archive/README.md)
+- [📄 🎉 Migration Frame.io v4 - COMPLÈTE](archive/FRAMEIO_V4_MIGRATION_COMPLETE.md)
+- [📄 PostFlow - Checklist Publication Repository](archive/PUBLICATION_CHECKLIST.md)
+- [📄 Nettoyage du Repository PostFlow](archive/CLEAN_REPO.md)
+- [📄 Frame.io API v4 - Corrections Appliquées](archive/FRAMEIO_V4_CORRECTIONS.md)
+- [📄 🎉 MIGRATION FRAME.IO V4 - RAPPORT FINAL](archive/MIGRATION_FINAL_REPORT.md)
+- [📄 Comment Tester l'Intégration Frame.io](archive/COMMENT_TESTER_FRAMEIO.md)
+- [📄 Frame.io v4 – Intégration OAuth Web App (Authorization Code)](archive/README_FRAMEIO_OAUTH.md)
+- [📄 ✅ OAUTH FRAME.IO - IMPLÉMENTATION TERMINÉE](archive/OAUTH_IMPLEMENTATION_COMPLETE.md)
+- [📄 🧹 Nettoyage du Projet Frame.io - Rapport Final](archive/CLEAN_FRAMEIO_REPORT.md)
 
-## 🚀 Quick Start
-
-### 🎬 Frame.io (Priorité)
-```bash
-# Configuration Frame.io rapide
-python scripts/configure_frameio.py
-
-# Documentation complète
-# Voir FRAMEIO_INTEGRATION.md
-```
-
-### ⚙️ Configuration générale
-1. **Vérifier la configuration**
-   ```bash
-   python tests/setup_validation.py
-   ```
-
-2. **Tester la structure serveur**
-   ```bash
-   python tests/test_server_structure.py
-   ```
-
-3. **Exécuter tous les tests**
-   ```bash
-   python run_tests.py
-   ```
-
-## 📊 État actuel du projet
-
-- ✅ Volume LucidLink : `o2b-undllm` accessible
-- ✅ Structure de dossiers : complète (75 dossiers créés)
-- ✅ Pipeline Python : fonctionnel (516 plans prêts)
-- ✅ Tests : 3/3 passent avec succès
-- ⏳ Sources : à ajouter dans `2_IN/_FROM_GRADING/UNDLM_SOURCES/`
-- ⏳ Templates AE : à créer dans `3_PROJECTS/2_VFX/TEMPLATES/`
-
-## 📍 Chemins importants
-
-- **Volume LucidLink** : `/Volumes/resizelab/o2b-undllm`
-- **Configuration** : `pipeline_config.json`
-- **Données CSV** : `data/shots.csv`
-- **Tests** : `tests/`
-- **Documentation** : `docs/`
-
-## 🔗 Liens utiles
-
-- [README principal](../README.md)
-- [Tests](../tests/README.md)
-- [Configuration serveur](../../Volumes/resizelab/o2b-undllm/1_REF_FILES/1_BRIEFS_AND_REPORTS/README_STRUCTURE.md)
+### 🛠️ Documentation Technique
+- [📄 Integration LucidLink → Frame.io](FRAMEIO_LUCIDLINK_INTEGRATION.md)
+- [🏗️ 🏗️ Architecture RL PostFlow](ARCHITECTURE.md)
+- [📄 [ARCHIVÉ] Setup IMS Server-to-Server (obsolète)](ADOBE_IMS_SERVER_TO_SERVER_SETUP.md)
+- [📄 Guide de Test de l'Intégration Frame.io](FRAMEIO_TESTING_GUIDE.md)
+- [📄 Guide de Configuration Adobe Developer Console pour Frame.io OAuth](ADOBE_OAUTH_TROUBLESHOOTING.md)
+- [📄 Système de Gestion d'Erreurs Renforcé - PostFlow](ERROR_HANDLING.md)
+- [📄 📋 RAPPORT D'ORGANISATION - FRAME.IO INTEGRATION](FRAMEIO_ORGANIZATION_REPORT.md)
+- [📄 Guide d'utilisation OAuth Frame.io - Saisie de codes améliorée](OAUTH_SAISIE_CODE_GUIDE.md)
+- [📄 Configuration Frame.io - Guide Final](FRAMEIO_CONFIGURATION_COMPLETE.md)
+- [📄 LucidLink Watcher - Résumé des améliorations](WATCHER_IMPROVEMENTS_SUMMARY.md)
+- [📄 🚀 FRAME.IO - DÉMARRAGE RAPIDE](FRAMEIO_QUICKSTART.md)
+- [📄 [ARCHIVÉ] Création d'intégration Server-to-Server (obsolète)](CREATE_ADOBE_SERVER_TO_SERVER.md)
+- [📄 ARCHIVE : Documentation Server-to-Server (obsolète)](ARCHIVE_FRAMEIO_SERVER_TO_SERVER_DOCS.md)
+- [📄 [ARCHIVÉ] Migration Frame.io v4 Server-to-Server (obsolète)](FRAMEIO_V4_MIGRATION.md)
+- [📄 Configuration des Intégrations UNDLM PostFlow](INTEGRATIONS_SETUP.md)
+- [📄 Guide d'utilisation du Watcher LucidLink](LUCIDLINK_WATCHER_GUIDE.md)
+- [📄 🚀 Guide de Création d'Intégration Server-to-Server Adobe](ADOBE_SERVER_TO_SERVER_SETUP.md)
+- [⚙️ Configuration PostFlow](CONFIGURATION.md)
+- [📄 🎬 UNDLM PostFlow - Guide d'Utilisation du Workflow de Review](REVIEW_WORKFLOW_GUIDE.md)
+- [📄 🎉 UNDLM PostFlow - Workflow de Review Intégré - RÉSUMÉ FINAL](WORKFLOW_SUMMARY.md)
+- [📄 UNDLM PostFlow - Résumé de Configuration](SETUP_SUMMARY.md)
+- [📄 Frame.io Integration - Architecture Propre](FRAMEIO_INTEGRATION.md)
+- [📄 🎬 UNDLM PostFlow - Architecture du Pipeline](PIPELINE_ARCHITECTURE.md)
 
 ---
 
-*Dernière mise à jour : 05/07/2025*
+## 🎯 Navigation Rapide
+
+### Pour les utilisateurs
+- **Premier démarrage** → [Guide de démarrage](guides/QUICK_START.md)
+- **Configuration** → [Configuration complète](guides/CONFIGURATION.md)
+- **Problèmes** → [Dépannage](guides/TROUBLESHOOTING.md)
+
+### Pour les développeurs
+- **Architecture** → [Vue d'ensemble](ARCHITECTURE.md)
+- **Développement** → [Setup développement](DEVELOPMENT.md)
+- **API** → [Référence API](api/README.md)
+
+### Pour les intégrations
+- **Frame.io** → [Configuration OAuth](integrations/FRAMEIO_OAUTH.md)
+- **LucidLink** → [Configuration LucidLink](integrations/LUCIDLINK_SETUP.md)
+- **Discord** → [Notifications Discord](integrations/DISCORD_SETUP.md)
+
+---
+
+**Documentation mise à jour le : 07 July 2025**  
+**Version : 4.0.0**

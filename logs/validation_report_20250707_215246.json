@@ -1,0 +1,107 @@
+{
+  "total_tests": 14,
+  "passed_tests": 7,
+  "failed_tests": 7,
+  "success_rate": 0.5,
+  "total_duration": 0.08591508865356445,
+  "results": [
+    {
+      "test": "Structure des fichiers",
+      "success": true,
+      "message": "Tous les fichiers requis sont pr\u00e9sents (9 fichiers)",
+      "duration": 0,
+      "timestamp": "2025-07-07T21:52:46.250020"
+    },
+    {
+      "test": "Configuration config/optimization.json",
+      "success": true,
+      "message": "Configuration valide",
+      "duration": 0,
+      "timestamp": "2025-07-07T21:52:46.250110"
+    },
+    {
+      "test": "Configuration config/alerts.json",
+      "success": true,
+      "message": "Configuration valide",
+      "duration": 0,
+      "timestamp": "2025-07-07T21:52:46.250178"
+    },
+    {
+      "test": "Configuration config/nomenclature.json",
+      "success": false,
+      "message": "Cl\u00e9s manquantes: frameio_mapping",
+      "duration": 0,
+      "timestamp": "2025-07-07T21:52:46.250331"
+    },
+    {
+      "test": "Import utils.alerts",
+      "success": false,
+      "message": "Erreur d'importation: No module named 'aiohttp'",
+      "duration": 0,
+      "timestamp": "2025-07-07T21:52:46.254453"
+    },
+    {
+      "test": "Import integrations.frameio.auth",
+      "success": false,
+      "message": "Erreur d'importation: attempted relative import beyond top-level package",
+      "duration": 0,
+      "timestamp": "2025-07-07T21:52:46.334347"
+    },
+    {
+      "test": "Import integrations.frameio.structure",
+      "success": false,
+      "message": "Erreur d'importation: attempted relative import beyond top-level package",
+      "duration": 0,
+      "timestamp": "2025-07-07T21:52:46.334670"
+    },
+    {
+      "test": "Import integrations.frameio.upload",
+      "success": false,
+      "message": "Erreur d'importation: attempted relative import beyond top-level package",
+      "duration": 0,
+      "timestamp": "2025-07-07T21:52:46.334833"
+    },
+    {
+      "test": "Syst\u00e8me de cache",
+      "success": false,
+      "message": "Erreur: attempted relative import beyond top-level package",
+      "duration": 0,
+      "timestamp": "2025-07-07T21:52:46.334987"
+    },
+    {
+      "test": "Syst\u00e8me d'alertes",
+      "success": false,
+      "message": "Erreur: No module named 'aiohttp'",
+      "duration": 0,
+      "timestamp": "2025-07-07T21:52:46.335187"
+    },
+    {
+      "test": "Script scripts/frameio_admin_cli.py",
+      "success": true,
+      "message": "Script valide",
+      "duration": 0,
+      "timestamp": "2025-07-07T21:52:46.335342"
+    },
+    {
+      "test": "Script scripts/frameio_optimization.py",
+      "success": true,
+      "message": "Script valide",
+      "duration": 0,
+      "timestamp": "2025-07-07T21:52:46.335445"
+    },
+    {
+      "test": "Documentation docs/FRAMEIO_ADVANCED_ADMIN.md",
+      "success": true,
+      "message": "Documentation valide (7151 caract\u00e8res)",
+      "duration": 0,
+      "timestamp": "2025-07-07T21:52:46.335557"
+    },
+    {
+      "test": "Documentation README.md",
+      "success": true,
+      "message": "Documentation valide (24971 caract\u00e8res)",
+      "duration": 0,
+      "timestamp": "2025-07-07T21:52:46.335755"
+    }
+  ]
+}

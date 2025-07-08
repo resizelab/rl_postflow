@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+"""
+Démonstration des nouvelles options de saisie de code OAuth
+"""
+
+# Exemple de code OAuth très long (fictif pour démonstration)
+EXEMPLE_URL = """https://localhost:8080/callback?code=eyJhbGciOiJSUzI1NiIsIng1dSI6Imltc19uYTEta2V5LWF0LTEuY2VyIiwia2lkIjoiaW1zX25hMS1rZXktYXQtMSIsIml0dCI6ImF0In0.eyJpZCI6IjE3NTE4MzE2NTA1MDVfYzU1MjEyOTctYTY4Ny00NmFkLWE5NGItZWMwMzg2NWRiODY3X3ZhNmMyIiwidHlwZSI6ImF1dGhvcml6YXRpb25fY29kZSIsImNsaWVudF9pZCI6IjFiOTc0OGQ3YjQwYTQwOGQ5N2Y5NDNhNzViNmE5ZjE4IiwidXNlcl9pZCI6IjgxQzYwMjU5NEJCREI3REYwQTA0QjgzN0BBZG9iZUlEIiwic3RhdGUiOiIiLCJhcyI6Imltcy1uYTEiLCJhYV9pZCI6IjgxQzYwMjU5NEJCREI3REYwQTA0QjgzN0BBZG9iZUlEIiwiZmciOiJaVEJGM1ZWTVZQUDVNSFVLRk1RVllIQUFDQSIsInNpZCI6IjE3NTE4MzE2NTA1MDBfZDhkZTMyNDItODZmYy00MzM5LTkwOTgtNDk3MDc4YzlkMzA0X3ZhNmMyIiwib3RvIjp0cnVlLCJleHBpcmVzX2luIjoiMTgwMDAwMCIsImNyZWF0ZWRfYXQiOiIxNzUxODMxNjUwNTA1Iiwic2NvcGUiOiJvcGVuaWQsZW1haWwscHJvZmlsZSxvZmZsaW5lX2FjY2VzcyxBZG9iZUlEIn0.LAnEa9eagFl36h7cWCGwksX_OjTADv4zVVdSuUlgueJqG7d59sdfG1avVluynmlIZllKDrgFZm6XQEagpmq0NFduyQ1KnD6UmIJPU8YJngcEkgyfjeYjpF1Q1bli-KQvwNgX_rftu-_u56V492kN_ho0Gg0WDwDTs30jhZrqsSs_Xz6Oic-p1i1Ze9AaJdHsOwTfJ1-_kTe3NnFto1TX5V2WOVW30f7L9H-VpYpSYBPhA_-8jNZYs02JlkVBRE_2dNFBw"""
+
+EXEMPLE_CODE = """eyJhbGciOiJSUzI1NiIsIng1dSI6Imltc19uYTEta2V5LWF0LTEuY2VyIiwia2lkIjoiaW1zX25hMS1rZXktYXQtMSIsIml0dCI6ImF0In0.eyJpZCI6IjE3NTE4MzE2NTA1MDVfYzU1MjEyOTctYTY4Ny00NmFkLWE5NGItZWMwMzg2NWRiODY3X3ZhNmMyIiwidHlwZSI6ImF1dGhvcml6YXRpb25fY29kZSIsImNsaWVudF9pZCI6IjFiOTc0OGQ3YjQwYTQwOGQ5N2Y5NDNhNzViNmE5ZjE4IiwidXNlcl9pZCI6IjgxQzYwMjU5NEJCREI3REYwQTA0QjgzN0BBZG9iZUlEIiwic3RhdGUiOiIiLCJhcyI6Imltcy1uYTEiLCJhYV9pZCI6IjgxQzYwMjU5NEJCREI3REYwQTA0QjgzN0BBZG9iZUlEIiwiZmciOiJaVEJGM1ZWTVZQUDVNSFVLRk1RVllIQUFDQSIsInNpZCI6IjE3NTE4MzE2NTA1MDBfZDhkZTMyNDItODZmYy00MzM5LTkwOTgtNDk3MDc4YzlkMzA0X3ZhNmMyIiwib3RvIjp0cnVlLCJleHBpcmVzX2luIjoiMTgwMDAwMCIsImNyZWF0ZWRfYXQiOiIxNzUxODMxNjUwNTA1Iiwic2NvcGUiOiJvcGVuaWQsZW1haWwscHJvZmlsZSxvZmZsaW5lX2FjY2VzcyxBZG9iZUlEIn0.LAnEa9eagFl36h7cWCGwksX_OjTADv4zVVdSuUlgueJqG7d59sdfG1avVluynmlIZllKDrgFZm6XQEagpmq0NFduyQ1KnD6UmIJPU8YJngcEkgyfjeYjpF1Q1bli-KQvwNgX_rftu-_u56V492kN_ho0Gg0WDwDTs30jhZrqsSs_Xz6Oic-p1i1Ze9AaJdHsOwTfJ1-_kTe3NnFto1TX5V2WOVW30f7L9H-VpYpSYBPhA_-8jNZYs02JlkVBRE_2dNFBw"""
+
+print("📋 EXEMPLES DE CODES OAUTH ADOBE")
+print("=" * 40)
+print(f"URL complète: {len(EXEMPLE_URL)} caractères")
+print(f"Code seul: {len(EXEMPLE_CODE)} caractères")
+print()
+print("💡 CONSEIL: Utilisez l'option 1 (URL complète) car c'est plus facile")
+print("   à copier depuis la barre d'adresse du navigateur")
+print()
+print("📝 ÉTAPES RECOMMANDÉES:")
+print("1. Générez l'URL d'autorisation (option 1 du menu)")
+print("2. Ouvrez l'URL dans votre navigateur")
+print("3. Autorisez l'application")
+print("4. Copiez TOUTE l'URL de redirection depuis la barre d'adresse")
+print("5. Utilisez l'option 2 > 1 pour coller l'URL complète")

@@ -1,0 +1,74 @@
+{
+  "project_id": "c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f",
+  "project_name": "UNDLM_DOCU",
+  "scenes_folder_id": "c9075e7e-e6fe-470d-98b5-ff7a8f429b34",
+  "structure": {
+    "scenes": {
+      "TEST_SCENE_01": {
+        "folder_id": "fb74a5b2-3d26-420c-b36a-bcd55044e9ea",
+        "created_at": "2025-07-07T18:22:30.753738",
+        "shots": {
+          "S001": {
+            "folder_id": "457ff547-75df-4c65-be47-e75ed894a796",
+            "created_at": "2025-07-07T18:22:30.753744"
+          }
+        }
+      },
+      "Shot_00001": {
+        "folder_id": "6040f291-870a-4823-8cc1-dcbf1078cd50",
+        "created_at": "2025-07-07T18:22:33.155143",
+        "shots": {
+          "00001": {
+            "folder_id": "0f0f4c63-72a9-47f8-960b-1d47aa1a1814",
+            "created_at": "2025-07-07T18:22:33.155146"
+          }
+        }
+      },
+      "SC01_SEQ_INTRO": {
+        "folder_id": "149ef4a7-ea7d-4576-8009-9203e3e41b58",
+        "created_at": "2025-07-07T18:36:30.037830",
+        "shots": {
+          "UNDLM_00001": {
+            "folder_id": "596cc581-b95d-4da3-a9af-514fbe152a29",
+            "created_at": "2025-07-07T18:36:30.037834"
+          },
+          "UNDLM_00002": {
+            "folder_id": "3df38955-8483-4ecb-9800-8a21de0afef5",
+            "created_at": "2025-07-07T18:36:30.629432"
+          }
+        }
+      },
+      "SC02_SEQ_ACTION": {
+        "folder_id": "dc58abfe-1f05-4094-8c08-e81e7167aa97",
+        "created_at": "2025-07-07T18:36:31.622385",
+        "shots": {
+          "UNDLM_00010": {
+            "folder_id": "025ad36e-d64b-4854-a8ae-822e5f53ad88",
+            "created_at": "2025-07-07T18:36:31.622388"
+          },
+          "UNDLM_00011": {
+            "folder_id": "aee313d0-f32d-46e3-b692-f2b331c096c9",
+            "created_at": "2025-07-07T18:36:32.056065"
+          }
+        }
+      },
+      "SC03_SEQ_OUTRO": {
+        "folder_id": "958dc0fd-6bf9-49f7-9c3f-aa9bf2f40a0a",
+        "created_at": "2025-07-07T18:36:33.439987",
+        "shots": {
+          "UNDLM_00050": {
+            "folder_id": "4bcc27d0-0ad1-440d-857d-90355d2a2c2c",
+            "created_at": "2025-07-07T18:36:33.439990"
+          },
+          "UNDLM_00099": {
+            "folder_id": "202bfab3-20f5-47f9-a1fb-dc745b29cb7b",
+            "created_at": "2025-07-07T18:52:45.039769"
+          }
+        }
+      }
+    }
+  },
+  "last_updated": "2025-07-07T18:52:45.039845",
+  "version": "1.0",
+  "wip_folder_id": "b2b0cbc0-fab4-4b3a-921e-7afe75f904d8"
+}
