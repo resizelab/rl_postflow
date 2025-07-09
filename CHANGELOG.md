@@ -14,12 +14,16 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Documentation README moderne** : Interface professionnelle pour publication
 - **Tests organisés** : Structure claire avec documentation dédiée
 - **Licence MIT** : Ajout de la licence pour publication open source
+- **Architecture bootstrap modulaire** : Séparation des composants avec initialisation intelligente
+- **Queue intelligente d'uploads** : Système de file d'attente avec retry automatique et gestion d'erreurs
 
 ### 🔧 Modifié
 - **Validation nomenclature renforcée** : Rejet automatique des fichiers mal placés
 - **Organisation du workspace** : Archives, tests et documentation structurés
 - **Système de logs** : Validation de structure avec debug détaillé
 - **Architecture modulaire** : Méthode `_validate_file_path_structure()` ajoutée
+- **Main.py modularisé** : Architecture bootstrap avec composants séparés
+- **Système de queue uploads** : Gestion intelligente des uploads multiples avec retry
 
 ### 🐛 Corrigé
 - **Bug critique de détection** : Fichiers n'étaient plus détectés dans le mauvais dossier (ex: `/SQ01/fichier.mov` au lieu de `/SQ01/UNDLM_00003/fichier.mov`)
