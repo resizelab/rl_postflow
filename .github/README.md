@@ -1,54 +1,100 @@
-# 🎬 RL PostFlow
+# 🎬 RL PostFlow - Pipeline d'Intégration LucidLink → Frame.io
 
-[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-pytest-orange.svg)](tests/)
-[![Version](https://img.shields.io/badge/Version-2.0.0-red.svg)](https://github.com/resizelab/rl_postflow/releases)
+[![Version](https://img.shields.io/badge/Version-4.1.0-blue.svg)](https://github.com/resizelab/rl_postflow/releases)
 
-> **Pipeline de post-production automatisé pour documentaire animé**  
-> Traitement et suivi de 516 plans sur 25 scènes avec intégrations professionnelles
+> **Pipeline automatisé de post-production pour l'upload intelligent de fichiers vidéo**  
+> Surveillance temps réel LucidLink → Upload Frame.io avec validation stricte et intégrations complètes
 
 ## 🚀 Fonctionnalités Principales
 
-### 📊 **Pipeline de Production**
-- **12 statuts de plan** : De `pending` à `final_delivery`
-- **5 stages de production** : Source → After Effects → EbSynth → Review → Delivery
-- **Tracking temps réel** : Progression automatique et gestion d'erreurs
-- **Processing par scène** : Traitement batch intelligent
+### � **Surveillance Intelligente**
+- **Watcher temps réel** : Détection automatique des nouveaux exports via LucidLink
+- **Validation stricte** : Nomenclature `SQ##_UNDLM_#####_v###` obligatoire
+- **Structure contrôlée** : Validation des chemins `.../SQxx/UNDLM_xxxxx/fichier`
+- **Filtrage avancé** : Support multi-formats (MOV, MP4, AVI, MXF)
 
-### 🔗 **Intégrations**
-- **Discord** : Notifications automatiques avec embeds riches
-- **Frame.io** : Upload et review automatisés
-- **Google Sheets** : Synchronisation bidirectionnelle
-- **LucidLink** : Vérification des fichiers sources
-- **After Effects** : Pipeline de traitement automatisé
+### 🎬 **Upload Frame.io Automatisé**
+- **OAuth Web App** : Authentification sécurisée autonome
+- **Upload intelligent** : Gestion automatique de la structure Frame.io
+- **Liens de review** : Génération automatique des liens de visualisation
+- **Retry mechanism** : Gestion des erreurs et nouvelles tentatives
 
-### 🎯 **Monitoring**
-- **Dashboard web** : Interface de monitoring en temps réel
-- **Gestion d'erreurs** : Système de retry et alertes
-- **Métriques** : Suivi des performances et statistiques
+### 🖼️ **Traitement Multimédia**
+- **Thumbnails intelligents** : Génération via FFmpeg et upload Google Drive
+- **Formules Google Sheets** : `=IMAGE()` et `=LIEN_HYPERTEXTE()` automatiques
+- **Preview Discord** : Notifications avec miniatures intégrées
+- **Métadonnées enrichies** : Extraction et tracking automatiques
+
+### 📊 **Queue et Monitoring**
+- **Queue intelligente** : Gestion des uploads multiples avec priorité
+- **Dashboard web** : Interface de monitoring en temps réel sur port 8080
+- **Tracking complet** : Suivi détaillé dans `uploads_tracking.json`
+- **Métriques performance** : Statistiques et analytics intégrées
+
+### 🔗 **Intégrations Complètes**
+- **Discord** : Notifications automatiques avec embeds riches et thumbnails
+- **Google Drive** : Stockage organisé des miniatures par date
+- **Google Sheets** : Synchronisation bidirectionnelle avec formules automatiques
+- **Frame.io** : Upload et gestion de review professionnelle
+- **LucidLink** : Surveillance native du système de fichiers cloud
 
 ## 📂 Structure du Projet
 
 ```
 rl_postflow/
-├── 🚀 main.py                  # Point d'entrée principal
-├── 📊 dashboard.py             # Dashboard web de monitoring
+├── 🚀 main.py                  # Point d'entrée du pipeline
+├── � stop_postflow.py         # Arrêt propre du pipeline
 ├── 📦 src/                     # Code source modulaire
-│   ├── utils/                  # Utilitaires (ErrorHandler, FileWatcher)
+│   ├── core/                   # Composants centraux
+│   │   ├── lucidlink_watcher.py    # Surveillance LucidLink
+│   │   └── pipeline.py             # Orchestration workflow
 │   ├── integrations/           # Intégrations externes
-│   ├── workflows/              # Workflows de production
-│   └── models/                 # Modèles de données
+│   │   ├── frameio/               # Upload et review Frame.io
+│   │   ├── sheets/                # Google Sheets API
+│   │   └── discord/               # Notifications Discord
+│   ├── utils/                  # Utilitaires
+│   │   ├── upload_queue.py        # Gestion queue uploads
+│   │   ├── upload_tracker.py      # Tracking état uploads
+│   │   ├── thumbnail.py           # Génération miniatures
+│   │   └── status_tracker.py      # Suivi statuts plans
+│   └── bootstrap/              # Configuration et initialisation
 ├── 🧪 tests/                   # Tests organisés
 │   ├── unit/                   # Tests unitaires
 │   ├── integration/            # Tests d'intégration
 │   └── fixtures/               # Données de test
-├── 🛠️ scripts/                 # Scripts utilitaires
+├── 🛠️ scripts/                 # Scripts utilitaires et admin
+├── 🔧 config/                  # Configuration (avec exemples)
+├── 📊 data/                    # Données et tracking persistent
 ├── 🎨 examples/                # Exemples et démos
-└── 📚 docs/                    # Documentation
+└── 📚 docs/                    # Documentation complète
 ```
 
-## ⚡ Installation Rapide
+## 📐 **Nomenclature et Validation**
+
+### **Format de Fichier Strict**
+```
+SQ##_UNDLM_#####_v###.(mov|mp4|avi|mxf)
+```
+
+### **Structure de Dossier Obligatoire**
+```
+.../SQxx/UNDLM_xxxxx/SQxx_UNDLM_xxxxx_vyyy.mov
+```
+
+### **Exemples Valides** ✅
+- `SQ01/UNDLM_00003/SQ01_UNDLM_00003_v001.mov`
+- `SQ02/UNDLM_00015/SQ02_UNDLM_00015_v003.mp4`
+- `SQ10/UNDLM_00089/SQ10_UNDLM_00089_v005.mxf`
+
+### **Exemples Rejetés** ❌
+- `SQ01/SQ01_UNDLM_00003_v001.mov` (fichier directement dans SQ01/)
+- `SC01_UNDLM_00001_v001.mov` (mauvaise nomenclature)
+- `SQ1_UNDLM_003_v1.mov` (format numérique incorrect)
+
+## ⚡ Installation et Configuration
 
 ```bash
 # Cloner le projet
@@ -58,77 +104,182 @@ cd rl_postflow
 # Créer l'environnement virtuel
 python -m venv .venv
 source .venv/bin/activate  # macOS/Linux
+# .venv\Scripts\activate  # Windows
 
-# Installation automatique
-python scripts/install_dependencies.py
+# Installer les dépendances
+pip install -r requirements.txt
+
+# Configurer les intégrations
+cp config/integrations.json.example config/integrations.json
+cp config/google_credentials.json.example config/google_credentials.json
+# Éditer les fichiers de configuration avec vos clés API
+```
+
+### **Configuration Frame.io OAuth**
+```json
+{
+  "frameio": {
+    "enabled": true,
+    "client_id": "your_frameio_client_id",
+    "client_secret": "your_frameio_client_secret",
+    "project_id": "your_project_id"
+  }
+}
+```
+
+### **Configuration Google APIs**
+```json
+{
+  "google_drive": {
+    "enabled": true,
+    "folder_structure": "PostFlow_Thumbnails/PostFlow_Project/{year}-{month:02d}"
+  },
+  "google_sheets": {
+    "enabled": true,
+    "spreadsheet_id": "your_spreadsheet_id"
+  }
+}
 ```
 
 ## 🎮 Utilisation
 
-### Pipeline Principal
+### **Démarrage du Pipeline**
 ```bash
-python main.py              # Parser CSV + Export
-python dashboard.py         # Dashboard web
+python main.py              # Lancer le pipeline complet
+python stop_postflow.py     # Arrêt propre du pipeline
 ```
 
-### Exemples
+### **Dashboard et Monitoring**
 ```bash
-python examples/pipeline_demo.py     # Démo complète
-python examples/export_by_scene.py   # Export par scène
+# Dashboard web sur http://localhost:8080
+python main.py              # Le dashboard est intégré
+
+# Vérification des logs
+tail -f logs/postflow.log    # Logs en temps réel
 ```
 
-### Tests
+### **Exemples et Démonstrations**
 ```bash
-python scripts/quick_test.py    # Tests rapides
-pytest tests/unit/              # Tests unitaires
-pytest tests/ --cov=src         # Tests avec coverage
+python examples/pipeline_demo.py           # Démo complète du workflow
+python examples/frameio_usage_examples.py  # Exemples Frame.io
+python examples/complete_integration.py    # Test intégrations
 ```
 
-## 🎯 Workflow de Production
+### **Tests et Validation**
+```bash
+pytest tests/               # Tous les tests
+pytest tests/unit/          # Tests unitaires seulement
+pytest tests/ --cov=src     # Tests avec coverage
+```
+
+## 🔄 Workflow de Production
 
 ```mermaid
 graph TD
-    A[Source Video] --> B[After Effects]
-    B --> C[EbSynth Processing]
-    C --> D[Animation Review]
-    D --> E[Final Delivery]
+    A[📁 Nouveau fichier LucidLink] --> B[🔍 Validation nomenclature]
+    B --> C[📂 Validation structure dossier]
+    C --> D[✅ Fichier valide]
+    D --> E[📤 Ajout à la queue upload]
+    E --> F[🎬 Upload Frame.io]
+    F --> G[🖼️ Génération thumbnail]
+    G --> H[☁️ Upload Google Drive]
+    H --> I[📊 Mise à jour Google Sheets]
+    I --> J[📢 Notification Discord]
     
-    F[Discord Notifications] --> B
-    F --> C
-    F --> D
-    F --> E
+    B --> K[❌ Format invalide]
+    C --> L[❌ Structure invalide]
+    K --> M[🚫 Fichier rejeté]
+    L --> M
     
-    G[Frame.io Upload] --> D
-    H[Google Sheets Update] --> B
-    H --> C
-    H --> D
-    H --> E
+    F --> N[🔄 Retry en cas d'échec]
+    N --> F
 ```
+
+## 📊 Monitoring et Dashboard
+
+### **Dashboard Web** (Port 8080)
+- 📈 **Statistiques temps réel** : Uploads réussis/échoués
+- 📋 **Queue d'upload** : Files d'attente et progression
+- 🔍 **Logs interactifs** : Visualisation des événements
+- ⚠️ **Alertes** : Erreurs et notifications importantes
+
+### **Tracking Persistent**
+- `data/uploads_tracking.json` : État détaillé de tous les uploads
+- `data/pipeline_status.json` : Status global du pipeline
+- `logs/postflow.log` : Logs complets avec rotation automatique
 
 ## 🧪 Tests & Qualité
 
-- **Tests unitaires** : 26 tests couvrant les modules principaux
-- **Tests d'intégration** : Validation du workflow complet
+- **Tests complets** : Validation de tous les modules critiques
+- **Tests d'intégration** : Workflow LucidLink → Frame.io complet
 - **Coverage** : Couverture de code avec pytest-cov
-- **Qualité** : Structure professionnelle et documentation
+- **Validation nomenclature** : Tests stricts des patterns de fichiers
+- **Mock intégrations** : Tests sans dépendances externes
 
-## 📈 Métriques
+## 🔧 Fonctionnalités Avancées
 
-| Métrique | Valeur |
-|----------|--------|
-| **Plans** | 516 |
-| **Scènes** | 25 |
-| **Statuts** | 12 |
-| **Intégrations** | 5 |
-| **Tests** | 26+ |
+### **Gestion d'Erreurs Intelligente**
+- **Retry automatique** : Nouvelles tentatives avec backoff exponentiel
+- **Alertes Discord** : Notifications d'erreurs en temps réel
+- **Logs détaillés** : Traçabilité complète des erreurs
+- **Recovery mode** : Reprise automatique après pannes
+
+### **Performance et Optimisation**
+- **Upload parallèle** : Gestion concurrent des fichiers multiples
+- **Cache intelligent** : Évite les re-uploads de fichiers identiques
+- **Compression adaptive** : Optimisation thumbnails selon taille
+- **Monitoring ressources** : Suivi CPU/mémoire/disque
+
+### **Sécurité et Authentification**
+- **OAuth Frame.io** : Authentification sécurisée sans stockage mot de passe
+- **Secrets management** : Clés API chiffrées et sécurisées
+- **Validation path** : Protection contre path traversal
+- **Logs sécurisés** : Masquage automatique des informations sensibles
+
+## 📈 Métriques et Analytics
+
+| Composant | Fonctionnalité |
+|-----------|----------------|
+| **Watcher** | Surveillance temps réel LucidLink |
+| **Validation** | Nomenclature + Structure strictes |
+| **Upload** | Frame.io avec retry intelligent |
+| **Thumbnails** | FFmpeg + Google Drive |
+| **Notifications** | Discord avec preview |
+| **Sheets** | Synchronisation bidirectionnelle |
+| **Dashboard** | Monitoring web temps réel |
+| **Queue** | Gestion uploads multiples |
 
 ## 🤝 Contribution
 
-1. **Fork** le projet
+1. **Fork** le projet sur GitHub
 2. **Créer** une branche feature (`git checkout -b feature/amazing-feature`)
-3. **Commit** les changements (`git commit -m 'Add amazing feature'`)
-4. **Push** vers la branche (`git push origin feature/amazing-feature`)
-5. **Ouvrir** une Pull Request
+3. **Développer** avec tests unitaires appropriés
+4. **Valider** avec `pytest tests/` avant commit
+5. **Commit** avec messages descriptifs (`git commit -m 'Add amazing feature'`)
+6. **Push** vers la branche (`git push origin feature/amazing-feature`)
+7. **Ouvrir** une Pull Request avec description détaillée
+
+### **Guidelines de Développement**
+- ✅ **Tests obligatoires** pour toute nouvelle fonctionnalité
+- 📝 **Documentation** : Docstrings et commentaires détaillés
+- 🔍 **Validation** : Respect des patterns de nomenclature
+- 🚀 **Performance** : Optimisation pour traitement de gros volumes
+- 🔒 **Sécurité** : Validation et sanitization des inputs
+
+## 📚 Documentation
+
+- **[Guide de Démarrage](docs/guides/QUICK_START.md)** - Installation et première utilisation
+- **[Configuration Frame.io](docs/integrations/FRAMEIO_OAUTH.md)** - Setup authentification OAuth
+- **[Architecture Technique](docs/ARCHITECTURE.md)** - Vue d'ensemble du système
+- **[Configuration Google](docs/setup/GOOGLE_SHEETS_SETUP.md)** - Setup APIs Google
+- **[Changelog Complet](CHANGELOG.md)** - Historique des versions
+
+## 🆘 Support et Ressources
+
+- **Issues GitHub** : [Signaler bugs et demandes](https://github.com/resizelab/rl_postflow/issues)
+- **Documentation** : [Guide complet](docs/)
+- **Exemples** : [Code samples](examples/)
+- **Scripts** : [Utilitaires admin](scripts/)
 
 ## 📄 License
 
@@ -136,12 +287,15 @@ Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de
 
 ## 🎉 Remerciements
 
-- **Resize Lab** pour le développement
-- **Communauté Python** pour les outils
-- **Équipe de production** pour les retours
+- **Resize Lab** pour le développement et la maintenance
+- **Communauté Python** pour les excellents outils et librairies
+- **Frame.io Team** pour leur API robuste et bien documentée
+- **Google Developers** pour les APIs Drive et Sheets
+- **Discord** pour les webhooks et notifications
 
 ---
 
 <div align="center">
-  <b>🎬 Fait avec ❤️ par Resize Lab</b>
+  <b>🎬 RL PostFlow v4.1.0 - Fait avec ❤️ par Resize Lab</b><br>
+  <i>Pipeline de post-production intelligent et fiable</i>
 </div>
