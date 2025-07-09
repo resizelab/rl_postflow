@@ -1,0 +1,58 @@
+{
+  "db_path": "data/postflow.db",
+  "retry_base_delay": 1.0,
+  "retry_backoff_factor": 2.0,
+  "max_retry_delay": 60.0,
+  "max_retries": 3,
+  
+  "health_monitor": {
+    "check_interval": 60,
+    "alert_threshold": 3,
+    "enabled": true
+  },
+  
+  "alerts": {
+    "email_enabled": false,
+    "discord_enabled": true,
+    "discord_webhook_url": "YOUR_DISCORD_WEBHOOK_URL",
+    
+    "email_config": {
+      "smtp_server": "smtp.gmail.com",
+      "smtp_port": 587,
+      "smtp_user": "your_email@gmail.com",
+      "smtp_password": "your_app_password",
+      "from_email": "your_email@gmail.com",
+      "to_emails": ["admin@yourcompany.com"]
+    }
+  },
+  
+  "error_categories": {
+    "frameio": {
+      "max_retries": 5,
+      "retry_delay": 30,
+      "timeout": 300
+    },
+    "google": {
+      "max_retries": 3,
+      "retry_delay": 15,
+      "timeout": 120
+    },
+    "network": {
+      "max_retries": 10,
+      "retry_delay": 5,
+      "timeout": 60
+    },
+    "file_system": {
+      "max_retries": 3,
+      "retry_delay": 2,
+      "timeout": 30
+    }
+  },
+  
+  "logging": {
+    "error_log_file": "logs/errors.log",
+    "max_log_size": 10485760,
+    "backup_count": 5,
+    "log_level": "ERROR"
+  }
+}

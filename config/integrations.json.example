@@ -1,17 +1,59 @@
-# Configuration avec tokens OAuth Frame.io
-
 {
+  "lucidlink": {
+    "base_path": "/path/to/lucidlink/mount",
+    "watch_directory": "/path/to/lucidlink/watch",
+    "watch_folders": true,
+    "notifications_enabled": true,
+    "watch_patterns": [
+      "UNDLM_\\d+_v\\d+\\.(mov|mp4|avi|mxf)$",
+      ".*_v\\d+\\.(mov|mp4|avi|mxf)$"
+    ],
+    "stability_timeout": 30
+  },
   "frameio": {
     "client_id": "YOUR_ADOBE_CLIENT_ID",
-    "client_secret": "YOUR_ADOBE_CLIENT_SECRET", 
+    "client_secret": "YOUR_ADOBE_CLIENT_SECRET",
     "redirect_uri": "https://localhost:8080/callback",
-    "access_token": "YOUR_ACCESS_TOKEN",
-    "refresh_token": "YOUR_REFRESH_TOKEN",
-    "token_type": "Bearer",
-    "expires_in": 86399,
-    "scope": "email,openid,offline_access,profile,additional_info.roles,AdobeID",
-    "id_token": "YOUR_ID_TOKEN",
-    "last_updated": "2025-01-06T23:03:28.993335",
-    "method": "oauth_web_app"
+    "project_id": "YOUR_FRAMEIO_PROJECT_ID",
+    "account_id": "YOUR_FRAMEIO_ACCOUNT_ID",
+    "workspace_id": "YOUR_FRAMEIO_WORKSPACE_ID",
+    "root_folder_id": "YOUR_FRAMEIO_ROOT_FOLDER_ID",
+    "base_url": "https://api.frame.io/v4",
+    "upload_enabled": true,
+    "max_concurrent_uploads": 3,
+    "method": "oauth_web_app",
+    "token_storage": {
+      "access_token": null,
+      "refresh_token": null,
+      "token_type": "bearer",
+      "expires_in": 86399,
+      "scope": "email,openid,offline_access,profile,additional_info.roles,AdobeID",
+      "id_token": null,
+      "updated_at": null
+    }
+  },
+  "google": {
+    "credentials_file": "config/google_credentials.json",
+    "drive": {
+      "folder_id": "YOUR_GOOGLE_DRIVE_FOLDER_ID",
+      "thumbnails_folder": "thumbnails",
+      "upload_enabled": true
+    },
+    "sheets": {
+      "spreadsheet_id": "YOUR_GOOGLE_SHEETS_ID",
+      "worksheet_name": "PostFlow",
+      "update_enabled": true
+    }
+  },
+  "discord": {
+    "webhook_url": "YOUR_DISCORD_WEBHOOK_URL",
+    "bot_name": "RL PostFlow Bot",
+    "enable_notifications": true,
+    "notification_types": {
+      "upload_success": true,
+      "upload_error": true,
+      "batch_summary": true,
+      "system_status": false
+    }
   }
 }

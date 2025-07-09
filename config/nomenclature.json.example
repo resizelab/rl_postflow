@@ -1,0 +1,92 @@
+{
+  "file_naming": {
+    "description": "Configuration de la nomenclature des fichiers pour le pipeline RL PostFlow",
+    "version": "4.1.0",
+    
+    "patterns": {
+      "current": {
+        "name": "Standard Project Format",
+        "description": "Format standard avec scène, shot et version",
+        "regex": "^SQ(?P<scene>\\d{2})_(?P<shot_name>[A-Z]+)_(?P<shot_number>\\d{5})_v(?P<version>\\d{3})\\.(mov|mp4|avi|mkv|mxf|prores|r3d|braw)$",
+        "format": "SQ{scene:02d}_{shot_name}_{shot_number:05d}_v{version:03d}.{ext}",
+        
+        "components": {
+          "scene": "2 digits (01-99)",
+          "shot_name": "Project identifier (e.g., UNDLM, PROJ)",
+          "shot_number": "5 digits (00001-99999)",
+          "version": "3 digits (001-999)",
+          "extensions": [".mov", ".mp4", ".avi", ".mkv", ".mxf", ".prores", ".r3d", ".braw"]
+        },
+        
+        "examples": [
+          "SQ01_UNDLM_00001_v001.mov",
+          "SQ02_UNDLM_00042_v002.mp4",
+          "SQ03_PROJ_01234_v015.avi"
+        ]
+      },
+      
+      "legacy": {
+        "name": "Legacy UNDLM Format",
+        "description": "Ancien format UNDLM pour compatibilité",
+        "regex": "^UNDLM_(?P<shot>\\d{5})_v(?P<version>\\d{3})\\.(mov|mp4|avi|mkv)$",
+        "format": "UNDLM_{shot:05d}_v{version:03d}.{ext}",
+        
+        "components": {
+          "project": "UNDLM",
+          "shot": "5 digits (00001-99999)",
+          "version": "3 digits (001-999)",
+          "extensions": [".mov", ".mp4", ".avi", ".mkv"]
+        },
+        
+        "examples": [
+          "UNDLM_00001_v001.mov",
+          "UNDLM_00042_v002.mp4"
+        ]
+      }
+    },
+    
+    "validation": {
+      "strict_mode": true,
+      "case_sensitive": false,
+      "require_extension": true,
+      "allowed_shot_names": ["UNDLM", "PROJ", "TEST"],
+      "min_shot_number": 1,
+      "max_shot_number": 99999,
+      "min_version": 1,
+      "max_version": 999
+    },
+    
+    "directory_structure": {
+      "required_pattern": "/SQ{scene:02d}/{shot_name}_{shot_number:05d}/",
+      "examples": [
+        "/SQ01/UNDLM_00001/",
+        "/SQ02/UNDLM_00042/",
+        "/SQ03/PROJ_01234/"
+      ],
+      "validation": {
+        "enforce_structure": true,
+        "create_missing_dirs": false
+      }
+    },
+    
+    "metadata": {
+      "extract_from_filename": true,
+      "fields": [
+        "scene_number",
+        "shot_name", 
+        "shot_number",
+        "version",
+        "extension"
+      ]
+    }
+  },
+  
+  "processing": {
+    "auto_detect_pattern": true,
+    "fallback_to_legacy": true,
+    "validation_errors": {
+      "action": "reject",
+      "log_level": "ERROR"
+    }
+  }
+}

@@ -124,3 +124,11 @@ output/*.json
 
 # Logs rotatifs
 logs/*.log.*
+
+# Fichiers de configuration avec secrets/credentials
+config/integrations.json
+config/integrations.json.old
+config/production_config.json
+config/google_credentials.json
+config/private.key
+config/public.key
