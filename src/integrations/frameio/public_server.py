@@ -60,16 +60,30 @@ class SecureFileHandler(SimpleHTTPRequestHandler):
                 
                 self.end_headers()
                 
-                # Streamer le fichier
+                # Streamer le fichier avec des chunks de 256 Ko
+                total_sent = 0
+                chunk_size = 256 * 1024  # 256 Ko
                 while True:
-                    chunk = f.read(8192)
+                    chunk = f.read(chunk_size)
                     if not chunk:
                         break
-                    self.wfile.write(chunk)
-                    
+                    try:
+                        self.wfile.write(chunk)
+                        self.wfile.flush()
+                        total_sent += len(chunk)
+                    except BrokenPipeError:
+                        logger.warning(f"Client a fermé la connexion pendant l'envoi de {requested_path} (envoyé: {total_sent} octets)")
+                        break
+                logger.info(f"Fichier servi: {requested_path} (total envoyé: {total_sent} octets)")
+        
+        except BrokenPipeError:
+            logger.warning(f"Client a fermé la connexion (BrokenPipe) pour {requested_path}")
         except Exception as e:
             logger.error(f"Erreur serveur fichier {requested_path}: {e}")
-            self.send_error(500, "Internal server error")
+            try:
+                self.send_error(500, "Internal server error")
+            except BrokenPipeError:
+                pass
     
     def do_HEAD(self):
         """Gérer les requêtes HEAD (Frame.io peut vérifier l'existence)"""

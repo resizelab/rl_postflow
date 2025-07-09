@@ -134,7 +134,7 @@ def generate_index_content(structure, root_files):
 ---
 
 **Documentation mise à jour le : {date}**  
-**Version : 4.0.0**
+**Version : 4.1.0**
 """.format(date=datetime.now().strftime("%d %B %Y"))
     
     return content

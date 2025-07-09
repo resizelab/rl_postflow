@@ -1,0 +1,43 @@
+{
+  "version": "1.0",
+  "created_at": "2025-07-09T11:05:49.530636",
+  "last_updated": "2025-07-09T11:06:04.977277",
+  "uploads": {
+    "43f938aeb0edb1d6": {
+      "upload_id": "43f938aeb0edb1d6",
+      "file_path": "/Volumes/resizelab/o2b-undllm/4_OUT/2_FROM_VFX/SC01/UNDLM_00001/SC01_UNDLM_00001_v001.mov",
+      "filename": "SC01_UNDLM_00001_v001.mov",
+      "shot_id": "UNDLM_00001",
+      "version": "v001",
+      "file_size": 831754531,
+      "file_hash": "eb5f9c823633064a9d494e0e3d377b1a85e870a3684f6d5af20a476f882481ac",
+      "created_at": "2025-07-09T11:06:00.028048",
+      "last_updated": "2025-07-09T11:06:04.977267",
+      "status": "THUMBNAIL_GENERATED",
+      "frameio_data": {
+        "file_id": null,
+        "upload_status": "PENDING",
+        "review_link": null,
+        "share_link": null,
+        "processing_status": null
+      },
+      "google_sheets_data": {
+        "updated": false,
+        "row_number": null,
+        "update_timestamp": null
+      },
+      "discord_data": {
+        "message_sent": false,
+        "message_id": null,
+        "send_timestamp": null
+      },
+      "thumbnail_data": {
+        "generated": true,
+        "local_path": null,
+        "drive_url": "https://drive.google.com/thumbnail?id=1StHCD57LyrOP5PMo5uOVnTdNaewTJUDU&sz=w400",
+        "drive_file_id": null
+      },
+      "scene_name": "SC01"
+    }
+  }
+}

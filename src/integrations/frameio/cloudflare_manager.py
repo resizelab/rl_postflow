@@ -63,7 +63,7 @@ class CloudflareManager:
     
     def start_tunnel(self, local_port: int, timeout: int = 30) -> Optional[str]:
         """
-        Démarre un tunnel Cloudflare temporaire.
+        Démarre un tunnel Cloudflare temporaire avec gestion optimisée.
         
         Args:
             local_port: Port local à exposer
@@ -80,14 +80,16 @@ class CloudflareManager:
             
             self.local_port = local_port
             
-            # Commande pour tunnel temporaire
+            # Commande pour tunnel temporaire avec options optimisées
             cmd = [
                 "cloudflared", 
                 "tunnel", 
-                "--url", f"http://localhost:{local_port}"
+                "--url", f"http://localhost:{local_port}",
+                "--no-autoupdate",  # Éviter les mises à jour automatiques
+                "--protocol", "http2"  # Protocole optimisé
             ]
             
-            logger.info(f"🚀 Démarrage tunnel Cloudflare sur port {local_port}")
+            logger.info(f"🚀 Démarrage tunnel Cloudflare sur port {local_port} (timeout: {timeout}s)")
             
             # Démarrer le processus
             self.process = subprocess.Popen(
@@ -99,8 +101,10 @@ class CloudflareManager:
                 universal_newlines=True
             )
             
-            # Attendre l'URL du tunnel
+            # Attendre l'URL du tunnel avec polling optimisé
             start_time = time.time()
+            poll_interval = 0.1
+            
             while time.time() - start_time < timeout:
                 if self.process.poll() is not None:
                     # Processus terminé
@@ -122,12 +126,24 @@ class CloudflareManager:
                                 if part.startswith("https://") and "trycloudflare.com" in part:
                                     self.tunnel_url = part
                                     logger.info(f"✅ Tunnel Cloudflare actif: {self.tunnel_url}")
-                                    return self.tunnel_url
                                     
+                                    # Attendre que le tunnel se stabilise
+                                    logger.info("⏳ Attente stabilisation tunnel (5s)...")
+                                    time.sleep(5)
+                                    
+                                    # Test de connectivité basique
+                                    if self._test_tunnel_connectivity():
+                                        logger.info("✅ Tunnel accessible et opérationnel")
+                                        return self.tunnel_url
+                                    else:
+                                        logger.warning("⚠️ Test de connectivité échoué - on continue quand même")
+                                        # On retourne quand même l'URL car le tunnel pourrait fonctionner
+                                        return self.tunnel_url
+                                        
                 except Exception as e:
                     logger.debug(f"Erreur lecture stdout: {e}")
                 
-                time.sleep(0.1)
+                time.sleep(poll_interval)
             
             logger.error(f"❌ Timeout obtention URL Cloudflare ({timeout}s)")
             self.stop_tunnel()
@@ -137,6 +153,41 @@ class CloudflareManager:
             logger.error(f"❌ Erreur démarrage tunnel Cloudflare: {e}")
             self.stop_tunnel()
             return None
+    
+    def _test_tunnel_connectivity(self, test_file_path: str = None) -> bool:
+        """
+        Teste la connectivité du tunnel avec une approche plus robuste.
+        
+        Args:
+            test_file_path: Chemin du fichier à tester (optionnel)
+        """
+        if not self.tunnel_url:
+            return False
+        
+        try:
+            import requests
+            
+            # Test de connectivité basique - juste vérifier que l'URL répond
+            test_url = self.tunnel_url
+            logger.debug(f"🔍 Test connectivité tunnel: {test_url}")
+            
+            response = requests.get(test_url, timeout=10)
+            
+            # Cloudflare retourne souvent 404 ou 403 même si le tunnel fonctionne
+            # Ce qui compte c'est qu'on obtient une réponse HTTP
+            if response.status_code in [200, 404, 403, 502]:
+                logger.debug(f"✅ Tunnel répond (code: {response.status_code})")
+                return True
+            else:
+                logger.debug(f"⚠️ Tunnel répond avec code: {response.status_code}")
+                return False
+                
+        except requests.exceptions.RequestException as e:
+            logger.debug(f"❌ Erreur test connectivité: {e}")
+            return False
+        except Exception as e:
+            logger.debug(f"❌ Erreur test connectivité: {e}")
+            return False
     
     def stop_tunnel(self) -> None:
         """Arrête le tunnel Cloudflare."""

@@ -114,4 +114,13 @@ yarn-error.log*
 config/frameio_config.json
 config/integrations.json
 data/watcher_state.json
+data/uploads_tracking.json
 .frameio_refresh_token
+
+# Archive et dossiers temporaires
+archive/
+temp/
+output/*.json
+
+# Logs rotatifs
+logs/*.log.*

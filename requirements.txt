@@ -28,6 +28,9 @@ google-auth>=2.16.0
 google-auth-oauthlib>=0.8.0
 google-auth-httplib2>=0.1.0
 
+# Google Drive integration (for thumbnails)
+google-api-python-client>=2.70.0
+
 # After Effects integration (via ExtendScript)
 # Note: Communication via file system, no Python package needed
 

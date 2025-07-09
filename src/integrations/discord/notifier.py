@@ -24,14 +24,24 @@ class DiscordNotifierConfig:
 class DiscordNotifier:
     """Enhanced Discord notifier with user mentions and Frame.io integration."""
     
-    def __init__(self, config: DiscordNotifierConfig):
+    def __init__(self, config):
         """
         Initialize Discord notifier.
         
         Args:
-            config: Notifier configuration
+            config: Configuration manager or DiscordNotifierConfig
         """
-        self.config = config
+        if hasattr(config, 'get'):
+            # Configuration manager
+            self.webhook_url = config.get('discord.webhook_url')
+            self.bot_name = config.get('discord.username', 'RL PostFlow Bot')
+            self.avatar_url = config.get('discord.avatar_url', 'https://cdn.discordapp.com/emojis/🎬.png')
+        else:
+            # DiscordNotifierConfig
+            self.webhook_url = config.webhook_url
+            self.bot_name = config.bot_name
+            self.avatar_url = config.avatar_url
+        
         self.last_notification_time = {}
     
     def send_message(self, message: str, embed: Optional[Dict[str, Any]] = None) -> bool:
@@ -48,19 +58,18 @@ class DiscordNotifier:
         try:
             payload = {
                 "content": message,
-                "username": getattr(self.config, 'bot_name', 'PostFlow Bot'),
-                "avatar_url": getattr(self.config, 'avatar_url', None)
+                "username": self.bot_name,
+                "avatar_url": self.avatar_url
             }
             
             if embed:
                 payload["embeds"] = [embed]
             
-            webhook_url = getattr(self.config, 'webhook_url', self.config.get('webhook_url') if isinstance(self.config, dict) else None)
-            if not webhook_url:
+            if not self.webhook_url:
                 logger.error("Discord webhook URL not configured")
                 return False
             
-            response = requests.post(webhook_url, json=payload)
+            response = requests.post(self.webhook_url, json=payload)
             response.raise_for_status()
             
             logger.info(f"Discord notification sent: {message[:50]}...")
@@ -265,58 +274,80 @@ class DiscordNotifier:
         
         return self.send_message(content, embed)
     
-    def notify_error(self, shot_nomenclature: str, stage: str, error_message: str,
-                    mention_user_id: Optional[str] = None) -> bool:
+    def notify_file_processed(self, filename: str, message: str, frameio_link: str = None, 
+                             thumbnail_url: str = None) -> bool:
         """
-        Notify about an error.
+        Notify about a processed file.
         
         Args:
-            shot_nomenclature: Shot with error
-            stage: Pipeline stage
-            error_message: Error description
-            mention_user_id: Discord user ID to mention
+            filename: Name of the processed file
+            message: Description message
+            frameio_link: Optional Frame.io link
+            thumbnail_url: Optional thumbnail URL for embed
             
         Returns:
             bool: True if notification sent
         """
-        # Build message with user mention
-        message_parts = []
-        
-        if mention_user_id:
-            message_parts.append(f"Hey <@{mention_user_id}>")
-        
-        message_parts.append(f"❌ **Error**: {shot_nomenclature}")
-        
-        content = " ".join(message_parts)
-        
         embed = {
-            "title": "Pipeline Error",
-            "description": f"An error occurred while processing {shot_nomenclature}",
-            "color": 0xff0000,  # Red
+            "title": "🎬 Fichier traité",
+            "description": f"**{filename}**",
+            "color": 0x00ff00,
             "fields": [
-                {
-                    "name": "Shot",
-                    "value": shot_nomenclature,
-                    "inline": True
-                },
-                {
-                    "name": "Stage",
-                    "value": stage.replace('_', ' ').title(),
-                    "inline": True
-                },
-                {
-                    "name": "Error Message",
-                    "value": error_message,
-                    "inline": False
-                }
+                {"name": "Fichier", "value": filename, "inline": True}
             ],
-            "timestamp": datetime.now().isoformat(),
-            "footer": {
-                "text": "RL PostFlow Pipeline"
-            }
+            "timestamp": datetime.now().isoformat()
         }
         
-        return self.send_message(content, embed)
+        if frameio_link:
+            embed["fields"].append({"name": "Frame.io", "value": f"[Voir sur Frame.io]({frameio_link})", "inline": True})
+        
+        if thumbnail_url:
+            # Utiliser image au lieu de thumbnail pour un preview complet
+            embed["image"] = {"url": thumbnail_url}
+            embed["fields"].append({"name": "Aperçu", "value": f"[Voir le thumbnail]({thumbnail_url})", "inline": True})
+        
+        # Message simple sans lien Frame.io en doublon
+        return self.send_message("", embed)
+    
+    def notify_error(self, title: str, error_message: str) -> bool:
+        """
+        Notify about an error.
+        
+        Args:
+            title: Error title
+            error_message: Error description
+            
+        Returns:
+            bool: True if notification sent
+        """
+        embed = {
+            "title": f"❌ {title}",
+            "description": error_message,
+            "color": 0xff0000,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        return self.send_message(f"❌ {title}", embed)
+    
+    def notify_system_status(self, title: str, message: str) -> bool:
+        """
+        Notify about system status.
+        
+        Args:
+            title: Status title
+            message: Status message
+            
+        Returns:
+            bool: True if notification sent
+        """
+        embed = {
+            "title": title,
+            "description": message,
+            "color": 0x0099ff,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        return self.send_message(title, embed)
     
     def _get_status_emoji(self, status: str) -> str:
         """Get emoji for status."""

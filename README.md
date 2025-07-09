@@ -1,83 +1,185 @@
-# 📚 Documentation RL PostFlow
+# 🎬 RL PostFlow - Pipeline d'Intégration LucidLink → Frame.io
 
-## 🏠 Index de la Documentation
+[![Version](https://img.shields.io/badge/version-4.1.0-blue.svg)](https://github.com/your-org/rl-postflow)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://python.org)
 
-### 🚀 Démarrage Rapide
-- [🏠 README Principal](../README.md)
+> **Pipeline automatisé de post-production pour l'upload intelligent de fichiers vidéo depuis LucidLink vers Frame.io avec intégrations complètes.**
 
-### 📖 Guides d'utilisation
-- [🚀 🚀 Guide de Démarrage Rapide - RL PostFlow](guides/QUICK_START.md)
+## 🚀 **Fonctionnalités**
 
-### 🔌 Intégrations
-- [🎬 🎬 Frame.io OAuth Configuration](integrations/FRAMEIO_OAUTH.md)
+- **🔍 Surveillance en temps réel** : Détection automatique des nouveaux exports via LucidLink
+- **📁 Validation stricte** : Nomenclature `SQ##_UNDLM_#####_v###` et structure de dossiers
+- **🎬 Upload Frame.io** : Upload automatique avec gestion de structure et liens de review
+- **🖼️ Thumbnails intelligents** : Génération et upload sur Google Drive
+- **📊 Google Sheets** : Mise à jour automatique avec formules `=IMAGE()` et `=LIEN_HYPERTEXTE()`
+- **📢 Notifications Discord** : Alertes avec preview des thumbnails
+- **🎛️ Dashboard web** : Interface de monitoring en temps réel
+- **🔄 Queue intelligente** : Gestion des uploads multiples avec retry
+- **🔐 OAuth sécurisé** : Authentification Frame.io Web App autonome
 
-### 📦 Releases
-- [📖 📖 Changelog - RL PostFlow](releases/CHANGELOG.md)
-- [📄 🎉 Git Update Complete - Version 2.1.0](releases/GIT_UPDATE_v2.1.0_SUMMARY.md)
-- [📄 🎉 GitHub Update Complete - RL PostFlow](releases/GITHUB_UPDATE_SUMMARY.md)
-- [📄 🎯 Résumé Final - Réorganisation PostFlow](releases/FINAL_SUMMARY.md)
-- [📄 🔧 Corrections des Erreurs d'API - Résumé](releases/API_FIXES_SUMMARY.md)
+## 📋 **Prérequis**
 
-### 📁 Archive
-- [📄 Test de l'Intégration Frame.io - Résumé des Capacités](archive/FRAMEIO_TESTING_SUMMARY.md)
-- [📄 🎬 Frame.io OAuth Authentication - Guide Final](archive/README_FRAMEIO_OAUTH_FINAL.md)
-- [📄 🎬 RL PostFlow - Intégration LucidLink → Frame.io](archive/README_FRAMEIO_INTEGRATION.md)
-- [📁 📁 Archive de Documentation](archive/README.md)
-- [📄 🎉 Migration Frame.io v4 - COMPLÈTE](archive/FRAMEIO_V4_MIGRATION_COMPLETE.md)
-- [📄 PostFlow - Checklist Publication Repository](archive/PUBLICATION_CHECKLIST.md)
-- [📄 Nettoyage du Repository PostFlow](archive/CLEAN_REPO.md)
-- [📄 Frame.io API v4 - Corrections Appliquées](archive/FRAMEIO_V4_CORRECTIONS.md)
-- [📄 🎉 MIGRATION FRAME.IO V4 - RAPPORT FINAL](archive/MIGRATION_FINAL_REPORT.md)
-- [📄 Comment Tester l'Intégration Frame.io](archive/COMMENT_TESTER_FRAMEIO.md)
-- [📄 Frame.io v4 – Intégration OAuth Web App (Authorization Code)](archive/README_FRAMEIO_OAUTH.md)
-- [📄 ✅ OAUTH FRAME.IO - IMPLÉMENTATION TERMINÉE](archive/OAUTH_IMPLEMENTATION_COMPLETE.md)
-- [📄 🧹 Nettoyage du Projet Frame.io - Rapport Final](archive/CLEAN_FRAMEIO_REPORT.md)
+- **Python 3.8+**
+- **FFmpeg** (pour génération thumbnails)
+- **LucidLink** configuré et monté
+- **Comptes configurés** :
+  - Frame.io (avec OAuth Web App)
+  - Google Drive API
+  - Google Sheets API
+  - Discord Webhook
 
-### 🛠️ Documentation Technique
-- [📄 Integration LucidLink → Frame.io](FRAMEIO_LUCIDLINK_INTEGRATION.md)
-- [🏗️ 🏗️ Architecture RL PostFlow](ARCHITECTURE.md)
-- [📄 [ARCHIVÉ] Setup IMS Server-to-Server (obsolète)](ADOBE_IMS_SERVER_TO_SERVER_SETUP.md)
-- [📄 Guide de Test de l'Intégration Frame.io](FRAMEIO_TESTING_GUIDE.md)
-- [📄 Guide de Configuration Adobe Developer Console pour Frame.io OAuth](ADOBE_OAUTH_TROUBLESHOOTING.md)
-- [📄 Système de Gestion d'Erreurs Renforcé - PostFlow](ERROR_HANDLING.md)
-- [📄 📋 RAPPORT D'ORGANISATION - FRAME.IO INTEGRATION](FRAMEIO_ORGANIZATION_REPORT.md)
-- [📄 Guide d'utilisation OAuth Frame.io - Saisie de codes améliorée](OAUTH_SAISIE_CODE_GUIDE.md)
-- [📄 Configuration Frame.io - Guide Final](FRAMEIO_CONFIGURATION_COMPLETE.md)
-- [📄 LucidLink Watcher - Résumé des améliorations](WATCHER_IMPROVEMENTS_SUMMARY.md)
-- [📄 🚀 FRAME.IO - DÉMARRAGE RAPIDE](FRAMEIO_QUICKSTART.md)
-- [📄 [ARCHIVÉ] Création d'intégration Server-to-Server (obsolète)](CREATE_ADOBE_SERVER_TO_SERVER.md)
-- [📄 ARCHIVE : Documentation Server-to-Server (obsolète)](ARCHIVE_FRAMEIO_SERVER_TO_SERVER_DOCS.md)
-- [📄 [ARCHIVÉ] Migration Frame.io v4 Server-to-Server (obsolète)](FRAMEIO_V4_MIGRATION.md)
-- [📄 Configuration des Intégrations UNDLM PostFlow](INTEGRATIONS_SETUP.md)
-- [📄 Guide d'utilisation du Watcher LucidLink](LUCIDLINK_WATCHER_GUIDE.md)
-- [📄 🚀 Guide de Création d'Intégration Server-to-Server Adobe](ADOBE_SERVER_TO_SERVER_SETUP.md)
-- [⚙️ Configuration PostFlow](CONFIGURATION.md)
-- [📄 🎬 UNDLM PostFlow - Guide d'Utilisation du Workflow de Review](REVIEW_WORKFLOW_GUIDE.md)
-- [📄 🎉 UNDLM PostFlow - Workflow de Review Intégré - RÉSUMÉ FINAL](WORKFLOW_SUMMARY.md)
-- [📄 UNDLM PostFlow - Résumé de Configuration](SETUP_SUMMARY.md)
-- [📄 Frame.io Integration - Architecture Propre](FRAMEIO_INTEGRATION.md)
-- [📄 🎬 UNDLM PostFlow - Architecture du Pipeline](PIPELINE_ARCHITECTURE.md)
+## ⚡ **Installation Rapide**
+
+```bash
+# Cloner le repository
+git clone https://github.com/your-org/rl-postflow.git
+cd rl-postflow
+
+# Installer les dépendances
+pip install -r requirements.txt
+
+# Configurer les variables d'environnement
+cp .env.example .env
+# Éditer .env avec vos configurations
+
+# Lancer le pipeline
+python main.py
+```
+
+## 🗂️ **Structure du Projet**
+
+```
+rl-postflow/
+├── src/                    # Code source principal
+│   ├── core/              # Composants centraux (watcher, pipeline)
+│   ├── integrations/      # Intégrations (Frame.io, Google, Discord)
+│   ├── utils/             # Utilitaires (thumbnails, upload, tracking)
+│   └── bootstrap/         # Initialisation et configuration
+├── config/                # Fichiers de configuration
+├── data/                  # Données et tracking
+├── docs/                  # Documentation détaillée
+├── tests/                 # Tests automatisés
+└── scripts/               # Scripts utilitaires
+```
+
+## 🎯 **Usage**
+
+### **Démarrage du Pipeline**
+```bash
+python main.py
+```
+
+### **Arrêt du Pipeline**
+```bash
+python stop_postflow.py
+```
+
+### **Dashboard Web**
+Accédez au dashboard sur `http://localhost:8080` pour :
+- Monitoring en temps réel
+- Statut des uploads
+- Gestion des erreurs
+- Métriques de performance
+
+## 📐 **Nomenclature Supportée**
+
+Le pipeline accepte uniquement les fichiers avec la nomenclature stricte :
+
+```
+SQ##_UNDLM_#####_v###.(mov|mp4|avi|mxf)
+```
+
+**Structure de dossier requise :**
+```
+.../SQxx/UNDLM_xxxxx/SQxx_UNDLM_xxxxx_vyyy.mov
+```
+
+**Exemples valides :**
+- `SQ01/UNDLM_00003/SQ01_UNDLM_00003_v001.mov` ✅
+- `SQ02/UNDLM_00015/SQ02_UNDLM_00015_v003.mp4` ✅
+
+**Exemples rejetés :**
+- `SQ01/SQ01_UNDLM_00003_v001.mov` ❌ (mauvais dossier)
+- `SC01_UNDLM_00001_v001.mov` ❌ (mauvaise nomenclature)
+
+## 🔧 **Configuration**
+
+### **Variables d'environnement (.env)**
+```env
+# Frame.io OAuth
+FRAMEIO_CLIENT_ID=your_client_id
+FRAMEIO_CLIENT_SECRET=your_client_secret
+
+# Google APIs
+GOOGLE_CREDENTIALS_PATH=config/google_credentials.json
+
+# Discord
+DISCORD_WEBHOOK_URL=your_webhook_url
+
+# LucidLink
+LUCIDLINK_MOUNT_PATH=/Volumes/your-mount
+```
+
+### **Configuration des intégrations**
+```json
+// config/integrations.json
+{
+  "google_drive": {
+    "enabled": true,
+    "folder_structure": "PostFlow_Thumbnails/PostFlow_Project/{year}-{month:02d}"
+  },
+  "discord": {
+    "enabled": true,
+    "embed_thumbnails": true
+  }
+}
+```
+
+## 📊 **Monitoring et Logs**
+
+- **Dashboard web** : `http://localhost:8080`
+- **Logs détaillés** : `logs/postflow_YYYYMMDD.log`
+- **Tracking uploads** : `data/uploads_tracking.json`
+
+## 🧪 **Tests**
+
+```bash
+# Lancer tous les tests
+pytest tests/
+
+# Test spécifique
+pytest tests/test_watcher.py
+
+# Test avec couverture
+pytest --cov=src tests/
+```
+
+## 📚 **Documentation**
+
+- **[Guide de Démarrage Rapide](docs/guides/QUICK_START.md)** - Installation et première utilisation
+- **[Configuration Frame.io OAuth](docs/integrations/FRAMEIO_OAUTH.md)** - Setup authentification
+- **[Architecture](docs/ARCHITECTURE.md)** - Vue d'ensemble technique
+- **[Changelog](CHANGELOG.md)** - Historique des versions
+
+## 🤝 **Contributing**
+
+1. Fork le projet
+2. Créer une branche feature (`git checkout -b feature/AmazingFeature`)
+3. Commit les changements (`git commit -m 'Add some AmazingFeature'`)
+4. Push vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrir une Pull Request
+
+## 📄 **License**
+
+Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+
+## 🆘 **Support**
+
+- **Issues** : [GitHub Issues](https://github.com/your-org/rl-postflow/issues)
+- **Documentation** : [docs/](docs/)
+- **Email** : support@yourorg.com
 
 ---
 
-## 🎯 Navigation Rapide
-
-### Pour les utilisateurs
-- **Premier démarrage** → [Guide de démarrage](guides/QUICK_START.md)
-- **Configuration** → [Configuration complète](guides/CONFIGURATION.md)
-- **Problèmes** → [Dépannage](guides/TROUBLESHOOTING.md)
-
-### Pour les développeurs
-- **Architecture** → [Vue d'ensemble](ARCHITECTURE.md)
-- **Développement** → [Setup développement](DEVELOPMENT.md)
-- **API** → [Référence API](api/README.md)
-
-### Pour les intégrations
-- **Frame.io** → [Configuration OAuth](integrations/FRAMEIO_OAUTH.md)
-- **LucidLink** → [Configuration LucidLink](integrations/LUCIDLINK_SETUP.md)
-- **Discord** → [Notifications Discord](integrations/DISCORD_SETUP.md)
-
----
-
-**Documentation mise à jour le : 07 July 2025**  
-**Version : 4.0.0**
+**RL PostFlow v4.1.0** - Pipeline de post-production intelligent et fiable

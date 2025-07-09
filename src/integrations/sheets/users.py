@@ -156,7 +156,51 @@ class SheetsUserManager:
         
         # Return only users cached by name (avoid duplicates)
         return [user for key, user in self.users_cache.items() if not key.startswith('discord_')]
-
+    
+    def get_service(self):
+        """
+        Get the Google Sheets service client for API calls.
+        
+        Returns:
+            googleapiclient.discovery.Resource: The Google Sheets service client
+        """
+        if not self.auth_client or not self.auth_client.client:
+            logger.error("No authenticated Google Sheets client available")
+            return None
+        
+        # Créer un service client à partir du client gspread
+        try:
+            from googleapiclient.discovery import build
+            from google.oauth2.service_account import Credentials
+            from pathlib import Path
+            
+            # Récupérer les credentials du fichier
+            credentials_file = getattr(self.auth_client.config, 'credentials_file', 'config/google_credentials.json')
+            credentials_path = Path(credentials_file)
+            
+            if not credentials_path.exists():
+                logger.error(f"Credentials file not found: {credentials_path}")
+                return None
+            
+            # Définir les scopes
+            scope = [
+                "https://spreadsheets.google.com/feeds",
+                "https://www.googleapis.com/auth/drive",
+                "https://www.googleapis.com/auth/spreadsheets"
+            ]
+            
+            # Charger les credentials
+            creds = Credentials.from_service_account_file(
+                credentials_path, scopes=scope
+            )
+            
+            # Créer le service
+            service = build('sheets', 'v4', credentials=creds)
+            return service
+            
+        except Exception as e:
+            logger.error(f"Failed to create Google Sheets service: {e}")
+            return None
 
 # Global instance for easy access
 _sheets_auth = None

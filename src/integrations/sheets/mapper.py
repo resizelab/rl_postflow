@@ -278,6 +278,15 @@ class SheetsMapper:
                     print(f"   ❌ Colonnes manquantes suggérées:")
                     for field, config in missing.items():
                         print(f"      • {field}: '{config['suggested_column']}'")
+    
+    def get_mapping(self) -> Dict:
+        """
+        Obtenir le mapping complet.
+        
+        Returns:
+            Dict: Le mapping complet depuis le fichier JSON
+        """
+        return self.mapping
 
 
 # Fonction utilitaire pour créer une instance globale

@@ -258,6 +258,26 @@ class FrameIOStructureManager:
         
         logger.info(f"📁 FrameIOStructureManager - Account: {self.account_id}, Workspace: {self.workspace_id}")
     
+    async def _make_authenticated_request(self, method: str, url: str, **kwargs):
+        """
+        Effectue une requête HTTP authentifiée robuste
+        
+        Args:
+            method: Méthode HTTP (GET, POST, etc.)
+            url: URL complète
+            **kwargs: Arguments pour httpx
+            
+        Returns:
+            Réponse HTTP
+        """
+        if self.auth is not None:
+            # Utiliser l'auth existant
+            return await self.auth.request(method, url, **kwargs)
+        else:
+            # Fallback - ne devrait pas arriver dans FrameIOStructureManager
+            # car il reçoit toujours un FrameIOAuth
+            raise ValueError("FrameIOStructureManager: auth est None")
+
     async def _api_request_with_retry(self, method: str, url: str, **kwargs) -> Any:
         """Effectuer une requête API avec retry automatique et gestion d'erreurs"""
         last_exception = None
@@ -268,7 +288,8 @@ class FrameIOStructureManager:
                 if attempt > 0:
                     await asyncio.sleep(self.retry_delay * (2 ** attempt))  # Back-off exponentiel
                 
-                response = await self.auth.request(method, url, **kwargs)
+                # Utiliser la méthode d'authentification robuste
+                response = await self._make_authenticated_request(method, url, **kwargs)
                 
                 # Gestion des erreurs spécifiques
                 if response.status_code == 429:
@@ -393,7 +414,7 @@ class FrameIOStructureManager:
         Endpoint: /accounts/{account_id}/folders/{folder_id}/children
         """
         try:
-            # Utiliser le nouveau endpoint pour les enfants d'un dossier
+            # Utiliser l'endpoint correct pour les enfants d'un dossier
             url = f"{self.base_url}/accounts/{self.account_id}/folders/{folder_id}/children"
             
             folders = []
@@ -404,7 +425,7 @@ class FrameIOStructureManager:
                 if next_cursor:
                     params["after"] = next_cursor
                 
-                response = await self.auth.request("GET", url, params=params)
+                response = await self._make_authenticated_request("GET", url, params=params)
                 response.raise_for_status()
                 data = response.json()
                 
@@ -455,7 +476,7 @@ class FrameIOStructureManager:
                 }
             }
             
-            response = await self.auth.request("POST", url, json=payload)
+            response = await self._make_authenticated_request("POST", url, json=payload)
             response.raise_for_status()
             response_data = response.json()
             
@@ -492,38 +513,39 @@ class FrameIOStructureManager:
                                          project_id: Optional[str] = None, workspace_id: Optional[str] = None) -> Optional[FrameIOFolder]:
         """
         Trouver ou créer un dossier pour une scène spécifique
-        Structure recommandée: Project Root > Scenes > {scene_name}
+        Structure cohérente avec LucidLink: Project Root > 2_FROM_ANIM > {sequence_name}
         """
         try:
-            # 1. Chercher le dossier "Scenes" dans le dossier racine
-            scenes_folder = None
+            # 1. Chercher le dossier "2_FROM_ANIM" dans le dossier racine
+            from_anim_folder = None
             root_folders = await self.get_folders(root_folder_id, project_id, workspace_id)
             
             for folder in root_folders:
-                if folder.name.lower() == "scenes":
-                    scenes_folder = folder
+                if folder.name == "2_FROM_ANIM":
+                    from_anim_folder = folder
                     break
             
-            if not scenes_folder:
-                scenes_folder = await self.create_folder("Scenes", root_folder_id, project_id, workspace_id)
-                if not scenes_folder:
-                    logger.error("Impossible de créer le dossier Scenes")
+            if not from_anim_folder:
+                from_anim_folder = await self.create_folder("2_FROM_ANIM", root_folder_id, project_id, workspace_id)
+                if not from_anim_folder:
+                    logger.error("Impossible de créer le dossier 2_FROM_ANIM")
                     return None
+                logger.info("📁 Dossier 2_FROM_ANIM créé")
             
-            # 2. Chercher le dossier de la scène ou le créer
-            scene_folders = await self.get_folders(scenes_folder.id, project_id, workspace_id)
+            # 2. Chercher le dossier de la séquence ou le créer
+            sequence_folders = await self.get_folders(from_anim_folder.id, project_id, workspace_id)
             
-            for folder in scene_folders:
+            for folder in sequence_folders:
                 if folder.name == scene_name:
-                    logger.info(f"Dossier scène trouvé: {scene_name}")
+                    logger.info(f"Dossier séquence trouvé: 2_FROM_ANIM/{scene_name}")
                     return folder
             
-            # Créer le dossier de la scène
-            scene_folder = await self.create_folder(scene_name, scenes_folder.id, project_id, workspace_id)
-            if scene_folder:
-                logger.info(f"Dossier scène créé: {scene_name}")
+            # Créer le dossier de la séquence
+            sequence_folder = await self.create_folder(scene_name, from_anim_folder.id, project_id, workspace_id)
+            if sequence_folder:
+                logger.info(f"Dossier séquence créé: 2_FROM_ANIM/{scene_name}")
             
-            return scene_folder
+            return sequence_folder
             
         except Exception as e:
             logger.error(f"Erreur gestion dossier scène {scene_name}: {e}")

@@ -1,6 +1,41 @@
-# 📋 CHANGELOG - RL PostFlow
+# 📝 Changelog - RL PostFlow
 
-Toutes les modifications importantes de ce projet seront documentées dans ce fichier.
+Toutes les modifications notables de ce projet seront documentées dans ce fichier.
+
+Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
+et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [4.1.0] - 2025-07-09 🎯 **FIABILISATION ET VALIDATION STRICTE**
+
+### 🚀 Ajouté
+- **Validation stricte de la structure de chemin** : Les fichiers doivent être dans `/SQxx/UNDLM_xxxxx/` uniquement
+- **Messages d'erreur explicites** : Logs détaillés avec chemin actuel vs chemin attendu  
+- **Script de nettoyage automatique** : `scripts/clean_project.py` pour maintenance
+- **Documentation README moderne** : Interface professionnelle pour publication
+- **Tests organisés** : Structure claire avec documentation dédiée
+- **Licence MIT** : Ajout de la licence pour publication open source
+
+### 🔧 Modifié
+- **Validation nomenclature renforcée** : Rejet automatique des fichiers mal placés
+- **Organisation du workspace** : Archives, tests et documentation structurés
+- **Système de logs** : Validation de structure avec debug détaillé
+- **Architecture modulaire** : Méthode `_validate_file_path_structure()` ajoutée
+
+### 🐛 Corrigé
+- **Bug critique de détection** : Fichiers n'étaient plus détectés dans le mauvais dossier (ex: `/SQ01/fichier.mov` au lieu de `/SQ01/UNDLM_00003/fichier.mov`)
+- **Validation croisée** : Correspondance entre nom de fichier et structure du dossier
+- **Nettoyage workspace** : Suppression des fichiers temporaires et cache
+
+### 🛡️ Sécurité  
+- **Validation strict du chemin** : Prévention du traitement de fichiers mal placés
+- **Nettoyage des credentials** : Suppression des données sensibles pour publication
+
+### 📦 Maintenance
+- **37 fichiers temporaires** supprimés
+- **227 éléments de cache** nettoyés  
+- **75+ fichiers de test** organisés dans `tests/`
+- **25+ documents de développement** archivés
+- **Tracking réinitialisé** avec backup automatique
 
 ---
 
@@ -8,7 +43,7 @@ Toutes les modifications importantes de ce projet seront documentées dans ce fi
 
 ### 🎯 **MISE À JOUR FRAME.IO MAJEURE**
 - ✅ **Migration vers Frame.io API v4** - Nouvelle architecture complète
-- ✅ **OAuth Web App autonome** - Remplacement Server-to-Server
+- ✅ **OAuth Web App autonome** - Remplacement Server-to-Server  
 - ✅ **Gestion automatique des tokens** - Refresh automatique
 - ✅ **Structure Frame.io intelligente** - Création/gestion automatique des projets
 - ✅ **Upload robuste avec retry** - Gestion d'erreurs avancée
@@ -20,14 +55,6 @@ Toutes les modifications importantes de ce projet seront documentées dans ce fi
 - ✅ **Upload distant sécurisé** - Plus besoin d'upload local vers Frame.io
 - ✅ **Gestion automatique des tunnels** - Création/destruction dynamique
 - ✅ **URLs temporaires** - Sécurité renforcée
-- ✅ **Support multi-fichiers** - Gestion parallèle optimisée
-
-### 🐛 **CORRECTIONS MINEURS - 8 JUILLET 2025**
-- ✅ **Logs de streaming optimisés** - Réduction 90% verbosité (100MB vs 10MB)
-- ✅ **Erreurs Broken pipe corrigées** - Niveau ERROR → INFO (comportement normal)
-- ✅ **Dashboard cohérent** - Statuts synchronisés avec l'état réel du pipeline
-- ✅ **Protection anti-boucle dashboard** - Prévention refresh infini
-- ✅ **Gestion robuste déconnexions** - Connexions fermées par client gérées proprement
 
 ### 🎛️ **DASHBOARD WEB COMPLET**
 - ✅ **Interface temps réel** - WebSocket avec Flask-SocketIO
@@ -35,7 +62,6 @@ Toutes les modifications importantes de ce projet seront documentées dans ce fi
 - ✅ **Zone de debug visuelle** - Logs en temps réel pour diagnostics
 - ✅ **APIs RESTful** - `/api/status`, `/api/queue/stats`, `/api/health`
 - ✅ **Responsive design** - Interface moderne et intuitive
-- ✅ **Auto-refresh intelligent** - Mise à jour périodique sans surcharge
 
 ### 🏗️ **ARCHITECTURE COMPLÈTEMENT REFACTORISÉE**
 - ✅ **Structure modulaire** - Séparation claire des responsabilités
@@ -46,7 +72,7 @@ Toutes les modifications importantes de ce projet seront documentées dans ce fi
 
 ### 👁️ **WATCHER LUCIDLINK INTELLIGENT**
 - ✅ **Détection intelligente** - Évite les faux positifs
-- ✅ **Cache des états** - Optimisation performance
+- ✅ **Cache des états** - Optimisation performance  
 - ✅ **Scan initial optimisé** - Détection rapide au démarrage
 - ✅ **Gestion synchronisation** - Force cache LucidLink si nécessaire
 - ✅ **Logs maîtrisés** - Plus de spam toutes les 5 secondes
@@ -56,57 +82,26 @@ Toutes les modifications importantes de ce projet seront documentées dans ce fi
 - ✅ **Escalation automatique** - Gestion des échecs répétés
 - ✅ **Notification Discord** - Alertes pour erreurs critiques
 - ✅ **Récupération gracieuse** - Redémarrage automatique des composants
-- ✅ **Logs structurés** - Traçabilité complète des erreurs
-
-### 📊 **OPTIMISATIONS PERFORMANCE**
-- ✅ **Streaming HTTP optimisé** - Chunks 8KB, gestion mémoire
-- ✅ **Parallélisation uploads** - Multiple fichiers simultanés
-- ✅ **Cache intelligent** - Réduction appels API Frame.io
-- ✅ **Timeouts configurables** - Adaptation aux conditions réseau
-- ✅ **Compression gzip** - Optimisation bande passante
-
-### 🔧 **CONFIGURATION AVANCÉE**
-- ✅ **Configuration modulaire** - JSON par composant
-- ✅ **Variables d'environnement** - Support complet
-- ✅ **Validation configuration** - Vérification au démarrage
-- ✅ **Configuration par défaut** - Valeurs sensées prêtes à l'emploi
-- ✅ **Secrets sécurisés** - Gestion appropriée des tokens
-
-### 🧪 **TESTS ET VALIDATION**
-- ✅ **Scripts de validation** - Vérification automatisée
-- ✅ **Tests d'intégration** - Validation complète workflow
-- ✅ **Métriques performance** - Monitoring temps réponse
-- ✅ **Tests de charge** - Validation stabilité
-- ✅ **Validation structure** - Organisation fichiers parfaite
-
-### 📁 **ORGANISATION PROFESSIONNELLE**
-- ✅ **Structure propre** - Fichiers bien organisés
-- ✅ **Séparation dev/prod** - Scripts développement isolés
-- ✅ **Documentation complète** - README, guides, exemples
-- ✅ **Gitignore complet** - Exclusion fichiers sensibles
-- ✅ **Requirements clairs** - Dépendances production/développement
 
 ---
 
-## [3.x.x] - Versions précédentes
+## [3.x.x] - Versions précédentes archivées
 
-### Frame.io Server-to-Server (Déprécié)
-- ❌ **Server-to-Server obsolète** - Migration vers OAuth Web App
-- ❌ **Upload local** - Remplacé par streaming Cloudflare
-- ❌ **Gestion manuelle tokens** - Automatisé avec refresh
-- ❌ **Structure fixe** - Remplacée par gestion dynamique
+Les versions précédentes sont disponibles dans `archive/development_docs/` pour référence historique.
 
 ### Limitations anciennes résolues
-- ❌ **Logs verbeux** - Optimisés et maîtrisés
-- ❌ **Dashboard basique** - Interface complète développée
-- ❌ **Erreurs non gérées** - Système robuste implémenté
-- ❌ **Configuration dispersée** - Centralisée et validée
+- ❌ **Server-to-Server obsolète** → ✅ OAuth Web App autonome
+- ❌ **Upload local** → ✅ Streaming Cloudflare distant  
+- ❌ **Logs verbeux** → ✅ Logs optimisés et maîtrisés
+- ❌ **Dashboard basique** → ✅ Interface complète temps réel
+- ❌ **Erreurs non gérées** → ✅ Système robuste avec retry
+- ❌ **Configuration dispersée** → ✅ Configuration centralisée
 
 ---
 
 ## 🎯 **ROADMAP FUTURES VERSIONS**
 
-### [4.1.0] - Prochaines améliorations
+### [4.2.0] - Prochaines améliorations
 - 📋 **Interface graphique** - Desktop app avec Electron
 - 📋 **Multi-projets** - Gestion plusieurs pipelines
 - 📋 **Analytics avancés** - Métriques détaillées
@@ -120,28 +115,22 @@ Toutes les modifications importantes de ce projet seront documentées dans ce fi
 
 ---
 
-## 📊 **STATISTIQUES VERSION 4.0.0**
+## 📊 **STATISTIQUES VERSION 4.1.0**
 
-- **Fichiers code** : 200+ fichiers Python
-- **Tests** : 75+ scripts de validation
-- **Documentation** : 45+ fichiers markdown
-- **Configurations** : 10+ fichiers JSON
-- **Scripts** : 30+ utilitaires développement
+- **Fichiers code** : 200+ fichiers Python organisés
+- **Tests** : 75+ scripts dans `tests/` 
+- **Documentation** : 50+ fichiers markdown structurés
+- **Scripts utilitaires** : 20+ scripts de production
 - **Lignes code** : 15,000+ lignes
 - **Couverture tests** : 90%+ fonctionnalités critiques
+- **Organisation** : 100% prêt pour publication
 
 ---
 
-## 🔗 **LIENS UTILES**
-
-- [📖 README Principal](README_MAIN.md)
-- [🎯 Statut Publication](PUBLICATION_READY.md)
-- [📁 Documentation](docs/)
-- [🧪 Tests](tests/)
-- [⚙️ Configuration](config/)
-
----
-
-**🎉 RL PostFlow v4.0.0 - La révolution du workflow Frame.io est là !**
-
-*Cloudflare streaming, OAuth autonome, dashboard temps réel, logs propres - Tout pour un pipeline professionnel de classe enterprise.*
+### 🏷️ Types de changements
+- `🚀 Ajouté` pour les nouvelles fonctionnalités
+- `🔧 Modifié` pour les changements dans les fonctionnalités existantes
+- `🐛 Corrigé` pour les corrections de bugs
+- `🛡️ Sécurité` pour les corrections de vulnérabilités
+- `❌ Supprimé` pour les fonctionnalités supprimées
+- `📦 Maintenance` pour les tâches de maintenance et organisation

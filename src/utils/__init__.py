@@ -9,9 +9,16 @@ from .status_tracker import (
     PipelineTracker
 )
 
+from .config import ConfigManager, get_config_manager
+from .thumbnail import ThumbnailGenerator, create_thumbnail_generator
+
 __all__ = [
     'ShotStatus',
     'PipelineStage', 
     'ShotProgress',
-    'PipelineTracker'
+    'PipelineTracker',
+    'ConfigManager',
+    'get_config_manager',
+    'ThumbnailGenerator',
+    'create_thumbnail_generator'
 ]

@@ -323,6 +323,10 @@ class RangeFileServer:
             logger.error(f"❌ Erreur ajout fichier: {e}")
             return None
     
+    def serve_file(self, file_path: str) -> Optional[str]:
+        """Servir un fichier et retourner son URL"""
+        return self.add_file(file_path)
+    
     def remove_file(self, url_name: str):
         """Supprimer un fichier de la liste"""
         if url_name in self.allowed_files:

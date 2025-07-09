@@ -27,7 +27,7 @@ def create_frameio_auth(project_root=None):
     
     return FrameIOAuth(project_root=project_root)
 
-__version__ = "4.0.0"
+__version__ = "4.1.0"
 __author__ = "PostFlow Team"
 __description__ = "Frame.io API v4 integration with Adobe IMS OAuth 2.0"
 
