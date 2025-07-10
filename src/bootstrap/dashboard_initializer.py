@@ -6,7 +6,7 @@
 Initialise et lance le dashboard web PostFlow.
 Extrait de main.py pour une meilleure organisation.
 
-Version: 4.1.0
+Version: 4.1.1
 Date: 9 juillet 2025
 """
 
@@ -72,7 +72,13 @@ class DashboardInitializer:
                 logger.info(f"✅ Dashboard démarré sur http://{host}:{port}")
                 return True
             else:
+                # Récupérer les logs d'erreur du subprocess
+                stdout, stderr = self.dashboard_process.communicate()
                 logger.error("❌ Échec du démarrage du dashboard")
+                if stderr:
+                    logger.error(f"   STDERR: {stderr.decode('utf-8', errors='ignore')}")
+                if stdout:
+                    logger.error(f"   STDOUT: {stdout.decode('utf-8', errors='ignore')}")
                 return False
                 
         except Exception as e:
@@ -93,7 +99,7 @@ class DashboardInitializer:
         env['DASHBOARD_DEBUG'] = str(dashboard_config.get('debug', False))
         
         # Ajouter les configurations générales
-        env['PIPELINE_VERSION'] = self.pipeline_config.get('version', '4.1.0')
+        env['PIPELINE_VERSION'] = self.pipeline_config.get('version', '4.1.1')
         env['PIPELINE_NAME'] = self.pipeline_config.get('name', 'RL PostFlow Pipeline')
         
         # Ajouter les chemins de configuration

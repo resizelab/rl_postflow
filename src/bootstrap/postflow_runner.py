@@ -6,7 +6,7 @@
 Contient la boucle principale du pipeline et le workflow de traitement.
 Extrait de main.py pour une meilleure organisation.
 
-Version: 4.1.0
+Version: 4.1.1
 Date: 9 juillet 2025
 """
 
@@ -24,6 +24,8 @@ try:
     from src.integrations.sheets.tracker import SheetsTracker
     from src.utils.thumbnail import ThumbnailGenerator
     from src.integrations.discord.notifier import DiscordNotifier
+    from src.integrations.discord.user_notifier import DiscordUserNotifier
+    from src.integrations.sheets.users import SheetsUserManager
     from src.utils.error_handler import ErrorHandler
     from src.utils.upload_queue import UploadQueue, QueuePriority
     PIPELINE_MODULES_AVAILABLE = True
@@ -60,6 +62,7 @@ class PostFlowRunner:
         self.sheets_tracker = None
         self.thumbnail_generator = None
         self.discord_notifier = None
+        self.user_notifier = None
         self.upload_queue = None
         
         # État du pipeline
@@ -168,6 +171,20 @@ class PostFlowRunner:
                         
                         config_wrapper = DiscordConfigWrapper(discord_config)
                         self.discord_notifier = DiscordNotifier(config_wrapper)
+                        
+                        # Initialiser le User Notifier avec intégration Google Sheets
+                        try:
+                            user_manager = SheetsUserManager(self.config)
+                            self.user_notifier = DiscordUserNotifier(
+                                discord_notifier=self.discord_notifier,
+                                user_manager=user_manager
+                            )
+                            logger.info("✅ Discord User Notifier initialisé avec intégration Google Sheets")
+                        except Exception as e:
+                            logger.warning(f"⚠️ Impossible d'initialiser User Notifier: {e}")
+                            logger.info("🔄 Utilisation du Discord Notifier standard")
+                            self.user_notifier = None
+                        
                         logger.info("✅ Discord notifier initialisé")
                 except Exception as e:
                     logger.warning(f"⚠️ Erreur initialisation Discord: {e}")
@@ -233,7 +250,8 @@ class PostFlowRunner:
                 self.watcher.start()
             
             # Notification de démarrage
-            if self.discord_notifier:
+            notifier = self.user_notifier or self.discord_notifier
+            if notifier:
                 await self._send_discord_notification(
                     "🚀 PostFlow v2.0 démarré",
                     "Le pipeline de traitement est maintenant actif"
@@ -713,17 +731,28 @@ class PostFlowRunner:
     async def _send_file_notification(self, file_path: Path, frameio_link: str = None, thumbnail_url: str = None):
         """Envoie une notification Discord pour un fichier traité"""
         try:
-            if not self.discord_notifier:
+            # Utiliser user_notifier en priorité, sinon discord_notifier
+            notifier = self.user_notifier or self.discord_notifier
+            if not notifier:
                 return
             
             message = f"🎬 Fichier traité: {file_path.name}"
             if frameio_link:
                 message += f"\n🔗 Frame.io: {frameio_link}"
             
-            # La méthode notify_file_processed est synchrone
-            result = self.discord_notifier.notify_file_processed(
-                file_path.name, message, frameio_link, thumbnail_url
-            )
+            # Si on utilise le user_notifier
+            if self.user_notifier:
+                result = await self.user_notifier.notify_file_processed(
+                    file_path=file_path,
+                    frameio_link=frameio_link,
+                    thumbnail_url=thumbnail_url
+                )
+            else:
+                # Fallback vers discord_notifier classique
+                result = self.discord_notifier.notify_file_processed(
+                    file_path.name, message, frameio_link, thumbnail_url
+                )
+            
             if not result:
                 logger.debug(f"⚠️ Notification fichier Discord non envoyée: {file_path.name}")
             
@@ -733,11 +762,18 @@ class PostFlowRunner:
     async def _send_discord_notification(self, title: str, message: str):
         """Envoie une notification Discord de façon asynchrone"""
         try:
-            if not self.discord_notifier:
+            # Utiliser user_notifier en priorité, sinon discord_notifier
+            notifier = self.user_notifier or self.discord_notifier
+            if not notifier:
                 return
             
-            # La méthode notify_system_status est synchrone, pas besoin d'await
-            result = self.discord_notifier.notify_system_status(title, message)
+            # Si on utilise le user_notifier
+            if self.user_notifier:
+                result = await self.user_notifier.send_system_notification(title, message)
+            else:
+                # Fallback vers discord_notifier classique
+                result = self.discord_notifier.notify_system_status(title, message)
+            
             if not result:
                 logger.debug(f"⚠️ Notification Discord non envoyée: {title}")
         except Exception as e:
@@ -781,7 +817,8 @@ class PostFlowRunner:
         self._shutdown_event.set()
         
         # Notification d'arrêt
-        if self.discord_notifier:
+        notifier = self.user_notifier or self.discord_notifier
+        if notifier:
             try:
                 await asyncio.wait_for(
                     self._send_discord_notification(

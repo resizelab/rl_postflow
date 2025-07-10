@@ -8,6 +8,14 @@ import asyncio
 from typing import Dict, List, Optional, Any
 from datetime import datetime
 from dataclasses import dataclass
+import pytz
+
+# Fuseau horaire Paris
+PARIS_TZ = pytz.timezone('Europe/Paris')
+
+def get_paris_time():
+    """Retourne l'heure actuelle en fuseau horaire Paris"""
+    return datetime.now(PARIS_TZ)
 import requests
 from pathlib import Path
 
@@ -164,7 +172,7 @@ class DiscordNotifier:
                     "inline": True
                 }
             ],
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": get_paris_time().isoformat(),
             "footer": {
                 "text": "RL PostFlow Pipeline"
             }
@@ -216,7 +224,7 @@ class DiscordNotifier:
                     "inline": True
                 }
             ],
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": get_paris_time().isoformat(),
             "footer": {
                 "text": "RL PostFlow Pipeline"
             }
@@ -272,7 +280,7 @@ class DiscordNotifier:
                     "inline": False
                 }
             ],
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": get_paris_time().isoformat(),
             "footer": {
                 "text": "RL PostFlow Pipeline"
             }

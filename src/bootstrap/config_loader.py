@@ -6,7 +6,7 @@
 Charge et valide la configuration du pipeline PostFlow.
 Extrait de main.py pour une meilleure organisation.
 
-Version: 4.1.0
+Version: 4.1.1
 Date: 9 juillet 2025
 """
 
@@ -139,7 +139,7 @@ class ConfigLoader:
     def _create_default_pipeline_config(self) -> Dict[str, Any]:
         """Crée une configuration pipeline par défaut"""
         return {
-            "version": "4.1.0",
+            "version": "4.1.1",
             "name": "RL PostFlow Pipeline",
             "description": "Pipeline automatisé LucidLink → Frame.io",
             "watcher": {
@@ -163,7 +163,7 @@ class ConfigLoader:
             "dashboard": {
                 "enabled": True,
                 "host": "localhost",
-                "port": 8080,
+                "port": 8081,
                 "debug": False
             },
             "frameio": {

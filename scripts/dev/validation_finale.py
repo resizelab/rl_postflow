@@ -163,7 +163,7 @@ def generate_validation_report():
     
     report = {
         "timestamp": datetime.now().isoformat(),
-        "pipeline_version": "v4.1.0",
+        "pipeline_version": "v4.1.1",
         "corrections_appliquées": [
             "Logs de streaming Frame.io réduits (100MB au lieu de 10MB)",
             "Erreurs Broken pipe gérées au niveau INFO",

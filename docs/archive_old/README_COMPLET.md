@@ -402,7 +402,7 @@ Le dashboard web fournit :
 
 ## 🔄 Mises à jour
 
-### Version actuelle : 4.1.0
+### Version actuelle : 4.1.1
 
 **Nouveautés :**
 - ✅ Outils d'administration avancés
@@ -413,7 +413,7 @@ Le dashboard web fournit :
 
 ### Historique des versions
 
-- **4.1.0** : Ajout des outils d'administration et optimisation
+- **4.1.1** : Ajout des outils d'administration et optimisation
 - **4.0.0** : Refactorisation complète avec OAuth Web App
 - **3.2.0** : Ajout du dashboard web
 - **3.1.0** : Intégration Discord

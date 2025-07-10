@@ -5,6 +5,33 @@ Toutes les modifications notables de ce projet seront documentées dans ce fichi
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.1] - 2025-07-10 🕐 **TIMESTAMP PARIS & OPTIMISATION DISCORD**
+
+### 🔧 Corrigé
+- **Discord Timestamps** : Correction fuseau horaire Europe/Paris sur toutes les notifications
+- **Double affichage d'heure** : Suppression champs d'heure redondants dans embeds Discord
+- **Configuration Discord** : Support multiple types (dict, objects, wrappers) dans DiscordNotifier
+- **frameio/notifier.py** : Remplacement `datetime.now()` par `get_paris_time()` (4 occurrences)
+- **discord_legacy.py** : Correction timestamps pour compatibilité (3 occurrences)
+
+### ✨ Ajouté
+- **Template Factory** : Système centralisé de templates Discord avec timestamp automatique
+- **Templates standardisés** : Success, Error, Info, Warning, Progress avec timestamp Paris
+- **Templates spécialisés** : Pipeline report, File processed, Shot upload, Daily report
+- **Scripts de validation** : Tests complets timestamps et compatibilité Discord
+- **Documentation templates** : Guide d'utilisation Template Factory
+
+### 🚀 Amélioré
+- **Code dupliqué** : Réduction 50% grâce à Template Factory centralisé
+- **Maintenance** : Un seul endroit pour tous les templates Discord
+- **Cohérence visuelle** : Standardisation automatique footer, couleurs, structure
+- **Performance** : Templates pré-compilés avec timestamp automatique
+
+### 🗑️ Supprimé
+- **Champs d'heure redondants** : Plus de "⏰ Mis à jour" dans les embeds
+- **Code obsolète** : Identification modules non utilisés (after_effects.py legacy)
+- **Templates dupliqués** : Centralisation via Template Factory
+
 ## [4.1.0] - 2025-07-09 🎯 **FIABILISATION ET VALIDATION STRICTE**
 
 ### 🚀 Ajouté

@@ -9,7 +9,7 @@
 Gère l'infrastructure partagée (serveur HTTP, tunnel Cloudflare).
 Extrait de main.py pour une meilleure organisation.
 
-Version: 4.1.0
+Version: 4.1.1
 Date: 9 juillet 2025
 """
 

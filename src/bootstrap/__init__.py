@@ -6,7 +6,7 @@
 Modules d'initialisation et de bootstrap pour le pipeline PostFlow.
 Extraits de main.py pour une meilleure organisation.
 
-Version: 4.1.0
+Version: 4.1.1
 Date: 9 juillet 2025
 """
 

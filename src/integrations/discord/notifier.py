@@ -5,11 +5,19 @@ Enhanced Discord notification system with user mentions and Frame.io integration
 
 import logging
 from typing import Dict, List, Optional, Any
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import requests
 from dataclasses import dataclass
+import pytz
 
 logger = logging.getLogger(__name__)
+
+# Fuseau horaire Paris
+PARIS_TZ = pytz.timezone('Europe/Paris')
+
+def get_paris_time():
+    """Retourne l'heure actuelle en fuseau horaire Paris"""
+    return datetime.now(PARIS_TZ)
 
 
 @dataclass
@@ -31,7 +39,12 @@ class DiscordNotifier:
         Args:
             config: Configuration manager or DiscordNotifierConfig
         """
-        if hasattr(config, 'get'):
+        if isinstance(config, dict):
+            # Dictionnaire simple
+            self.webhook_url = config.get('webhook_url')
+            self.bot_name = config.get('username', 'RL PostFlow Bot')
+            self.avatar_url = config.get('avatar_url', 'https://cdn.discordapp.com/emojis/🎬.png')
+        elif hasattr(config, 'get'):
             # Configuration manager
             self.webhook_url = config.get('discord.webhook_url')
             self.bot_name = config.get('discord.username', 'RL PostFlow Bot')
@@ -132,7 +145,7 @@ class DiscordNotifier:
                     "inline": False
                 }
             ],
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": get_paris_time().isoformat(),
             "footer": {
                 "text": "RL PostFlow Pipeline"
             }
@@ -192,7 +205,7 @@ class DiscordNotifier:
                     "inline": True
                 }
             ],
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": get_paris_time().isoformat(),
             "footer": {
                 "text": "RL PostFlow Pipeline"
             }
@@ -255,7 +268,7 @@ class DiscordNotifier:
                     "inline": True
                 }
             ],
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": get_paris_time().isoformat(),
             "footer": {
                 "text": "RL PostFlow Pipeline"
             }
@@ -295,7 +308,7 @@ class DiscordNotifier:
             "fields": [
                 {"name": "Fichier", "value": filename, "inline": True}
             ],
-            "timestamp": datetime.now().isoformat()
+            "timestamp": get_paris_time().isoformat()
         }
         
         if frameio_link:
@@ -324,7 +337,7 @@ class DiscordNotifier:
             "title": f"❌ {title}",
             "description": error_message,
             "color": 0xff0000,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": get_paris_time().isoformat()
         }
         
         return self.send_message(f"❌ {title}", embed)
@@ -344,7 +357,7 @@ class DiscordNotifier:
             "title": title,
             "description": message,
             "color": 0x0099ff,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": get_paris_time().isoformat()
         }
         
         return self.send_message(title, embed)

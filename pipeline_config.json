@@ -48,6 +48,14 @@
     "batch_size": 5,
     "delay_between_batches": 30
   },
+  "dashboard": {
+    "enabled": true,
+    "host": "localhost",
+    "port": 8081,
+    "debug": false,
+    "auto_refresh_interval": 5,
+    "max_recent_uploads": 20
+  },
   "file_watcher": {
     "enabled": true,
     "watch_directories": [

@@ -12,5 +12,6 @@ except ImportError:
     BOT_AVAILABLE = False
 
 from .notifier import DiscordNotifier, create_discord_notifier
+from .user_notifier import DiscordUserNotifier
 
-__all__ = ['DiscordBot', 'DiscordNotifier', 'create_discord_notifier', 'BOT_AVAILABLE']
+__all__ = ['DiscordBot', 'DiscordNotifier', 'DiscordUserNotifier', 'create_discord_notifier', 'BOT_AVAILABLE']

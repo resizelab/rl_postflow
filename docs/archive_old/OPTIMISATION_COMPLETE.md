@@ -3,7 +3,7 @@
 ## 📋 Résumé des Améliorations
 
 **Date de finalisation** : 7 janvier 2025  
-**Version** : 4.1.0  
+**Version** : 4.1.1  
 **Status** : ✅ **PRODUCTION READY**
 
 ## 🚀 Améliorations Implémentées
@@ -227,5 +227,5 @@ Le pipeline RL PostFlow v4.1 est maintenant **production-ready** avec :
 
 **Dernière mise à jour** : 7 janvier 2025, 21:55  
 **Développeur** : GitHub Copilot  
-**Version** : 4.1.0 - Outils Avancés  
+**Version** : 4.1.1 - Outils Avancés  
 **Compatibilité** : Frame.io API v4, Python 3.8+

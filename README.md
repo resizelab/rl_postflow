@@ -1,10 +1,12 @@
-# 🎬 RL PostFlow - Pipeline d'Intégration LucidLink → Frame.io
+# 🎬 RL PostFlow
 
-[![Version](https://img.shields.io/badge/version-4.1.0-blue.svg)](https://github.com/your-org/rl-postflow)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://python.org)
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Tests](https://img.shields.io/badge/Tests-pytest-orange.svg)](tests/)
+[![Version](https://img.shields.io/badge/Version-4.1.1-red.svg)](https://github.com/resizelab/rl_postflow/releases)
 
-> **Pipeline automatisé de post-production pour l'upload intelligent de fichiers vidéo depuis LucidLink vers Frame.io avec intégrations complètes.**
+> **Pipeline de post-production automatisé pour documentaire animé**  
+> Traitement et suivi de 516 plans sur 25 scènes avec intégrations professionnelles
 
 ## 🚀 **Fonctionnalités**
 
@@ -13,7 +15,9 @@
 - **🎬 Upload Frame.io** : Upload automatique avec gestion de structure et liens de review
 - **🖼️ Thumbnails intelligents** : Génération et upload sur Google Drive
 - **📊 Google Sheets** : Mise à jour automatique avec formules `=IMAGE()` et `=LIEN_HYPERTEXTE()`
-- **📢 Notifications Discord** : Alertes avec preview des thumbnails
+- **📢 Notifications Discord** : Alertes avec preview et mentions automatiques des utilisateurs
+- **🤖 Templates intelligents** : Notifications Discord avec templates et intégration Google Sheets
+- **👥 Gestion utilisateurs** : Récupération automatique des ID Discord depuis Google Sheets
 - **🎛️ Dashboard web** : Interface de monitoring en temps réel
 - **🔄 Queue intelligente** : Gestion des uploads multiples avec retry
 - **🔐 OAuth sécurisé** : Authentification Frame.io Web App autonome
@@ -76,11 +80,18 @@ python stop_postflow.py
 ```
 
 ### **Dashboard Web**
+Le dashboard web est automatiquement démarré avec le pipeline principal.
 Accédez au dashboard sur `http://localhost:8080` pour :
-- Monitoring en temps réel
-- Statut des uploads
-- Gestion des erreurs
-- Métriques de performance
+- Monitoring en temps réel du pipeline
+- Statut des uploads et de la queue
+- Gestion des erreurs et alertes
+- Métriques de performance et statistiques
+- Interface WebSocket pour les mises à jour temps réel
+
+```bash
+# Dashboard autonome (si nécessaire)
+python dashboard.py
+```
 
 ## 📐 **Nomenclature Supportée**
 
@@ -182,4 +193,4 @@ Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de 
 
 ---
 
-**RL PostFlow v4.1.0** - Pipeline de post-production intelligent et fiable
+**RL PostFlow v4.1.1** - Pipeline de post-production intelligent et fiable

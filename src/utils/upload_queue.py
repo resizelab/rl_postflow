@@ -6,7 +6,7 @@
 Gestionnaire de queue pour les uploads afin d'éviter les conflits
 et mélange entre les traitements simultanés.
 
-Version: 4.1.0
+Version: 4.1.1
 Date: 9 juillet 2025
 """
 

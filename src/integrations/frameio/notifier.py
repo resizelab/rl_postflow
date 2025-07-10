@@ -10,8 +10,16 @@ from datetime import datetime
 from dataclasses import dataclass
 from pathlib import Path
 import logging
+import pytz
 
 logger = logging.getLogger(__name__)
+
+# Fuseau horaire Paris
+PARIS_TZ = pytz.timezone('Europe/Paris')
+
+def get_paris_time():
+    """Retourne l'heure actuelle en fuseau horaire Paris"""
+    return datetime.now(PARIS_TZ)
 
 @dataclass
 class FrameIONotificationData:
@@ -164,7 +172,7 @@ class FrameIODiscordNotifier:
                 "text": "RL PostFlow - Intégration LucidLink → Frame.io",
                 "icon_url": "https://cdn.discordapp.com/emojis/🎬.png"
             },
-            "timestamp": datetime.now().isoformat()
+            "timestamp": get_paris_time().isoformat()
         }
         
         # Ajouter les tags si présents
@@ -220,7 +228,7 @@ class FrameIODiscordNotifier:
                 "text": "RL PostFlow - Intégration LucidLink → Frame.io",
                 "icon_url": "https://cdn.discordapp.com/emojis/❌.png"
             },
-            "timestamp": datetime.now().isoformat()
+            "timestamp": get_paris_time().isoformat()
         }
         
         # Ajouter le message d'erreur si présent
@@ -268,7 +276,7 @@ class FrameIODiscordNotifier:
                 "text": "RL PostFlow - Le fichier sera disponible sous peu",
                 "icon_url": "https://cdn.discordapp.com/emojis/⏳.png"
             },
-            "timestamp": datetime.now().isoformat()
+            "timestamp": get_paris_time().isoformat()
         }
         
         return embed
@@ -339,7 +347,7 @@ class FrameIODiscordNotifier:
                     "text": "RL PostFlow - Intégration LucidLink → Frame.io",
                     "icon_url": "https://cdn.discordapp.com/emojis/📊.png"
                 },
-                "timestamp": datetime.now().isoformat()
+                "timestamp": get_paris_time().isoformat()
             }
             
             # Ajouter les détails des erreurs s'il y en a

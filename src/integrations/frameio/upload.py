@@ -1508,7 +1508,7 @@ class FrameIOUploadManager:
         """
         headers = {
             'Content-Type': 'application/json',
-            'User-Agent': 'RL-PostFlow/4.1.0'
+            'User-Agent': 'RL-PostFlow/4.1.1'
         }
         
         # Ajouter le token d'authentification

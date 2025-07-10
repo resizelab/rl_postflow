@@ -11,7 +11,8 @@ from datetime import datetime, timedelta
 
 from ..models.data_models import PostProductionData
 from ..utils.status_tracker import PipelineTracker, ShotStatus, PipelineStage
-from ..integrations.discord import DiscordNotifier, create_discord_notifier
+from ..integrations.discord import DiscordNotifier, DiscordUserNotifier, create_discord_notifier
+from ..integrations.sheets.users import SheetsUserManager
 from ..workflows.scene_processor import SceneProcessor
 
 
@@ -36,9 +37,10 @@ class PipelineManager:
         # Initialize components
         self.pipeline_tracker = PipelineTracker(tracking_file)
         self.discord_notifier = self.setup_discord_notifier()
+        self.user_notifier = self.setup_user_notifier()
         self.scene_processor = SceneProcessor(
             self.pipeline_tracker,
-            self.discord_notifier,
+            self.user_notifier or self.discord_notifier,  # Utiliser user_notifier si disponible
             scene_data_dir
         )
         
@@ -117,6 +119,29 @@ class PipelineManager:
         
         return None
     
+    def setup_user_notifier(self) -> Optional[DiscordUserNotifier]:
+        """Setup Discord user notifier with Google Sheets integration."""
+        if not self.discord_notifier:
+            return None
+            
+        try:
+            # Initialiser le gestionnaire d'utilisateurs Sheets
+            user_manager = SheetsUserManager(self.config)
+            
+            # Créer le notifier avec intégration users
+            user_notifier = DiscordUserNotifier(
+                discord_notifier=self.discord_notifier,
+                user_manager=user_manager
+            )
+            
+            print("✅ Discord User Notifier activé avec intégration Google Sheets")
+            return user_notifier
+            
+        except Exception as e:
+            print(f"⚠️ Impossible d'initialiser User Notifier: {e}")
+            print("🔄 Utilisation du Discord Notifier standard")
+            return None
+    
     def initialize_project(self, post_production_data: PostProductionData) -> None:
         """
         Initialize the pipeline for all shots in the project.
@@ -135,9 +160,14 @@ class PipelineManager:
             self.scene_processor.initialize_scene_tracking(scene_name)
         
         # Send initialization notification
-        if self.discord_notifier:
+        notifier = self.user_notifier or self.discord_notifier
+        if notifier:
             stats = self.pipeline_tracker.get_pipeline_stats()
-            self.discord_notifier.notify_daily_report(stats)
+            if hasattr(notifier, 'notify_daily_report'):
+                notifier.notify_daily_report(stats)
+            else:
+                # Fallback pour DiscordUserNotifier
+                notifier.send_pipeline_report(stats)
         
         print(f"✅ Pipeline initialized for {len(post_production_data.shots)} shots")
     

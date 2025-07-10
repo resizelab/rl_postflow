@@ -6,7 +6,7 @@
 Vérification de synchronisation au démarrage du pipeline.
 Compare les fichiers sur LucidLink avec le JSON de tracking.
 
-Version: 4.1.0
+Version: 4.1.1
 Date: 9 juillet 2025
 """
 

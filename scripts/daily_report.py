@@ -9,12 +9,18 @@ import os
 import json
 from pathlib import Path
 from datetime import datetime
+import pytz
 
 # Ajouter le répertoire parent au path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.integrations.discord import DiscordNotifier, DiscordConfig
+from src.integrations.discord import DiscordNotifier
 from src.parsers.csv_parser import parse_shots_csv
+
+def get_paris_time():
+    """Retourne l'heure actuelle à Paris."""
+    paris_tz = pytz.timezone('Europe/Paris')
+    return datetime.now(paris_tz)
 
 def generate_daily_report():
     """Génère et envoie un rapport quotidien"""
@@ -30,11 +36,11 @@ def generate_daily_report():
             config = json.load(f)
         
         # Créer la configuration Discord
-        discord_config = DiscordConfig(
-            webhook_url=config['discord']['webhook_url'],
-            bot_name=config['discord'].get('username', 'PostFlow BOT'),
-            avatar_url=config['discord'].get('avatar_url', '')
-        )
+        discord_config = {
+            'webhook_url': config['discord']['webhook_url'],
+            'username': config['discord'].get('username', 'PostFlow BOT'),
+            'avatar_url': config['discord'].get('avatar_url', '')
+        }
         
         # Initialiser le notificateur Discord
         notifier = DiscordNotifier(discord_config)
@@ -75,17 +81,17 @@ def generate_daily_report():
             if success:
                 # Envoyer un rapport détaillé supplémentaire
                 embed = {
-                    "title": "📈 Rapport Détaillé UNDLM",
-                    "description": f"Analyse complète du pipeline au {datetime.now().strftime('%d/%m/%Y')}",
+                    "title": "� Rapport Quotidien de Production",
+                    "description": "Statistiques détaillées du pipeline PostFlow",
                     "color": 0x9932cc,  # Violet
                     "fields": [
                         {"name": "🎬 Scènes Uniques", "value": str(unique_scenes), "inline": True},
                         {"name": "📁 Fichiers Sources", "value": str(source_files), "inline": True},
                         {"name": "🔄 Doublons Détectés", "value": str(duplicates), "inline": True},
                         {"name": "⚠️ Trous Nomenclature", "value": str(gaps), "inline": True},
-                        {"name": "⏱️ Dernière Mise à Jour", "value": datetime.now().strftime('%H:%M'), "inline": True},
                         {"name": "📊 Taux de Completion", "value": f"{stats['completion_percentage']:.1f}%", "inline": True}
-                    ]
+                    ],
+                    "timestamp": get_paris_time().isoformat()
                 }
                 
                 # Ajouter une analyse des erreurs si il y en a
@@ -96,7 +102,7 @@ def generate_daily_report():
                         "inline": False
                     })
                 
-                notifier.send_message("📋 **Rapport Quotidien Détaillé**", embed)
+                notifier.send_message("", embed)
                 
                 print("✅ Rapport quotidien envoyé avec succès!")
                 return True
@@ -110,7 +116,7 @@ def generate_daily_report():
             # Rapport basique sans données
             embed = {
                 "title": "⚠️ Rapport Quotidien - Données Limitées",
-                "description": f"Rapport automatique du {datetime.now().strftime('%d/%m/%Y')}",
+                "description": f"Rapport automatique du {get_paris_time().strftime('%d/%m/%Y')}",
                 "color": 0xff9900,  # Orange
                 "fields": [
                     {"name": "Status", "value": "Pipeline en attente de données", "inline": False},
@@ -126,11 +132,11 @@ def generate_daily_report():
         
         # Envoyer une notification d'erreur
         try:
-            discord_config = DiscordConfig(
-                webhook_url=config['discord']['webhook_url'],
-                bot_name=config['discord'].get('username', 'PostFlow BOT'),
-                avatar_url=config['discord'].get('avatar_url', '')
-            )
+            discord_config = {
+                'webhook_url': config['discord']['webhook_url'],
+                'username': config['discord'].get('username', 'PostFlow BOT'),
+                'avatar_url': config['discord'].get('avatar_url', '')
+            }
             notifier = DiscordNotifier(discord_config)
             
             embed = {
@@ -138,9 +144,9 @@ def generate_daily_report():
                 "description": "Erreur lors de la génération du rapport quotidien",
                 "color": 0xff0000,
                 "fields": [
-                    {"name": "Erreur", "value": str(e), "inline": False},
-                    {"name": "Heure", "value": datetime.now().strftime('%H:%M:%S'), "inline": True}
-                ]
+                    {"name": "Erreur", "value": str(e), "inline": False}
+                ],
+                "timestamp": get_paris_time().isoformat()
             }
             
             notifier.send_message("🚨 **Erreur Système**", embed)
