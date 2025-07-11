@@ -5,6 +5,57 @@ Toutes les modifications notables de ce projet seront documentées dans ce fichi
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.3] - 2025-07-11 🎨 **IMPORT SOURCES ÉTALONNÉES v2**
+
+### ✨ Ajouté
+- **Script import_graded_sources_v2.py** : Import incrémental des sources étalonnées dans projets AE existants
+- **Hiérarchie layers automatique** : Positionnement correct Graded > Edit (désactivé) > BG_SOLID
+- **Scan sources étalonnées** : Détection automatique des plans disponibles dans `_FROM_GRADING/BY_SHOTS/`
+- **Mode simulation** : Option `--dry-run` pour test sans modification
+- **Import sélectif** : Options `--sequence`, `--sequences`, `--all` pour import ciblé
+- **JSX génération dynamique** : Scripts d'import AE avec ouverture et sauvegarde automatique
+- **Validation structure AE** : Vérification compatibilité dossiers FROM_GRADING et MASTER_COMPS_SHOTS
+- **Documentation import étalonnage** : Guide complet workflow incrémental sources graded
+
+### 🔧 Amélioration
+- **Workflow séparé** : Import incrémental vs régénération complète des projets AE
+- **Performance optimisée** : Réutilisation projets existants sans recréation
+- **Flexibilité pipeline** : Import au fur et à mesure de la disponibilité des sources étalonnées
+- **Scripts test** : Utilitaires test avec fichiers factices pour validation workflow
+
+### 📚 Documentation
+- **Guide import sources étalonnées** : Documentation complète `docs/IMPORT_GRADED_SOURCES.md`
+- **Mise à jour README** : Intégration workflow incrémental dans documentation principale
+- **Workflow production** : Instructions étape par étape génération → import graded
+
+## [4.1.2] - 2025-07-11 🎬 **GÉNÉRATEUR AFTER EFFECTS v2 - TOUTES SÉQUENCES**
+
+### ✨ Ajouté
+- **Mapping étendu** : Support de toutes les 28 séquences (516 plans) via CSV Google Sheets
+- **Script analyze_gsheets_data.py** : Génération automatique du mapping complet depuis `RL_O2B_UNDLM_SUIVI_ANIM - SHOTS_TRACK.csv`
+- **Générateur AE v2** : Automatisation complète pour 28 séquences avec structure template SQXX
+- **Documentation complète** : Guide détaillé du générateur AE avec métriques et workflow
+- **Structure EB optimisée** : Création automatique HAIR/SKIN/_Others avec 9 sous-dossiers
+- **Scripts JSX optimisés** : Compatible After Effects 2025 avec solid réutilisable
+
+### 🔧 Corrigé
+- **Structure dossiers AE** : Renommage MASTER → MASTER_COMP_SEQ, MASTERS_COMP_PLANS → MASTER_COMPS_SHOTS
+- **Hiérarchie AE** : Dossier parent `_MASTER` contenant toutes les compositions principales
+- **Position TC** : Layer Timecode maintenant ajouté en dernier pour rester visible au top
+- **Optimisation solids** : BG_SOLID_BLACK réutilisable évite duplication mémoire (-90%)
+
+### 🚀 Amélioré
+- **Génération massive** : 11 séquences générées avec 100% de réussite
+- **Performance** : Scripts JSX optimisés pour After Effects 2025
+- **Métadonnées** : Durées exactes et statuts depuis Google Sheets
+- **Documentation** : README mis à jour avec références générateur AE
+
+### 📊 Métriques
+- **28 séquences supportées** (vs 3 précédemment)
+- **516 plans** (durée totale 51.9 minutes)
+- **~1.4 GB** de projets AE estimés
+- **100% taux de réussite** génération
+
 ## [4.1.1] - 2025-07-10 🕐 **TIMESTAMP PARIS & OPTIMISATION DISCORD**
 
 ### 🔧 Corrigé

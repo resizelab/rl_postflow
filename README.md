@@ -6,7 +6,7 @@
 [![Version](https://img.shields.io/badge/Version-4.1.1-red.svg)](https://github.com/resizelab/rl_postflow/releases)
 
 > **Pipeline de post-production automatisé pour documentaire animé**  
-> Traitement et suivi de 516 plans sur 25 scènes avec intégrations professionnelles
+> Traitement et suivi de 516 plans sur 28 séquences avec intégrations professionnelles
 
 ## 🚀 **Fonctionnalités**
 
@@ -21,6 +21,7 @@
 - **🎛️ Dashboard web** : Interface de monitoring en temps réel
 - **🔄 Queue intelligente** : Gestion des uploads multiples avec retry
 - **🔐 OAuth sécurisé** : Authentification Frame.io Web App autonome
+- **🎬 Générateur After Effects** : Automatisation complète de 28 séquences (516 plans)
 
 ## 📋 **Prérequis**
 
@@ -92,6 +93,47 @@ Accédez au dashboard sur `http://localhost:8080` pour :
 # Dashboard autonome (si nécessaire)
 python dashboard.py
 ```
+
+### **Générateur After Effects**
+
+Le générateur AE v2 automatise la création de projets After Effects pour toutes les 28 séquences du projet :
+
+#### **Génération initiale (sources Edit)**
+```bash
+# Générer le mapping complet des 28 séquences
+python scripts/analyze_gsheets_data.py
+
+# Créer les projets AE avec sources Edit uniquement
+python scripts/generate_ae_projects_v2.py --all
+
+# Ou générer des séquences spécifiques
+python scripts/generate_ae_projects_v2.py --sequence SQ01
+python scripts/generate_ae_projects_v2.py --sequences SQ01 SQ05 SQ11
+```
+
+#### **Import sources étalonnées (workflow incrémental)**
+```bash
+# Scanner les sources étalonnées disponibles
+python scripts/import_graded_sources_v2.py --scan
+
+# Importer pour une séquence spécifique
+python scripts/import_graded_sources_v2.py --sequence SQ01
+
+# Import pour plusieurs séquences
+python scripts/import_graded_sources_v2.py --sequences SQ01 SQ05 SQ11
+
+# Import massif (toutes séquences)
+python scripts/import_graded_sources_v2.py --all
+
+# Mode test/simulation
+python scripts/import_graded_sources_v2.py --sequence SQ01 --dry-run
+```
+
+> **Workflow recommandé :** Générer d'abord tous les projets avec les sources Edit, puis utiliser l'import incrémental au fur et à mesure que les sources étalonnées deviennent disponibles.
+
+**Documentation :**
+- 📖 [Guide complet générateur AE](docs/AFTER_EFFECTS_GENERATOR.md)
+- 🎨 [Guide import sources étalonnées](docs/IMPORT_GRADED_SOURCES.md)
 
 ## 📐 **Nomenclature Supportée**
 
@@ -169,6 +211,7 @@ pytest --cov=src tests/
 ## 📚 **Documentation**
 
 - **[Guide de Démarrage Rapide](docs/guides/QUICK_START.md)** - Installation et première utilisation
+- **[Générateur After Effects](docs/AFTER_EFFECTS_GENERATOR.md)** - Automatisation complète AE (28 séquences)
 - **[Configuration Frame.io OAuth](docs/integrations/FRAMEIO_OAUTH.md)** - Setup authentification
 - **[Architecture](docs/ARCHITECTURE.md)** - Vue d'ensemble technique
 - **[Changelog](CHANGELOG.md)** - Historique des versions

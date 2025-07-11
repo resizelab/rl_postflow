@@ -1,0 +1,319 @@
+
+--- PAGE 1 ---
+O2b ﬁlms  
+Une nuit dans la manche  
+Fiche technique animation
+
+--- PAGE 2 ---
+• Photoshop animation rotoscopie
+• Animation à l’aide du logiciel EBSYNTH
+• Note
+• EBSYNTH arborescence
+SOMMAIRE
+• Tips
+• Intention
+• After-effect arborescence
+• Photoshop arborescence
+• After-effect / photoshop : Assemblage composition et étalonnage
+• Arborescence globale réseau LucidLink
+• Qui fait quoi
+• Photoshop brush
+• Résumé technique
+• Bible graphique
+
+--- PAGE 3 ---
+• Format scènes animation: 2560p/1440p.
+• Animations effectuée en 12im/sec (c’est une base, mais peut être autre selon les scènes). 
+Résumé technique 
+• Environ 35 à 40 minutes d’animation full et mix média
+• Dessin et animation sous Photoshop en NB, avec chaque élément ayant une couleur distincte sur des calques séparés, puis assemblage/composition et couleur dans after-effect.
+• Animation / rotoscopie dans photoshop ou photoshop et Ebsynth (logiciel de track)
+• Fichiers AE et PSD en 25 im/sec (bien vériﬁer cette cadence dans chaque logiciel)
+
+--- PAGE 4 ---
+Intention 
+Ce ﬁlm, qui aborde un sujet sensible, sera réalisé en technique mixte, mélant vidéo et animation en rendu aquarelle en conservant une ancrage 
+fort dans le réel grâce à l’utilisation de la rotoscopie. Aﬁn d’éviter l’effet de reconstitution avec des acteurs, tous les visages seront repeints. Le 
+reste pourra parfois laisser place à la vidéo source. Ce choix ce fait au compo dans AE. 
+Le rendu visuel sera ponctué de variations graphiques en fonction des séquences et de la narration et des intérieurs / extérieurs jour et nuit. 
+L ’ensemble conservera néanmoins une cohérence esthétique, autour d’un style 2D artisanal. L ’aspect pictural de l’aquarelle, avec la vibration du 
+pinceau, y sera sensible — mais toujours maîtrisé, pour ne pas perturber la lisibilité des plans ni détourner l’attention. Par exemple, dans une 
+scène calme, une vibration trop rapide pourrait s’avérer intrusive : elle devra donc être ajustée selon le rythme et l’intention de chaque séquence. 
+L ’animation sera faite sous photoshop, puis importée dans after-effect pour l’assemblage, la composition et la couleur. Nous utiliseront aussi 
+Ebsynth  pour nous faire parfois gagner du temps dans certains caches et permettra parfois d’éviter un tremblement trop poussé. Ce 
+tremblement de texture pourra être aﬃné et ajouté ensuite dans after effect. 
+
+--- PAGE 5 ---
+Exemple d’animations 
+
+--- PAGE 6 ---
+Exemple d’animations 
+Avec video en transparence Sans vidéo 
+
+--- PAGE 7 ---
+Mix média avec vidéo très présente: pour d’éventuelles scènes sans visage ou de très loin 
+
+--- PAGE 8 ---
+Etapes animation 
+• Importer un plan dans AE. Le réduire de 50 % en vitesse pour animer la moitié des images ( pour devenir à la ﬁn12im/sec), puis l’exporter en suite 
+d’images png pour un calque vidéo référence à importer dans photoshop et ranimer/rotoscopier la scène en noir et blanc/ 
+• Dans Photoshop, importer la séquence (calque/ calques video /nouveau calque video d’après un ﬁchier), puis créer des calques vidéo (calque/ calques 
+video /nouveau calque video ). Les renommer selon les besoins (peau, barbe, bonnet ect). Utiliser le brush brusk Ink_UNDM et décalquer en noir 
+chaque image. 
+• Aller dans AE et importer le ﬁchier psd en composition (pour avoir tous les loyers animés et séparés) puis coloriser chaque layer selon la palette 
+dédiée. 
+• Compositer/ ﬁnaliser le plan dans ce même projet AE en l’intégrant avec la vidéo (masque) et rajouter éventuellement de la texture ou du vignette, 
+effets de lumière sur les smartphones, sur des visages ect. Laisser dans l’ombre/obscurcir les éléments inutile à la narration du plan.
+
+--- PAGE 9 ---
+L ’idée est de peindre chaque éléments du personnage en noir et en calques séparés alpha dans Photoshop… 
+…pour rassembler, coloriser dans After-effect et avoir une ﬂexibilité de rendu au composition
+La palette des couleur sera tout de même verrouillée pour chaque Séquence. Le fait d’avoir les éléments séparé permet de jouer sur les textures, de modiﬁer si l’on souhaite les 
+yeux, une écharpe une lumière ou autre détail pour améliorer la compréhension ou l’esthétique d’une scène.
+Photoshop animation rotoscopie
+(Par exemple vetement 01, vetements 02, ect, en prévoyance..)
+
+
+--- PAGE 10 ---
+Dans Photoshop: créer un nouveau document de la taille de la scène que vous allez peindre (2560 / 1440px) 
+Ensuite pour faire apparaître la timeline animation: « fenêtre », puis « montage » 
+Déﬁnir la Cadence du montage: toujours rester en 25 image sec dans tous les logiciels. 
+Attention par défaut Photoshop met en 30im/sec, mais une fois modiﬁer logiquement  
+il reste ensuite en 25
+Photoshop arborescence
+
+--- PAGE 11 ---
+Photoshop arborescence
+Pour la technique d’animation image par image, choisir calque, calque video, nouveau calque video vide et 
+peindre à chaque image puis enregistrer le ﬁchier pour l’importer ensuite dans AE. 
+
+--- PAGE 12 ---
+Photoshop brush
+
+
+--- PAGE 13 ---
+2-Du à sa transparence, si vous lâchez le brush, une superposition apparaît en re-peingnat par dessus, 
+accident qui peut être interessant parfois interessant comme la joue droite ici:
+3-Brush avec pression lié à l’opacité.
+1-Ne pas lâcher le brush et garder une pression constante donne ceci: 
+Pour avoir tous une uniformité et pour éviter un surplus de vibration des textures, restons principalement sur l’option 1 qui est la plus 
+épurée. Nous pourrons rajouter des textures et transparences ensuite si besoin 
+Photoshop brush
+Utiliser uniquement le brush UNDM_Brush
+Comme ici chaque élément est peint sans relâcher le pinceau (à part sous la bouche/barbe ou une transparence apparait). Cela ressemble plus  
+à de l’encre qu’à du feutre.
+
+--- PAGE 14 ---
+After- effect: assemblage/composition et couleur 
+Avant Après
+
+
+--- PAGE 15 ---
+After- effect: assemblage/composition et couleur 
+Différentes possibilités d’assemblage mix média au compo
+
+
+--- PAGE 16 ---
+After- effect: assemblage/composition et couleur 
+Exemple de réinterprétation de la lumière au compo sur un plan 
+
+--- PAGE 17 ---
+After- effect: assemblage/composition et couleur 
+Ici 8 calques (avec 
+certains dupliqués 
+pour être plus 
+opaques ou pour 
+complexiﬁer une 
+couleur/matière en 
+jouant sur les levels 
+alpha)
+La vidéo en dessous 
+et au dessus ramène 
+ici quelques noir, 
+comme le bonnet,  les 
+pupilles et les 
+vêtements.
+
+--- PAGE 18 ---
+After- effect: assemblage/composition et couleur 
+L ’effet Ray-Fill est un plug 
+AE mais correspond à 
+l’effet « remplir ou « ﬁll » 
+en anglais 
+Ici il y a deux calques 
+visage car un est modiﬁé 
+en level alpha pour le 
+rendre opaque et pour 
+mettre un calque blanc 
+rapidement en dessous 
+pour éviter à avoir à 
+rotoscopier le blanc des 
+yeux. Un autre layer peau 
+au dessus (le même 
+dupliqué ) est d’une autre 
+couleur, en alpha et 
+permet de rajouter une 
+couleur/texture ici sur la 
+joue gauche). Dans ce cas 
+l’effet teinte peut être  
+choisi, car il n’y a pas de 
+transparence donc il y a 
+du NB: Nous pouvons 
+choisir une couleur pour 
+les noirs et une pour les 
+blancs.
+
+--- PAGE 19 ---
+Gagner du temps avec le logiciel Ebsynth (Logiciel de track intelligent gratuit)
+• Autres exemple ici de l’utilité Ebsynth (dont le rajout de silhouette) : https://www.youtube.com/watch?v=ERp5tMqQkwU
+• Tout se trouve ici : https://ebsynth.com/
+• Le logiciel peut être utilisé pour rajouter des éléments sur la vidéo même, avant de peindre: ( ajout de silhouettes / personnages supplémentaires, ajout d’une barbe sur un 
+personnage en mouvement ect ) 
+• Tuto oﬃciel ( il y en a d’autres sur YouTube ) : https://www.youtube.com/watch?v=0RLtHuu5jV4
+• Note: si votre base en un png alpha, ce qui est le cas logiquement, pas besoin d’utiliser la case alpha dans Ebsynth, il exporte en alpha si la base est en alpha. Juste 
+besoin des deux premières cases et de décider ou sortir la séquence dans « out ».
+Animation à l’aide du logiciel EBSYNTH 
+
+--- PAGE 20 ---
+Pour la technique d’animation Ebsynth choisir la bonne image (la plus large, là ou l’on voit un maximum 
+d’élèments de la scène) puis peindre sur un autre calque vide.  
+
+
+--- PAGE 21 ---
+Key : image clé Photoshop png Alpha
+VIDEO: ou nom de la suite d’image ref du plan, Ici nommé T_P8 (vidéo sortie de AE en 50% réduit de vitesse).
+OUT : suite d’image ref du plan (vidéo sortie de AE en 50% réduit de vitesse). Ici nommé T_P8
+Le psd source de travail peut être mis visible à la racine. Ici TP8
+EBSYNTH araborescence
+Nous avons juste besoin de trois dossiers: 
+• Dossier Key (pour mettre les images référence pour Ebsynth) 
+• Dossier Video (avec la source vidéo référence pour Ebsynth en suite d’image png) 
+• Dossier OUT (pour exporter chase elements)
+
+--- PAGE 22 ---
+Note: Il y aura souvent un assemblage des 2 techniques d’animation dans un même plan pour gagner du temps: 
+L ’idée est de peindre un maximum d’éléments grâce au track intelligent d’Ebsynth mais parfois il faudra peindre image par image un élément nécessaire (la main par 
+exemple qui parfois n’est pas comprise ou pas jolie par le track, ou les yeux pour pareil un soucis d’esthétique). 
+Ebsynth fonctionne bien sur les barbes et cheveux car çà évite certains tremblement excessifs du image par image. On peut réinjecter de la texture dans des textures qui 
+semblent trop ﬁgées (en s’en servant comme cache d’une autre matière dans after effect) 
+Vous pouvez aussi commencer une scène par la silhouette par exemple, et voir au fur et à mesure voir ce qu’il manque, sans rajouter des détails inutiles. 
+Par exemple pour un personnage secondaire une silhouette, une ombre et un peu des cheveux peut suﬃre..à vous de voir. 
+Parfois Ebsynth crée des abérations ou des bavures. Vous pouvez soit : 
+-les cacher au compo avec la vidéo par dessus 
+-faire des masques avec dégradé progressif dans ae 
+-réimporter la suite d’image dans PS et corriger les images qui buggent, ou repeindre les images voulues. Réimporter ce ﬁchier psd dans ae. 
+-recommencer le passage Ebsynth avec cette fois ci une image peinte plus proche de l’image bref, voire au pixel près (sélection dans PS et remplissage opaque, sans ou 
+avec le pinceau UNDM, puis insérer un cycle faux ﬁxe de texture ensuite si nécessaire dans ae si çà manque de texture) 
+Note 
+
+--- PAGE 23 ---
+Si l’animation est faite dans photoshop (V1): On importe le ﬁchier psd dans After effect (en composition) pour obtenir tous les calques. 
+Les modiﬁcations faites dans PS seront automatiquement mises à jour dans AE après enregistrement du ﬁchier PS.
+Si l’animation est faite dans Ebsynth (V2): On importe tous les layers Ebsynth créés dans after effect comme ici pour compo et étalo: 
+Dans After Effect 
+
+--- PAGE 24 ---
+Claire et Virgile 
+Claire: Scène de l’hôpital et diverses scènes. 
+L ’objectif est la production de premières versions sur lesquels David fera de la « repasse «  aﬁn d’ajuster et garantir la DA
+Virgile: Habillage général Générique  début et ﬁn + Synthé dans le corps du documentaire traitement des messages sms, cartes et mails. 
+Intégration des éléments graphiques. Ensuite Virgile sera en renfort sur l’animation 
+Réfs typo et cartes:
+
+
+--- PAGE 25 ---
+Oerd 
+Tous types de scènes en renfort notamment les scènes sur le canot et l’embarquement. 
+La volonté étant de bénéﬁcier de l’expérience et eﬃcience de Oerd aﬁn de l’associer à David sur des scènes complexes à traiter. 
+Au besoin David effectuera une harmonisation de DA 
+
+--- PAGE 26 ---
+Matthieu  
+Scènes de cycle pour réutilisation ( face loin/moyen/proche, haut loin/moyen/proche).  
+Ces cycles se composent de :   
+Canot des migrants naviguant de gauche à droite et droite à gauche du cadre de près et de loin à l’horizon. 
+Canot des migrants en top shot avec zoom avant - zoom arrière et en plan ﬁxe 
+Matthieu aura à faire la scène de naufrage avec notamment l’affaissement du canot 
+Ce cycle aura un système prévu d’évolution: le canot s’affaisse petit à petit (à cause de  l’eau qui s’inﬁltre) et jusqu’au naufrage. 
+Ce canot doit être celui de référence - attention en terme de représentation une trentaine de migrants dont 1/3 sans gilets de sauvetage 
+(Environ 8 femmes et 7 enfants les autres sont des hommes) 
+Au besoin David effectuera une harmonisation de DA 
+Ajouts par ailleurs de silhouettes dans les scènes
+
+
+--- PAGE 27 ---
+Qui fait quoi (partie animation): 
+David - Supervision (avec Xavier) DA/Prod Artistique - Garant de rendu artistique  
+Repasse et ﬁnalisation de tous les premières versions de plans animés. Fabrication de plans animés. 
+Mail: devaux7@hotmail.com 
+Matthieu - Différentes périodes de travail du 15 juillet au 30 juillet puis de ﬁn août à octobre.  
+Missions : Fabrication des cycles d'animation - Fabrication de plans animés (premières versions). Réalisation de la séquence de ﬁn noyade - Supervision animation/Accompagnement stagiaires en renfort 
+(car Matthieu est aussi enseignant aux Ateliers de Sèvre et connait bien les stagiaires.) 
+Mail: mgueritte@gmail.com 
+Oerd - Dès ﬁn juillet et jusqu'à Octobre 
+Missions : Fabrication de plans animés (premières versions) 
+Mail: oerd@free.fr 
+En complément :  
+Claire (stagiaire) - 1ères versions d’animation 
+Mail: claire.leﬂour@gmail.com 
+Virgile (stagiaire) - DA puis ensuite 1ères versions d'animation en mix avec assemblage sous after 
+Mail: virgiledebelvata.pro@gmail.com 
+Xavier - Créa réseau cloud + arborescence  et mise en place des éléments en lien avec Eva 
+Supervision et suivi avec David, Recherches IA 
+Et mise à dispo d'un assistant monteur/technique. 
+Mail: post.xavierb@gmail.com
+Caroline- Production artistique et post production.  
+Mail: bruncaroline@hotmail.com 
+
+--- PAGE 28 ---
+TIPS COMPO 
+Une bonne partie de la scène peut rester en video. Ici les personnages sont à 60% environ en vidéo. L ’animation est 
+essentiellement sur les visages, le reste est vignetté, laissé en vidéo et sombre. Cela permet parfois aussi de cacher 
+des bugs Ebsynth.
+
+
+--- PAGE 29 ---
+TIPS PHOTOSHOP 
+N’hésitez pas à créer en amont un peu plus de calques que nécéssaire même si ils restent vides, car on souhaite souvent rajouter des éléments/animations.  
+Cela permet d’éviter d’avoir à réimporter à chaque fois les nouveaux layers dans after-effect, ils seront déjà présents dans la composition. 
+Vous pouvez par exemple nommer vêtement 01, vêtement 02, vetement_03 ect.. 
+Si par exemple il y a deux personnages dans une scène: peindre le gilet de sauvetage des deux personnages dans un même 
+calque, et ainsi de suite pour les yeux ect. Cela allège le temps et le poids des ﬁchiers 
+Plusieurs éléments ayant une  couleur distincte sur un même personnage peuvent être peints aussi sur un même calque si ils ne 
+se touchent pas: un masque after-effect permettra de les séparer l’un de loutre et d’y appliquer une couleur distincte. 
+Si par exemple il y a deux personnages dans une scène: peindre le gilet de sauvetage des deux personnages dans un même 
+calque, et ainsi de suite pour les yeux ect. Cela allège le temps et le poids des ﬁchiers 
+Plusieurs éléments ayant une  couleur distincte sur un même personnage peuvent être peints aussi sur un même calque si ils ne 
+se touchent pas: un masque after-effect permettra de les séparer l’un de loutre et d’y appliquer une couleur distincte. 
+
+--- PAGE 30 ---
+Référence arborescence (WIP) PL_010
+AE
+PS
+EB
+Pour AE
+From AE
+PL_010_01D.ae
+Pour PS
+From PS
+Video
+PL_010_01D.ps
+Key
+P010_0001.png
+P010_0002.png
+P010_0003.png
+Gilet
+Peau
+P010_0002.png
+P010_0002.png
+OUT Gilet
+Peau
+P010_0001.png
+P010_0002.png
+P010_0003.png
+P010_0001.png
+P010_0002.png
+P010_0003.png
+
+--- PAGE 31 ---
+Merci!
