@@ -3,7 +3,9 @@
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-pytest-orange.svg)](tests/)
-[![Version](https://img.shields.io/badge/Version-4.1.1-red.svg)](https://github.com/resizelab/rl_postflow/releases)
+[![Version](https://img.shields.io/badge/Version-4.1.4-red.svg)](https://github.com/resizelab/rl_postflow/releases)
+[![Windows](https://img.shields.io/badge/Windows-Compatible-brightgreen.svg)](docs/WINDOWS_GUIDE.md)
+[![Multi-Platform](https://img.shields.io/badge/Multi--Platform-macOS%20%7C%20Windows%20%7C%20Linux-blue.svg)](docs/DEPLOYMENT_STRATEGY.md)
 
 > **Pipeline de post-production automatisé pour documentaire animé**  
 > Traitement et suivi de 516 plans sur 25 scènes avec intégrations professionnelles
@@ -28,19 +30,24 @@
 - **Gestion d'erreurs** : Système de retry et alertes
 - **Métriques** : Suivi des performances et statistiques
 
-## 🆕 Nouveautés v4.1.1
+## 🆕 Nouveautés v4.1.4 - **COMPATIBILITÉ WINDOWS COMPLÈTE**
 
-### 🔧 **Améliorations Discord**
-- ✅ **Timestamp Paris** : Correction du fuseau horaire Europe/Paris sur tous les embeds
-- ✅ **Mentions utilisateurs** : Intégration Google Sheets pour mentions @user Discord
-- ✅ **Templates optimisés** : Système centralisé de templates avec Template Factory
-- ✅ **Plus de doublon d'heure** : Un seul timestamp par notification
+### 🔧 **Support Multi-Plateforme**
+- ✅ **Windows 10/11 natif** : Support complet avec détection automatique OS
+- ✅ **CrossPlatformPathManager** : Conversion automatique `/Volumes/` ↔ `E:\Volumes\`
+- ✅ **Déploiement automatisé** : Scripts macOS → Windows avec `deploy.py`
+- ✅ **Migration transparente** : Outils automatiques pour transition Windows
 
-### 🚀 **Optimisations**
-- 🔄 **Code cleanup** : Suppression modules obsolètes (after_effects.py, discord_legacy.py)
-- 📦 **Architecture améliorée** : Centralisation des templates et configuration
-- 🎨 **Cohérence visuelle** : Standardisation des embeds Discord
-- ⚡ **Performance** : Réduction du code dupliqué de 50%
+### 🚀 **Déploiement Production**
+- 🔄 **Dev macOS → Prod Windows** : Workflow optimisé avec même repository
+- 📦 **Scripts automatisés** : `deploy.py`, `deploy_windows.bat`, validation pré-déploiement
+- 🛡️ **Backup/Rollback** : Sécurité complète avec récupération automatique
+- ✅ **Tests 100% validés** : Suite cross-platform complète
+
+### 🗂️ **Structure Professionnelle**
+- 📁 **Repository organisé** : `tools/`, `scripts/`, `docs/` clairement séparés
+- 📚 **Documentation complète** : Guides Windows, stratégie déploiement
+- 🧪 **Validation rigoureuse** : Zero chemins hardcodés, tests automatisés
 
 ## 📂 Structure du Projet
 
@@ -64,17 +71,32 @@ rl_postflow/
 
 ## ⚡ Installation Rapide
 
+### **Multi-Plateforme (macOS/Windows/Linux)**
+
 ```bash
 # Cloner le projet
 git clone https://github.com/resizelab/rl_postflow.git
 cd rl_postflow
 
-# Créer l'environnement virtuel
-python -m venv .venv
-source .venv/bin/activate  # macOS/Linux
+# Installation automatique cross-platform
+python scripts/setup_postflow.py
 
-# Installation automatique
-python scripts/install_dependencies.py
+# OU installation manuelle
+python -m venv .venv
+source .venv/bin/activate    # macOS/Linux
+# .venv\Scripts\activate     # Windows
+
+pip install -r requirements.txt
+```
+
+### **Déploiement Windows (Production)**
+
+```bash
+# Migration automatique macOS → Windows
+python scripts/deploy.py --target windows
+
+# OU migration manuelle Windows
+python tools/migration/migrate_to_windows.py
 ```
 
 ## 🎮 Utilisation

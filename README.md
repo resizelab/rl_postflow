@@ -1,392 +1,183 @@
 # 🎬 RL PostFlow
 
-[![Python](https://img.shields.io/badge/Python## ⚡ **Installation Rapide**
-
-### **Installation Automatique (Recommandée)**
-
-```bash
-# Cloner le repository
-git clone https://github.com/your-org/rl-postflow.git
-cd rl-postflow
-
-# Installer les dépendances
-pip install -r requirements.txt
-
-# Lancer l'installation interactive (détecte automatiquement Windows/macOS/Linux)
-python setup_postflow.py
-```
-
-### **Installation Manuelle**
-
-```bash
-# Cloner le repository
-git clone https://github.com/your-org/rl-postflow.git
-cd rl-postflow
-
-# Installer les dépendances
-pip install -r requirements.txt
-
-# Configurer les variables d'environnement
-cp .env.example .env
-# Éditer .env avec vos configurations
-
-# Lancer le pipeline
-python main.py
-```
-
-### **🪟 Installation Windows**
-
-PostFlow est maintenant **entièrement compatible Windows** ! 
-
-```cmd
-# Installation Windows avec détection automatique des chemins
-python setup_postflow.py
-
-# Ou migration depuis macOS
-python migrate_to_windows.py
-```
-
-**Chemin LucidLink Windows :** `E:\Volumes\resizelab\o2b-undllm`
-
-📖 **[Guide Windows complet →](docs/WINDOWS_GUIDE.md)**(https://python.org)
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-pytest-orange.svg)](tests/)
-[![Version](https://img.shields.io/badge/Version-4.1.1-red.svg)](https://github.com/resizelab/rl_postflow/releases)
+[![Version](https://img.shields.io/badge/Version-4.1.4-red.svg)](https://github.com/resizelab/rl_postflow/releases)
+[![Windows](https://img.shields.io/badge/Windows-Compatible-brightgreen.svg)](docs/WINDOWS_GUIDE.md)
+[![Multi-Platform](https://img.shields.io/badge/Multi--Platform-macOS%20%7C%20Windows%20%7C%20Linux-blue.svg)](docs/DEPLOYMENT_STRATEGY.md)
 
 > **Pipeline de post-production automatisé pour documentaire animé**  
-> Traitement et suivi de 516 plans sur 28 séquences avec intégrations professionnelles
+> Traitement et suivi de 516 plans sur 25 scènes avec intégrations professionnelles
 
-## 🚀 **Fonctionnalités**
+## 🚀 Fonctionnalités Principales
 
-- **🔍 Surveillance en temps réel** : Détection automatique des nouveaux exports via LucidLink
-- **📁 Validation stricte** : Nomenclature `SQ##_UNDLM_#####_v###` et structure de dossiers
-- **🎬 Upload Frame.io** : Upload automatique avec gestion de structure et liens de review
-- **🖼️ Thumbnails intelligents** : Génération et upload sur Google Drive
-- **📊 Google Sheets** : Mise à jour automatique avec formules `=IMAGE()` et `=LIEN_HYPERTEXTE()`
-- **📢 Notifications Discord** : Alertes avec preview et mentions automatiques des utilisateurs
-- **🤖 Templates intelligents** : Notifications Discord avec templates et intégration Google Sheets
-- **👥 Gestion utilisateurs** : Récupération automatique des ID Discord depuis Google Sheets
-- **🎛️ Dashboard web** : Interface de monitoring en temps réel
-- **🔄 Queue intelligente** : Gestion des uploads multiples avec retry
-- **🔐 OAuth sécurisé** : Authentification Frame.io Web App autonome
-- **🎬 Générateur After Effects** : Automatisation complète de 28 séquences (516 plans)
-- **🪟 Compatible Windows** : Support natif Windows/macOS/Linux avec conversion automatique des chemins
+### 📊 **Pipeline de Production**
+- **12 statuts de plan** : De `pending` à `final_delivery`
+- **5 stages de production** : Source → EbSynth → Review → Delivery (optimisé)
+- **Tracking temps réel** : Progression automatique et gestion d'erreurs
+- **Processing par scène** : Traitement batch intelligent avec priorité
 
-## 📋 **Prérequis**
+### 🔗 **Intégrations**
+- **Discord** : Notifications automatiques avec mentions utilisateurs et timestamps Paris
+- **Frame.io** : Upload et review automatisés avec intégration seamless
+- **Google Sheets** : Synchronisation bidirectionnelle et gestion utilisateurs
+- **LucidLink** : Vérification des fichiers sources et monitoring
+- **Template Factory** : Système centralisé de templates Discord optimisé
 
-- **Python 3.8+**
-- **FFmpeg** (pour génération thumbnails)
-- **LucidLink** configuré et monté
-- **Comptes configurés** :
-  - Frame.io (avec OAuth Web App)
-  - Google Drive API
-  - Google Sheets API
-  - Discord Webhook
+### 🎯 **Monitoring**
+- **Dashboard web** : Interface de monitoring en temps réel
+- **Gestion d'erreurs** : Système de retry et alertes
+- **Métriques** : Suivi des performances et statistiques
 
-### **🖥️ Plateformes Supportées**
+## 🆕 Nouveautés v4.1.4 - **COMPATIBILITÉ WINDOWS COMPLÈTE**
 
-| Plateforme | Statut | Chemin LucidLink | Installation |
-|------------|--------|------------------|--------------|
-| **🪟 Windows** | ✅ Compatible | `E:\Volumes\resizelab\o2b-undllm` | `python setup_postflow.py` |
-| **🍎 macOS** | ✅ Compatible | `/Volumes/resizelab/o2b-undllm` | `python setup_postflow.py` |
-| **🐧 Linux** | ✅ Compatible | `/mnt/lucidlink/resizelab/o2b-undllm` | `python setup_postflow.py` |
+### 🔧 **Support Multi-Plateforme**
+- ✅ **Windows 10/11 natif** : Support complet avec détection automatique OS
+- ✅ **CrossPlatformPathManager** : Conversion automatique `/Volumes/` ↔ `E:\Volumes\`
+- ✅ **Déploiement automatisé** : Scripts macOS → Windows avec `deploy.py`
+- ✅ **Migration transparente** : Outils automatiques pour transition Windows
 
-**Conversion automatique des chemins** : PostFlow détecte automatiquement votre plateforme et adapte tous les chemins en conséquence.
+### 🚀 **Déploiement Production**
+- 🔄 **Dev macOS → Prod Windows** : Workflow optimisé avec même repository
+- 📦 **Scripts automatisés** : `deploy.py`, `deploy_windows.bat`, validation pré-déploiement
+- 🛡️ **Backup/Rollback** : Sécurité complète avec récupération automatique
+- ✅ **Tests 100% validés** : Suite cross-platform complète
 
-### **🖥️ Compatibilité Multi-Plateforme**
+### 🗂️ **Structure Professionnelle**
+- 📁 **Repository organisé** : `tools/`, `scripts/`, `docs/` clairement séparés
+- 📚 **Documentation complète** : Guides Windows, stratégie déploiement
+- 🧪 **Validation rigoureuse** : Zero chemins hardcodés, tests automatisés
 
-PostFlow supporte nativement :
-- **Windows** (E:\Volumes\resizelab\o2b-undllm)
-- **macOS** (/Volumes/resizelab/o2b-undllm) 
-- **Linux** (/mnt/lucidlink/resizelab/o2b-undllm)
+## 📂 Structure du Projet
 
-La détection de plateforme et conversion des chemins sont automatiques.
+```
+rl_postflow/
+├── 🚀 main.py                  # Point d'entrée principal
+├── 📊 dashboard.py             # Dashboard web de monitoring
+├── 📦 src/                     # Code source modulaire
+│   ├── utils/                  # Utilitaires (ErrorHandler, FileWatcher)
+│   ├── integrations/           # Intégrations externes
+│   ├── workflows/              # Workflows de production
+│   └── models/                 # Modèles de données
+├── 🧪 tests/                   # Tests organisés
+│   ├── unit/                   # Tests unitaires
+│   ├── integration/            # Tests d'intégration
+│   └── fixtures/               # Données de test
+├── 🛠️ scripts/                 # Scripts utilitaires
+├── 🎨 examples/                # Exemples et démos
+└── 📚 docs/                    # Documentation
+```
 
-## ⚡ **Installation Rapide**
+## ⚡ Installation Rapide
 
-### **🚀 Installation Automatique (Recommandé)**
+### **Multi-Plateforme (macOS/Windows/Linux)**
 
 ```bash
-# Cloner le repository
-git clone https://github.com/your-org/rl-postflow.git
-cd rl-postflow
+# Cloner le projet
+git clone https://github.com/resizelab/rl_postflow.git
+cd rl_postflow
 
-# Installer les dépendances
+# Installation automatique cross-platform
+python scripts/setup_postflow.py
+
+# OU installation manuelle
+python -m venv .venv
+source .venv/bin/activate    # macOS/Linux
+# .venv\Scripts\activate     # Windows
+
 pip install -r requirements.txt
-
-# Lancer l'installation interactive
-python setup_postflow.py
-
-# Suivre le guide d'installation
-# (détection automatique Windows/macOS/Linux)
 ```
 
-### **⚙️ Installation Manuelle**
+### **Déploiement Windows (Production)**
 
 ```bash
-# Cloner le repository
-git clone https://github.com/your-org/rl-postflow.git
-cd rl-postflow
+# Migration automatique macOS → Windows
+python scripts/deploy.py --target windows
 
-# Installer les dépendances
-pip install -r requirements.txt
-
-# Configurer les variables d'environnement
-cp .env.example .env
-# Éditer .env avec vos configurations
-
-# Lancer le pipeline
-python main.py
+# OU migration manuelle Windows
+python tools/migration/migrate_to_windows.py
 ```
 
-### **🔄 Migration Windows**
+## 🎮 Utilisation
 
-Si vous migrez depuis macOS vers Windows :
-
+### Pipeline Principal
 ```bash
-# Script de migration automatique
-python migrate_to_windows.py
-
-# Test de compatibilité
-python test_cross_platform.py
+python main.py              # Parser CSV + Export
+python dashboard.py         # Dashboard web
 ```
 
-## 🗂️ **Structure du Projet**
-
-```
-rl-postflow/
-├── src/                    # Code source principal
-│   ├── core/              # Composants centraux (watcher, pipeline)
-│   ├── integrations/      # Intégrations (Frame.io, Google, Discord)
-│   ├── utils/             # Utilitaires (thumbnails, upload, tracking)
-│   └── bootstrap/         # Initialisation et configuration
-├── config/                # Fichiers de configuration
-├── data/                  # Données et tracking
-├── docs/                  # Documentation détaillée
-├── tests/                 # Tests automatisés
-└── scripts/               # Scripts utilitaires
-```
-
-## 🎯 **Usage**
-
-### **Démarrage du Pipeline**
+### Exemples
 ```bash
-python main.py
+python examples/pipeline_demo.py     # Démo complète
+python examples/export_by_scene.py   # Export par scène
 ```
 
-### **Arrêt du Pipeline**
+### Tests
 ```bash
-python stop_postflow.py
+python scripts/quick_test.py    # Tests rapides
+pytest tests/unit/              # Tests unitaires
+pytest tests/ --cov=src         # Tests avec coverage
 ```
 
-### **Dashboard Web**
-Le dashboard web est automatiquement démarré avec le pipeline principal.
-Accédez au dashboard sur `http://localhost:8080` pour :
-- Monitoring en temps réel du pipeline
-- Statut des uploads et de la queue
-- Gestion des erreurs et alertes
-- Métriques de performance et statistiques
-- Interface WebSocket pour les mises à jour temps réel
+## 🎯 Workflow de Production
 
-```bash
-# Dashboard autonome (si nécessaire)
-python dashboard.py
+```mermaid
+graph TD
+    A[Source Video] --> B[After Effects]
+    B --> C[EbSynth Processing]
+    C --> D[Animation Review]
+    D --> E[Final Delivery]
+    
+    F[Discord Notifications] --> B
+    F --> C
+    F --> D
+    F --> E
+    
+    G[Frame.io Upload] --> D
+    H[Google Sheets Update] --> B
+    H --> C
+    H --> D
+    H --> E
 ```
 
-### **Générateur After Effects v2**
+## 🧪 Tests & Qualité
 
-Le générateur AE v2 automatise la création de projets After Effects pour toutes les 28 séquences du projet :
+- **Tests unitaires** : 26 tests couvrant les modules principaux
+- **Tests d'intégration** : Validation du workflow complet
+- **Coverage** : Couverture de code avec pytest-cov
+- **Qualité** : Structure professionnelle et documentation
 
-#### **Génération avec nouvel outil (tools/)**
-```bash
-# Aller dans le dossier tools
-cd tools/after_effects_generator_v2
+## 📈 Métriques
 
-# Générer une séquence spécifique
-python generate_ae_projects_v2.py --sequence SQ02
+| Métrique | Valeur |
+|----------|--------|
+| **Plans** | 516 |
+| **Scènes** | 25 |
+| **Statuts** | 12 |
+| **Intégrations** | 5 |
+| **Tests** | 26+ |
 
-# Validation (3 premières séquences)
-python generate_ae_projects_v2.py --validation
+## 🤝 Contribution
 
-# Production complète (28 séquences)
-python generate_ae_projects_v2.py --all
-```
+1. **Fork** le projet
+2. **Créer** une branche feature (`git checkout -b feature/amazing-feature`)
+3. **Commit** les changements (`git commit -m 'Add amazing feature'`)
+4. **Push** vers la branche (`git push origin feature/amazing-feature`)
+5. **Ouvrir** une Pull Request
 
-#### **Génération avec scripts legacy**
-```bash
-# Générer le mapping complet des 28 séquences
-python scripts/analyze_gsheets_data.py
+## 📄 License
 
-# Créer les projets AE avec sources Edit uniquement
-python scripts/generate_ae_projects_v2.py --all
+Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de détails.
 
-# Ou générer des séquences spécifiques
-python scripts/generate_ae_projects_v2.py --sequence SQ01
-python scripts/generate_ae_projects_v2.py --sequences SQ01 SQ05 SQ11
-```
+## 🎉 Remerciements
 
-#### **Import sources étalonnées (workflow incrémental)**
-```bash
-# Scanner les sources étalonnées disponibles
-python scripts/import_graded_sources_v2.py --scan
-
-# Importer pour une séquence spécifique
-python scripts/import_graded_sources_v2.py --sequence SQ01
-
-# Import pour plusieurs séquences
-python scripts/import_graded_sources_v2.py --sequences SQ01 SQ05 SQ11
-
-# Import massif (toutes séquences)
-python scripts/import_graded_sources_v2.py --all
-
-# Mode test/simulation
-python scripts/import_graded_sources_v2.py --sequence SQ01 --dry-run
-```
-
-> **Workflow recommandé :** Générer d'abord tous les projets avec les sources Edit, puis utiliser l'import incrémental au fur et à mesure que les sources étalonnées deviennent disponibles.
-
-**Documentation :**
-- 📖 [Guide complet générateur AE](docs/AFTER_EFFECTS_GENERATOR.md)
-- 🎨 [Guide import sources étalonnées](docs/IMPORT_GRADED_SOURCES.md)
-
-## 📐 **Nomenclature Supportée**
-
-Le pipeline accepte uniquement les fichiers avec la nomenclature stricte :
-
-```
-SQ##_UNDLM_#####_v###.(mov|mp4|avi|mxf)
-```
-
-**Structure de dossier requise :**
-```
-.../SQxx/UNDLM_xxxxx/SQxx_UNDLM_xxxxx_vyyy.mov
-```
-
-**Exemples valides :**
-- `SQ01/UNDLM_00003/SQ01_UNDLM_00003_v001.mov` ✅
-- `SQ02/UNDLM_00015/SQ02_UNDLM_00015_v003.mp4` ✅
-
-**Exemples rejetés :**
-- `SQ01/SQ01_UNDLM_00003_v001.mov` ❌ (mauvais dossier)
-- `SC01_UNDLM_00001_v001.mov` ❌ (mauvaise nomenclature)
-
-## 🔧 **Configuration**
-
-### **Variables d'environnement (.env)**
-```env
-# Frame.io OAuth
-FRAMEIO_CLIENT_ID=your_client_id
-FRAMEIO_CLIENT_SECRET=your_client_secret
-
-# Google APIs
-GOOGLE_CREDENTIALS_PATH=config/google_credentials.json
-
-# Discord
-DISCORD_WEBHOOK_URL=your_webhook_url
-
-# LucidLink
-LUCIDLINK_MOUNT_PATH=/Volumes/your-mount
-```
-
-### **Configuration des intégrations**
-```json
-// config/integrations.json
-{
-  "google_drive": {
-    "enabled": true,
-    "folder_structure": "PostFlow_Thumbnails/PostFlow_Project/{year}-{month:02d}"
-  },
-  "discord": {
-    "enabled": true,
-    "embed_thumbnails": true
-  }
-}
-```
-
-## �️ **Tools**
-
-Le dossier `tools/` contient des outils spécialisés pour le pipeline :
-
-### **After Effects Generator v2**
-```bash
-cd tools/after_effects_generator_v2
-python generate_ae_projects_v2.py --sequence SQ02
-```
-- ✅ **28 séquences** (520 plans) - Structure EB complète
-- ✅ **Nouvelle organisation 2024** - HAIR/SKIN/_Others
-- ✅ **Sources UHD optimisées** - 3840x2160 → 2560x1440
-- **[📚 Documentation complète →](tools/after_effects_generator_v2/README.md)**
-
-### **Organisation Tools**
-```
-tools/
-├── after_effects_generator_v2/    # Générateur AE v2 production
-└── README.md                      # Index des outils
-```
-
-**[🛠️ Voir tous les outils →](tools/README.md)**
-
-## �📊 **Monitoring et Logs**
-
-- **Dashboard web** : `http://localhost:8080`
-- **Logs détaillés** : `logs/postflow_YYYYMMDD.log`
-- **Tracking uploads** : `data/uploads_tracking.json`
-
-## 🧪 **Tests**
-
-```bash
-# Test de compatibilité multi-plateforme
-python test_cross_platform.py
-
-# Lancer tous les tests
-pytest tests/
-
-# Test spécifique
-pytest tests/test_watcher.py
-
-# Test avec couverture
-pytest --cov=src tests/
-```
-
-### **🔧 Tests Spécifiques Windows**
-
-```cmd
-# Tester la compatibilité Windows
-python test_cross_platform.py
-
-# Tester la migration macOS → Windows
-python migrate_to_windows.py --test
-
-# Vérifier les composants
-python main.py --test
-```
-
-## 📚 **Documentation**
-
-- **[Guide de Démarrage Rapide](docs/guides/QUICK_START.md)** - Installation et première utilisation
-- **[Générateur After Effects](docs/AFTER_EFFECTS_GENERATOR.md)** - Automatisation complète AE (28 séquences)
-- **[Configuration Frame.io OAuth](docs/integrations/FRAMEIO_OAUTH.md)** - Setup authentification
-- **[Architecture](docs/ARCHITECTURE.md)** - Vue d'ensemble technique
-- **[Changelog](CHANGELOG.md)** - Historique des versions
-
-## 🤝 **Contributing**
-
-1. Fork le projet
-2. Créer une branche feature (`git checkout -b feature/AmazingFeature`)
-3. Commit les changements (`git commit -m 'Add some AmazingFeature'`)
-4. Push vers la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrir une Pull Request
-
-## 📄 **License**
-
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
-
-## 🆘 **Support**
-
-- **Issues** : [GitHub Issues](https://github.com/your-org/rl-postflow/issues)
-- **Documentation** : [docs/](docs/)
-- **Email** : support@yourorg.com
+- **Resize Lab** pour le développement
+- **Communauté Python** pour les outils
+- **Équipe de production** pour les retours
 
 ---
 
-**RL PostFlow v4.1.1** - Pipeline de post-production intelligent et fiable
+<div align="center">
+  <b>🎬 Fait avec ❤️ par Resize Lab</b>
+</div>
