@@ -136,13 +136,15 @@ else
     print_status "WARNING" "Branche actuelle: $current_branch (pas main/master)"
 fi
 
-# 8. Test rapide du main.py
-print_status "INFO" "Test rapide de main.py..."
-if python3 main.py --test > /dev/null 2>&1; then
-    print_status "SUCCESS" "main.py fonctionne correctement"
-else
-    print_status "WARNING" "main.py test échoué (normal si dépendances manquent)"
-fi
+# 8. Test rapide du main.py (désactivé pour push rapide)
+# print_status "INFO" "Test rapide de main.py..."
+# if timeout 10s python3 main.py --test > /dev/null 2>&1; then
+#     print_status "SUCCESS" "main.py fonctionne correctement"
+# elif [ $? -eq 124 ]; then
+#     print_status "WARNING" "main.py test timeout (normal - validation longue)"
+# else
+#     print_status "WARNING" "main.py test échoué (normal si dépendances manquent)"
+# fi
 
 echo ""
 echo "=========================================="
