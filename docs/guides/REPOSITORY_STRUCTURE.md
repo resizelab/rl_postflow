@@ -1,70 +1,143 @@
-# 🗂️ RL PostFlow - Structure du Repository
-> **Rangement effectué le 11 juillet 2025**
+# 📁 Structure du Repository PostFlow v4.1.3
 
-## 📁 Structure Organisée
+## 🎯 Fichiers Principaux (Racine)
 
-### **🚀 Fichiers Principaux**
-- **`main.py`** - Point d'entrée principal du pipeline
-- **`dashboard.py`** - Interface web de monitoring  
-- **`stop_postflow.py`** - Script d'arrêt du pipeline
-- **`pipeline_config.json`** - Configuration du pipeline
-- **`requirements.txt`** & **`requirements-production.txt`** - Dépendances Python
+```
+📄 main.py                    # Point d'entrée principal
+📄 README.md                  # Documentation principale  
+📄 CHANGELOG.md               # Historique des versions
+📄 LICENSE                    # Licence du projet
+📄 requirements.txt           # Dépendances Python
+📄 pipeline_config.json       # Configuration du pipeline
+📄 pytest.ini                # Configuration des tests
+📄 .gitignore                # Fichiers ignorés par Git
+```
 
-### **📂 Dossiers Core**
-- **`src/`** - Code source principal (modules bootstrap, intégrations, utils)
-- **`config/`** - Fichiers de configuration (JSON, clés, mappings)
-- **`data/`** - Données du pipeline (BDD, CSV, JSON de tracking)
-- **`logs/`** - Logs du système
+## 📂 Structure Organisée
 
-### **🛠️ Outils et Scripts**
-- **`tools/`** - Outils spécialisés (After Effects Generator v2, ae_scripts, discord_posts)
-- **`scripts/`** - Scripts utilitaires, production et tests consolidés
-- **`validation/`** - Scripts de validation AE
+### 🧩 **Code Source**
+```
+src/                          # Code source principal
+├── bootstrap/               # Modules d'initialisation
+├── integrations/           # Intégrations (Frame.io, Discord, etc.)
+├── utils/                  # Utilitaires partagés
+└── core/                   # Composants core
+```
 
-### **📚 Documentation**
-- **`docs/`** - Documentation technique complète
-- **`documentation/`** - Docs projet (VFX, graphistes, rapports)
-- **`examples/`** - Exemples d'utilisation
+### 🛠️ **Outils et Scripts**
+```
+tools/                        # Outils de développement
+├── validation/             # Scripts de validation
+│   ├── validate_postflow.py
+│   ├── validate_no_hardcoded_paths.py
+│   └── test_cross_platform.py
+├── migration/              # Outils de migration
+│   ├── migrate_to_windows.py
+│   └── setup_postflow.py
+├── demo/                   # Démonstrations
+│   ├── demo_cross_platform.py
+│   └── demo_stable_configs.py
+└── utilities/              # Utilitaires divers
+```
 
-### **🗄️ Archives et Legacy**
-- **`archive/`** - Code obsolète et anciens développements
-- **`releases/`** - Notes de version et checklists
+### 📜 **Scripts de Déploiement**
+```
+scripts/                      # Scripts d'automatisation
+├── deploy.py               # Déploiement intelligent
+├── deploy_windows.bat      # Déploiement Windows
+├── pre_deploy_check.sh     # Validation pré-déploiement
+└── tests/                  # Tests spécifiques
+```
 
-### **🎬 Spécialisés**
-- **`templates/`** - Templates de configuration
-- **`temp/`** - Fichiers temporaires
-- **`output/`** - Sorties générées
+### 📚 **Documentation**
+```
+docs/                         # Documentation complète
+├── WINDOWS_GUIDE.md        # Guide Windows
+├── DEPLOYMENT_STRATEGY.md  # Stratégie déploiement
+├── reports/                # Rapports techniques
+│   ├── WINDOWS_COMPATIBILITY_REPORT.md
+│   ├── CORRECTION_CHEMINS_EN_DUR.md
+│   └── MISSION_ACCOMPLISHED.md
+└── guides/                 # Guides utilisateur
+    ├── DEPLOYMENT_QUICK_GUIDE.md
+    └── REPOSITORY_STRUCTURE.md
+```
 
-### **🔧 Système**
-- **`systemd/`** - Configuration service Linux
-- **`nginx/`** - Configuration serveur web
-- **`backups/`** - Sauvegardes
+### ⚙️ **Configuration**
+```
+config/                       # Fichiers de configuration
+├── integrations.json.example
+├── pipeline_config.json.example  
+├── nomenclature.json.example
+└── error_handling.json.example
+```
 
-## 🎯 Principes d'Organisation
+### 📊 **Données et Logs**
+```
+data/                         # Données de l'application
+├── postflow.db             # Base de données SQLite
+├── uploads_tracking.json   # Suivi des uploads
+└── validation_reports/     # Rapports de validation
 
-1. **Séparation claire** entre code actif et obsolète
-2. **Documentation consolidée** par type d'usage
-3. **Outils spécialisés** dans des dossiers dédiés
-4. **Configuration centralisée** dans config/
-5. **Logs et data séparés** du code
+logs/                         # Fichiers de logs
+├── postflow.log            # Log principal
+└── deploy_*.log            # Logs de déploiement
+```
 
-## 📋 Migration Effectuée
+### 🗄️ **Archives et Sauvegardes**
+```
+archive/                      # Archives et fichiers obsolètes
+├── old_scripts/            # Anciens scripts
+├── development_docs/       # Ancienne documentation
+└── legacy_code/            # Code legacy
 
-### Fichiers Déplacés
-- ✅ `validate_ae_v2.py` → `validation/`
-- ✅ Documentation VFX → `documentation/`
-- ✅ Notes de release → `releases/current/`
-- ✅ Scripts obsolètes → `archive/legacy_scripts/`
-- ✅ `tests/` → `scripts/tests/` (consolidation)
-- ✅ `ae_scripts/` → `tools/after_effects_generator_v2/`
-- ✅ `discord_posts/` → `tools/after_effects_generator_v2/`
+backups/                      # Sauvegardes automatiques
+└── config_backups/         # Sauvegardes de config
+```
 
-### Structure Nettoyée
-- 🗂️ **9 fichiers** à la racine (vs ~50 avant)
-- 📁 **Organisation logique** par fonction
-- 🧹 **Séparation claire** actif/obsolète
-- 🛠️ **Tests consolidés** dans scripts/
+### 🎯 **Autres Dossiers**
+```
+templates/                    # Templates de fichiers
+validation/                   # Dossier de validation
+releases/                     # Gestion des versions
+examples/                     # Exemples d'utilisation
+```
+
+## 🚀 Utilisation
+
+### Démarrage Principal
+```bash
+python main.py
+```
+
+### Validation Système
+```bash
+python tools/validation/validate_postflow.py
+```
+
+### Tests Cross-Platform
+```bash
+python tools/validation/test_cross_platform.py
+```
+
+### Migration Windows
+```bash
+python tools/migration/migrate_to_windows.py
+```
+
+### Installation Automatique
+```bash
+python tools/migration/setup_postflow.py
+```
+
+## 📋 Avantages de Cette Structure
+
+✅ **Racine propre** - Seuls les fichiers essentiels  
+✅ **Organisation logique** - Chaque type de fichier à sa place  
+✅ **Navigation facile** - Structure intuitive  
+✅ **Maintenance simplifiée** - Tout est rangé  
+✅ **Scripts accessibles** - Outils bien organisés  
 
 ---
 
-**Racine propre et organisée !** ✨
+*PostFlow v4.1.3 - Structure optimisée le 12 juillet 2025*

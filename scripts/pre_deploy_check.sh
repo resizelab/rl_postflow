@@ -63,41 +63,41 @@ fi
 
 # 2. Tests de compatibilité multi-plateforme
 print_status "INFO" "Tests de compatibilité multi-plateforme..."
-if [ -f "test_cross_platform.py" ]; then
-    if python3 test_cross_platform.py; then
+if [ -f "tools/validation/test_cross_platform.py" ]; then
+    if python3 tools/validation/test_cross_platform.py; then
         print_status "SUCCESS" "Tests de compatibilité: RÉUSSIS"
     else
         print_status "ERROR" "Tests de compatibilité: ÉCHEC"
         exit 1
     fi
 else
-    print_status "WARNING" "test_cross_platform.py non trouvé"
+    print_status "WARNING" "tools/validation/test_cross_platform.py non trouvé"
 fi
 
 # 3. Validation des configurations
 print_status "INFO" "Validation des configurations..."
-if [ -f "validate_postflow.py" ]; then
-    if python3 validate_postflow.py; then
+if [ -f "tools/validation/validate_postflow.py" ]; then
+    if python3 tools/validation/validate_postflow.py; then
         print_status "SUCCESS" "Validation configurations: RÉUSSIE"
     else
         print_status "ERROR" "Validation configurations: ÉCHEC"
         exit 1
     fi
 else
-    print_status "WARNING" "validate_postflow.py non trouvé"
+    print_status "WARNING" "tools/validation/validate_postflow.py non trouvé"
 fi
 
 # 4. Simulation migration Windows
 print_status "INFO" "Simulation migration Windows..."
-if [ -f "migrate_to_windows.py" ]; then
-    if python3 migrate_to_windows.py --dry-run; then
+if [ -f "tools/migration/migrate_to_windows.py" ]; then
+    if python3 tools/migration/migrate_to_windows.py --dry-run; then
         print_status "SUCCESS" "Simulation migration: RÉUSSIE"
     else
         print_status "ERROR" "Simulation migration: ÉCHEC"
         exit 1
     fi
 else
-    print_status "WARNING" "migrate_to_windows.py non trouvé"
+    print_status "WARNING" "tools/migration/migrate_to_windows.py non trouvé"
 fi
 
 # 5. Vérification des fichiers critiques
@@ -107,7 +107,7 @@ critical_files=(
     "src/utils/cross_platform_paths.py"
     "src/utils/lucidlink_utils.py"
     "src/integrations/lucidlink.py"
-    "setup_postflow.py"
+    "tools/migration/setup_postflow.py"
 )
 
 for file in "${critical_files[@]}"; do
