@@ -11,44 +11,96 @@ from pathlib import Path
 from typing import Optional, Dict, Any
 import hashlib
 
+# Import du gestionnaire de chemins multi-plateforme
+from .cross_platform_paths import get_platform_path_manager, normalize_lucidlink_path, is_windows_platform
+
 logger = logging.getLogger(__name__)
 
 class LucidLinkDetector:
-    """Détecteur et utilitaires pour LucidLink"""
+    """Détecteur et utilitaires pour LucidLink avec support multi-plateforme"""
     
     def __init__(self):
+        # Utiliser le gestionnaire de chemins multi-plateforme
+        self.path_manager = get_platform_path_manager()
         self.is_lucidlink_mounted = self._check_lucidlink_mount()
         self.lucidlink_paths = self._detect_lucidlink_paths()
         
     def _check_lucidlink_mount(self) -> bool:
-        """Vérifie si LucidLink est monté"""
+        """Vérifie si LucidLink est monté (compatible Windows/macOS/Linux)"""
         try:
-            # Vérifier la présence du processus LucidLink
-            result = subprocess.run(['pgrep', '-f', 'lucid'], 
-                                 capture_output=True, text=True)
-            return result.returncode == 0
-        except Exception:
+            # Vérifier si le chemin de base LucidLink existe
+            lucidlink_base = self.path_manager.get_lucidlink_base_path()
+            if lucidlink_base.exists():
+                logger.debug(f"LucidLink trouvé à: {lucidlink_base}")
+                return True
+            
+            # Vérifier la présence du processus LucidLink selon l'OS
+            if is_windows_platform():
+                # Sur Windows, chercher les processus LucidLink
+                try:
+                    result = subprocess.run(['tasklist', '/FI', 'IMAGENAME eq lucid*'], 
+                                         capture_output=True, text=True, timeout=5)
+                    return 'lucid' in result.stdout.lower()
+                except Exception:
+                    pass
+            else:
+                # Sur macOS/Linux, utiliser pgrep
+                try:
+                    result = subprocess.run(['pgrep', '-f', 'lucid'], 
+                                         capture_output=True, text=True, timeout=5)
+                    return result.returncode == 0
+                except Exception:
+                    pass
+            
+            return False
+        except Exception as e:
+            logger.debug(f"Erreur vérification mount LucidLink: {e}")
             return False
     
     def _detect_lucidlink_paths(self) -> list:
-        """Détecte les chemins montés par LucidLink"""
+        """Détecte les chemins montés par LucidLink (multi-plateforme)"""
         paths = []
         try:
-            # Vérifier les points de montage courants
-            common_paths = [
-                '/Volumes/LucidLink',
-                '/Volumes/resizelab',  # Ajouté pour le projet
-                '/mnt/lucidlink',
-                '/Users/Shared/LucidLink',
-                os.path.expanduser('~/LucidLink')
-            ]
+            # Utiliser le gestionnaire de chemins pour obtenir le chemin de base
+            base_path = self.path_manager.get_lucidlink_base_path()
             
-            for path in common_paths:
-                if os.path.exists(path):
-                    # Vérifier si c'est un point de montage ou un répertoire LucidLink
-                    if os.path.ismount(path) or self._is_lucidlink_directory(path):
-                        paths.append(path)
-                        logger.debug(f"Chemin LucidLink détecté: {path}")
+            if base_path.exists():
+                paths.append(str(base_path))
+                logger.debug(f"Chemin LucidLink principal détecté: {base_path}")
+            
+            # Vérifier des chemins additionnels selon la plateforme
+            if is_windows_platform():
+                # Chemins Windows spécifiques
+                windows_paths = [
+                    "E:\\Volumes\\resizelab",
+                    "D:\\Volumes\\resizelab", 
+                    "C:\\Volumes\\resizelab",
+                    "E:\\resizelab",
+                    "D:\\resizelab"
+                ]
+                
+                for path_str in windows_paths:
+                    path = Path(path_str)
+                    if path.exists() and str(path) not in paths:
+                        if self._is_lucidlink_directory(str(path)):
+                            paths.append(str(path))
+                            logger.debug(f"Chemin LucidLink Windows détecté: {path}")
+            else:
+                # Chemins macOS/Linux spécifiques
+                unix_paths = [
+                    '/Volumes/LucidLink',
+                    '/Volumes/resizelab',
+                    '/mnt/lucidlink',
+                    '/Users/Shared/LucidLink',
+                    os.path.expanduser('~/LucidLink')
+                ]
+                
+                for path_str in unix_paths:
+                    path = Path(path_str)
+                    if path.exists() and str(path) not in paths:
+                        if self._is_lucidlink_directory(str(path)):
+                            paths.append(str(path))
+                            logger.debug(f"Chemin LucidLink Unix détecté: {path}")
                         
         except Exception as e:
             logger.debug(f"Erreur détection LucidLink: {e}")
@@ -56,7 +108,7 @@ class LucidLinkDetector:
         return paths
     
     def _is_lucidlink_directory(self, path: str) -> bool:
-        """Vérifie si un répertoire est géré par LucidLink"""
+        """Vérifie si un répertoire est géré par LucidLink (multi-plateforme)"""
         try:
             # Méthode 1: Vérifier la présence de fichiers spéciaux LucidLink
             lucid_indicators = [
@@ -68,9 +120,8 @@ class LucidLinkDetector:
                 if os.path.exists(indicator):
                     return True
             
-            # Méthode 2: Vérifier le type de système de fichiers
-            if os.path.exists(path):
-                import subprocess
+            # Méthode 2: Vérifier le type de système de fichiers (Unix seulement)
+            if not is_windows_platform() and os.path.exists(path):
                 try:
                     result = subprocess.run(['df', '-T', path], 
                                          capture_output=True, text=True, timeout=5)
@@ -83,6 +134,20 @@ class LucidLinkDetector:
             path_lower = path.lower()
             if any(keyword in path_lower for keyword in ['lucid', 'resizelab']):
                 return True
+            
+            # Méthode 4: Vérifier la structure de dossiers typique du projet
+            if os.path.exists(path):
+                # Chercher des dossiers caractéristiques
+                project_indicators = [
+                    os.path.join(path, '2_IN'),
+                    os.path.join(path, '3_PROJECTS'),
+                    os.path.join(path, '4_OUT'),
+                    os.path.join(path, '5_DELIVERABLES')
+                ]
+                
+                found_indicators = sum(1 for indicator in project_indicators if os.path.exists(indicator))
+                if found_indicators >= 2:  # Au moins 2 dossiers trouvés
+                    return True
                 
             return False
             
@@ -91,11 +156,16 @@ class LucidLinkDetector:
             return False
     
     def is_lucidlink_file(self, file_path: Path) -> bool:
-        """Vérifie si un fichier est sur un système LucidLink"""
+        """Vérifie si un fichier est sur un système LucidLink (multi-plateforme)"""
         try:
-            file_str = str(file_path.resolve())
+            # Normaliser le chemin pour la plateforme actuelle
+            normalized_path = normalize_lucidlink_path(file_path)
+            file_str = str(normalized_path.resolve())
+            
+            # Vérifier si le fichier est sous un des chemins LucidLink détectés
             return any(file_str.startswith(path) for path in self.lucidlink_paths)
-        except Exception:
+        except Exception as e:
+            logger.debug(f"Erreur vérification fichier LucidLink: {e}")
             return False
     
     def get_lucidlink_file_status(self, file_path: Path) -> Dict[str, Any]:

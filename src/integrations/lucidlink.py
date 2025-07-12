@@ -1,6 +1,7 @@
 """
 LucidLink Integration Module for UNDLM PostFlow
 Handles file verification and path mapping according to the UNDLM folder structure
+Multi-platform support (macOS, Windows, Linux)
 """
 
 import os
@@ -9,16 +10,35 @@ from typing import Dict, List, Optional, Tuple
 from datetime import datetime
 import logging
 
+# Import du gestionnaire de chemins multi-plateforme
+from ..utils.cross_platform_paths import (
+    get_platform_path_manager, 
+    normalize_lucidlink_path, 
+    validate_config_for_platform
+)
+
 logger = logging.getLogger(__name__)
 
 class LucidLinkIntegration:
     """
     Manages LucidLink file operations and path mapping for UNDLM PostFlow
+    Multi-platform support (macOS, Windows, Linux)
     """
     
     def __init__(self, config: Dict):
         self.config = config
-        self.base_path = Path(config.get('base_path', '/Volumes/resizelab/o2b-undllm'))
+        
+        # Utiliser le gestionnaire de chemins multi-plateforme
+        self.path_manager = get_platform_path_manager()
+        
+        # Mettre à jour la configuration pour la plateforme actuelle
+        self.config = validate_config_for_platform(config)
+        
+        # Définir les chemins de base avec normalisation multi-plateforme
+        base_path_str = self.config.get('base_path', self.path_manager.get_lucidlink_base_path())
+        self.base_path = normalize_lucidlink_path(base_path_str)
+        
+        # Construire les chemins de structure du projet
         self.sources_path = self.base_path / "2_IN" / "_FROM_GRADING" / "UNDLM_SOURCES"
         self.vfx_projects_path = self.base_path / "3_PROJECTS" / "2_VFX"
         self.vfx_sequences_path = self.base_path / "3_PROJECTS" / "2_VFX" / "SEQUENCES"
@@ -27,15 +47,39 @@ class LucidLinkIntegration:
         self.outputs_path = self.base_path / "4_OUT" / "2_FROM_VFX"
         self.deliverables_path = self.base_path / "5_DELIVERABLES" / "MASTER"
         
-        # Ensure base paths exist (for development/testing)
+        # Vérifier la connexion
         self.connected = self._check_connection()
         
+        logger.info(f"🔗 LucidLink initialisé sur {self.path_manager.current_os}")
+        logger.info(f"📁 Chemin de base: {self.base_path}")
+        logger.info(f"🔌 Connecté: {'✅' if self.connected else '❌'}")
+        
     def _check_connection(self) -> bool:
-        """Check if LucidLink volume is mounted and accessible"""
+        """Check if LucidLink volume is mounted and accessible (multi-platform)"""
         try:
-            return self.base_path.exists()
+            # Vérifier l'existence du chemin de base
+            if not self.base_path.exists():
+                logger.warning(f"⚠️ Chemin LucidLink non trouvé: {self.base_path}")
+                return False
+            
+            # Vérifier la structure de base du projet
+            essential_paths = [
+                self.base_path / "2_IN",
+                self.base_path / "3_PROJECTS", 
+                self.base_path / "4_OUT"
+            ]
+            
+            missing_paths = [path for path in essential_paths if not path.exists()]
+            if missing_paths:
+                logger.warning(f"⚠️ Structure projet incomplète. Dossiers manquants: {missing_paths}")
+                # Retourner True quand même si le chemin de base existe
+                return True
+            
+            logger.info(f"✅ LucidLink connecté et structure projet validée")
+            return True
+            
         except Exception as e:
-            logger.warning(f"LucidLink connection check failed: {e}")
+            logger.warning(f"❌ Vérification connexion LucidLink échouée: {e}")
             return False
     
     def verify_source_file(self, shot_data: Dict) -> Tuple[bool, Optional[str]]:

@@ -49,8 +49,13 @@ class WatcherInitializer:
                 logger.info("⚪ Watcher désactivé dans la configuration")
                 return False
             
-            # Obtenir le chemin de surveillance
-            watch_path = self.config.get('lucidlink', {}).get('watch_path', '/Volumes/resizelab/o2b-undllm/4_OUT/2_FROM_ANIM')
+            # Obtenir le chemin de surveillance (avec détection automatique)
+            from src.utils.cross_platform_paths import CrossPlatformPathManager
+            path_manager = CrossPlatformPathManager()
+            
+            # Chemin par défaut cross-platform
+            default_watch_path = path_manager.build_lucidlink_path('o2b-undllm', '4_OUT', '2_FROM_ANIM')
+            watch_path = self.config.get('lucidlink', {}).get('watch_path', str(default_watch_path))
             
             logger.info(f"📁 Chemin de surveillance: {watch_path}")
             

@@ -1,0 +1,25 @@
+{
+  "timestamp": "2025-07-12T21:55:02.725056",
+  "total_tests": 6,
+  "passed_tests": 6,
+  "failed_tests": 0,
+  "success_rate": 100.0,
+  "results": {
+    "module_imports": true,
+    "cross_platform_manager": true,
+    "lucidlink_integration": true,
+    "configuration_loading": true,
+    "file_operations": true,
+    "bootstrap_modules": true
+  },
+  "errors": [],
+  "platform": {
+    "os": "darwin",
+    "platform": "macOS-15.5-arm64-arm-64bit",
+    "machine": "arm64",
+    "lucidlink_base": "/Volumes/resizelab/o2b-undllm",
+    "is_windows": false,
+    "is_macos": true,
+    "is_linux": false
+  }
+}

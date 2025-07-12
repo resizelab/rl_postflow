@@ -788,8 +788,12 @@ class PostFlowRunner:
                 logger.warning("⚠️ Upload tracker non disponible, pas de vérification")
                 return False
             
-            # Chemin de base LucidLink
-            lucidlink_base = self.config.get('lucidlink', {}).get('base_path', '/Volumes/resizelab/o2b-undllm')
+            # Chemin de base LucidLink (détection automatique cross-platform)
+            from src.utils.cross_platform_paths import CrossPlatformPathManager
+            path_manager = CrossPlatformPathManager()
+            
+            default_base_path = path_manager.build_lucidlink_path('o2b-undllm')
+            lucidlink_base = self.config.get('lucidlink', {}).get('base_path', str(default_base_path))
             scan_path = Path(lucidlink_base) / "4_OUT" / "2_FROM_ANIM"
             
             if not scan_path.exists():

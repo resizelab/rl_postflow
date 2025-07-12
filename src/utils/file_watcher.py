@@ -49,7 +49,15 @@ class LucidLinkWatcher:
         """
         self.config = config
         self.error_handler = error_handler
-        self.base_path = Path(config.get('base_path', '/Volumes/resizelab/o2b-undllm'))
+        
+        # Chemin de base avec détection automatique cross-platform
+        default_base_path = config.get('base_path')
+        if not default_base_path:
+            from src.utils.cross_platform_paths import CrossPlatformPathManager
+            path_manager = CrossPlatformPathManager()
+            default_base_path = str(path_manager.build_lucidlink_path('o2b-undllm'))
+        
+        self.base_path = Path(default_base_path)
         self.watch_paths = [
             self.base_path / "4_OUT" / "2_FROM_VFX" / "BY_SHOT",
             self.base_path / "3_PROJECTS" / "2_VFX" / "SEQUENCES"

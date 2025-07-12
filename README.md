@@ -1,6 +1,54 @@
 # 🎬 RL PostFlow
 
-[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
+[![Python](https://img.shields.io/badge/Python## ⚡ **Installation Rapide**
+
+### **Installation Automatique (Recommandée)**
+
+```bash
+# Cloner le repository
+git clone https://github.com/your-org/rl-postflow.git
+cd rl-postflow
+
+# Installer les dépendances
+pip install -r requirements.txt
+
+# Lancer l'installation interactive (détecte automatiquement Windows/macOS/Linux)
+python setup_postflow.py
+```
+
+### **Installation Manuelle**
+
+```bash
+# Cloner le repository
+git clone https://github.com/your-org/rl-postflow.git
+cd rl-postflow
+
+# Installer les dépendances
+pip install -r requirements.txt
+
+# Configurer les variables d'environnement
+cp .env.example .env
+# Éditer .env avec vos configurations
+
+# Lancer le pipeline
+python main.py
+```
+
+### **🪟 Installation Windows**
+
+PostFlow est maintenant **entièrement compatible Windows** ! 
+
+```cmd
+# Installation Windows avec détection automatique des chemins
+python setup_postflow.py
+
+# Ou migration depuis macOS
+python migrate_to_windows.py
+```
+
+**Chemin LucidLink Windows :** `E:\Volumes\resizelab\o2b-undllm`
+
+📖 **[Guide Windows complet →](docs/WINDOWS_GUIDE.md)**(https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-pytest-orange.svg)](tests/)
 [![Version](https://img.shields.io/badge/Version-4.1.1-red.svg)](https://github.com/resizelab/rl_postflow/releases)
@@ -22,6 +70,7 @@
 - **🔄 Queue intelligente** : Gestion des uploads multiples avec retry
 - **🔐 OAuth sécurisé** : Authentification Frame.io Web App autonome
 - **🎬 Générateur After Effects** : Automatisation complète de 28 séquences (516 plans)
+- **🪟 Compatible Windows** : Support natif Windows/macOS/Linux avec conversion automatique des chemins
 
 ## 📋 **Prérequis**
 
@@ -34,7 +83,45 @@
   - Google Sheets API
   - Discord Webhook
 
+### **🖥️ Plateformes Supportées**
+
+| Plateforme | Statut | Chemin LucidLink | Installation |
+|------------|--------|------------------|--------------|
+| **🪟 Windows** | ✅ Compatible | `E:\Volumes\resizelab\o2b-undllm` | `python setup_postflow.py` |
+| **🍎 macOS** | ✅ Compatible | `/Volumes/resizelab/o2b-undllm` | `python setup_postflow.py` |
+| **🐧 Linux** | ✅ Compatible | `/mnt/lucidlink/resizelab/o2b-undllm` | `python setup_postflow.py` |
+
+**Conversion automatique des chemins** : PostFlow détecte automatiquement votre plateforme et adapte tous les chemins en conséquence.
+
+### **🖥️ Compatibilité Multi-Plateforme**
+
+PostFlow supporte nativement :
+- **Windows** (E:\Volumes\resizelab\o2b-undllm)
+- **macOS** (/Volumes/resizelab/o2b-undllm) 
+- **Linux** (/mnt/lucidlink/resizelab/o2b-undllm)
+
+La détection de plateforme et conversion des chemins sont automatiques.
+
 ## ⚡ **Installation Rapide**
+
+### **🚀 Installation Automatique (Recommandé)**
+
+```bash
+# Cloner le repository
+git clone https://github.com/your-org/rl-postflow.git
+cd rl-postflow
+
+# Installer les dépendances
+pip install -r requirements.txt
+
+# Lancer l'installation interactive
+python setup_postflow.py
+
+# Suivre le guide d'installation
+# (détection automatique Windows/macOS/Linux)
+```
+
+### **⚙️ Installation Manuelle**
 
 ```bash
 # Cloner le repository
@@ -50,6 +137,18 @@ cp .env.example .env
 
 # Lancer le pipeline
 python main.py
+```
+
+### **🔄 Migration Windows**
+
+Si vous migrez depuis macOS vers Windows :
+
+```bash
+# Script de migration automatique
+python migrate_to_windows.py
+
+# Test de compatibilité
+python test_cross_platform.py
 ```
 
 ## 🗂️ **Structure du Projet**
@@ -94,11 +193,26 @@ Accédez au dashboard sur `http://localhost:8080` pour :
 python dashboard.py
 ```
 
-### **Générateur After Effects**
+### **Générateur After Effects v2**
 
 Le générateur AE v2 automatise la création de projets After Effects pour toutes les 28 séquences du projet :
 
-#### **Génération initiale (sources Edit)**
+#### **Génération avec nouvel outil (tools/)**
+```bash
+# Aller dans le dossier tools
+cd tools/after_effects_generator_v2
+
+# Générer une séquence spécifique
+python generate_ae_projects_v2.py --sequence SQ02
+
+# Validation (3 premières séquences)
+python generate_ae_projects_v2.py --validation
+
+# Production complète (28 séquences)
+python generate_ae_projects_v2.py --all
+```
+
+#### **Génération avec scripts legacy**
 ```bash
 # Générer le mapping complet des 28 séquences
 python scripts/analyze_gsheets_data.py
@@ -189,7 +303,30 @@ LUCIDLINK_MOUNT_PATH=/Volumes/your-mount
 }
 ```
 
-## 📊 **Monitoring et Logs**
+## �️ **Tools**
+
+Le dossier `tools/` contient des outils spécialisés pour le pipeline :
+
+### **After Effects Generator v2**
+```bash
+cd tools/after_effects_generator_v2
+python generate_ae_projects_v2.py --sequence SQ02
+```
+- ✅ **28 séquences** (520 plans) - Structure EB complète
+- ✅ **Nouvelle organisation 2024** - HAIR/SKIN/_Others
+- ✅ **Sources UHD optimisées** - 3840x2160 → 2560x1440
+- **[📚 Documentation complète →](tools/after_effects_generator_v2/README.md)**
+
+### **Organisation Tools**
+```
+tools/
+├── after_effects_generator_v2/    # Générateur AE v2 production
+└── README.md                      # Index des outils
+```
+
+**[🛠️ Voir tous les outils →](tools/README.md)**
+
+## �📊 **Monitoring et Logs**
 
 - **Dashboard web** : `http://localhost:8080`
 - **Logs détaillés** : `logs/postflow_YYYYMMDD.log`
@@ -198,6 +335,9 @@ LUCIDLINK_MOUNT_PATH=/Volumes/your-mount
 ## 🧪 **Tests**
 
 ```bash
+# Test de compatibilité multi-plateforme
+python test_cross_platform.py
+
 # Lancer tous les tests
 pytest tests/
 
@@ -206,6 +346,19 @@ pytest tests/test_watcher.py
 
 # Test avec couverture
 pytest --cov=src tests/
+```
+
+### **🔧 Tests Spécifiques Windows**
+
+```cmd
+# Tester la compatibilité Windows
+python test_cross_platform.py
+
+# Tester la migration macOS → Windows
+python migrate_to_windows.py --test
+
+# Vérifier les composants
+python main.py --test
 ```
 
 ## 📚 **Documentation**

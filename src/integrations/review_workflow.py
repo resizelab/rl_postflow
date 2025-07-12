@@ -70,10 +70,13 @@ class ReviewWorkflowManager:
     def _initialize_integrations(self):
         """Initialize all integrations"""
         try:
-            # LucidLink
+            # LucidLink (détection automatique cross-platform)
             lucidlink_config = self.config.get('lucidlink', {})
             if not lucidlink_config:
-                lucidlink_config = {'base_path': '/Volumes/resizelab/o2b-undllm'}
+                from src.utils.cross_platform_paths import CrossPlatformPathManager
+                path_manager = CrossPlatformPathManager()
+                default_base_path = path_manager.build_lucidlink_path('o2b-undllm')
+                lucidlink_config = {'base_path': str(default_base_path)}
             self.lucidlink = LucidLinkIntegration(lucidlink_config)
             
             # Frame.io

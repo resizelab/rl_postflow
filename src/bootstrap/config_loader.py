@@ -5,9 +5,10 @@
 
 Charge et valide la configuration du pipeline PostFlow.
 Extrait de main.py pour une meilleure organisation.
+Support multi-plateforme avec gestionnaire de chemins.
 
 Version: 4.1.1
-Date: 9 juillet 2025
+Date: 12 juillet 2025
 """
 
 import json
@@ -15,12 +16,13 @@ import logging
 from pathlib import Path
 from typing import Dict, Any, Optional
 from src.utils.config import ConfigManager
+from src.utils.cross_platform_paths import get_platform_path_manager, validate_config_for_platform
 
 logger = logging.getLogger(__name__)
 
 
 class ConfigLoader:
-    """Gestionnaire de chargement et validation de la configuration"""
+    """Gestionnaire de chargement et validation de la configuration (multi-plateforme)"""
     
     def __init__(self, config_path: Optional[Path] = None):
         self.config_path = config_path
@@ -29,6 +31,11 @@ class ConfigLoader:
         self.config_manager = None
         self.config = {}
         self.pipeline_config = {}
+        
+        # Gestionnaire de chemins multi-plateforme
+        self.path_manager = get_platform_path_manager()
+        
+        logger.info(f"🖥️ ConfigLoader initialisé pour: {self.path_manager.current_os}")
         
     def load_configurations(self) -> tuple[Dict[str, Any], Dict[str, Any], ConfigManager]:
         """
@@ -50,7 +57,16 @@ class ConfigLoader:
             if main_config_path.exists():
                 logger.info(f"📄 Chargement de la configuration: {main_config_path}")
                 with open(main_config_path, 'r', encoding='utf-8') as f:
-                    self.config = json.load(f)
+                    raw_config = json.load(f)
+                
+                # Valider et adapter la configuration pour la plateforme actuelle
+                self.config = validate_config_for_platform(raw_config)
+                
+                # Sauvegarder si des changements ont été apportés
+                if self.config != raw_config:
+                    logger.info("🔄 Mise à jour de la configuration pour la plateforme actuelle")
+                    with open(main_config_path, 'w', encoding='utf-8') as f:
+                        json.dump(self.config, f, indent=2, ensure_ascii=False)
             else:
                 logger.warning(f"⚠️ Configuration non trouvée: {main_config_path}")
                 logger.info("📝 Création d'une configuration par défaut...")
@@ -89,7 +105,11 @@ class ConfigLoader:
             raise
     
     def _create_default_config(self) -> Dict[str, Any]:
-        """Crée une configuration par défaut"""
+        """Crée une configuration par défaut adaptée à la plateforme"""
+        
+        # Obtenir le chemin LucidLink pour la plateforme actuelle
+        lucidlink_base = str(self.path_manager.get_lucidlink_base_path())
+        
         return {
             "frameio": {
                 "client_id": "YOUR_CLIENT_ID",
@@ -117,9 +137,16 @@ class ConfigLoader:
                 "sheet_name": "PostFlow_Tracking"
             },
             "lucidlink": {
-                "base_path": "/Volumes/resizelab/o2b-undllm",
-                "watch_path": "/Volumes/resizelab/o2b-undllm/4_OUT/2_FROM_ANIM",
-                "enabled": True
+                "base_path": lucidlink_base,
+                "watch_directory": lucidlink_base,
+                "enabled": True,
+                "watch_folders": True,
+                "notifications_enabled": True,
+                "watch_patterns": [
+                    "UNDLM_\\d+_v\\d+\\.(mov|mp4|avi|mxf)$",
+                    ".*_v\\d+\\.(mov|mp4|avi|mxf)$"
+                ],
+                "stability_timeout": 30
             },
             "workflow": {
                 "enable_thumbnails": True,
@@ -133,6 +160,12 @@ class ConfigLoader:
                 "width": 400,
                 "height": 225,
                 "quality": 85
+            },
+            "_platform_info": {
+                "os": self.path_manager.current_os,
+                "lucidlink_base": lucidlink_base,
+                "created_date": "2025-07-12",
+                "version": "4.1.1"
             }
         }
     

@@ -9,8 +9,8 @@ Point d'entrée principal du pipeline d'intégration LucidLink → Frame.io
 - Surveillance en temps réel
 - Gestion des erreurs centralisée
 
-Version: 4.1.1 (Discord Optimisé)
-Date: 10 juillet 2025
+Version: 4.1.4 (Compatibilité Windows)
+Date: 12 juillet 2025
 """
 
 import sys
@@ -152,7 +152,7 @@ class RLPostFlowPipeline:
     def print_banner(self):
         """Affiche la bannière de démarrage"""
         print("\n" + "="*80)
-        print("🎬 RL POSTFLOW - PIPELINE D'INTÉGRATION v4.1.1 (Modularisé)")
+        print("🎬 RL POSTFLOW - PIPELINE D'INTÉGRATION v4.1.3 (Modularisé)")
         print("="*80)
         print("Pipeline automatisé LucidLink → Frame.io")
         print("• 🔐 Authentification OAuth Web App autonome")
@@ -335,7 +335,7 @@ def setup_signal_handlers(pipeline: RLPostFlowPipeline):
 
 async def main():
     """Fonction principale"""
-    parser = argparse.ArgumentParser(description='RL PostFlow Pipeline v4.1.1 (Modularisé)')
+    parser = argparse.ArgumentParser(description='RL PostFlow Pipeline v4.1.3 (Modularisé)')
     parser.add_argument('--config', type=Path, help='Chemin vers le fichier de configuration')
     parser.add_argument('--file', type=Path, help='Traiter un fichier spécifique')
     parser.add_argument('--no-dashboard', action='store_true', help='Désactiver le dashboard')
