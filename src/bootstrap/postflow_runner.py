@@ -208,7 +208,7 @@ class PostFlowRunner:
             logger.info("✅ Intégrations initialisées avec succès")
             
         except Exception as e:
-            logger.error(f"❌ Erreur lors de l'initialisation des intégrations: {e}")
+            logger.error(f"[ERROR] Erreur lors de l'initialisation des intégrations: {e}")
     
     async def run_pipeline(self):
         """Lance le pipeline principal PostFlow v2.0"""
@@ -219,11 +219,11 @@ class PostFlowRunner:
         
         # Vérifier les composants essentiels
         if not self.frameio_manager:
-            logger.error("❌ Frame.io requis pour le fonctionnement")
+            logger.error("[ERROR] Frame.io requis pour le fonctionnement")
             return False
         
         if not self.watcher:
-            logger.error("❌ Watcher requis pour le fonctionnement")
+            logger.error("[ERROR] Watcher requis pour le fonctionnement")
             return False
         
         self.is_running = True
@@ -262,30 +262,30 @@ class PostFlowRunner:
                 try:
                     # Vérifier et rafraîchir le token périodiquement
                     if not await self._check_and_refresh_token():
-                        logger.error("❌ Problème avec le token Frame.io")
+                        logger.error("[ERROR] Problème avec le token Frame.io")
                     
                     # Attendre soit le timeout soit l'événement d'arrêt
                     try:
                         await asyncio.wait_for(self._shutdown_event.wait(), timeout=self.token_check_interval)
                         # Si on arrive ici, l'événement d'arrêt a été déclenché
-                        logger.info("🛑 Événement d'arrêt détecté")
+                        logger.info("[STOP] Événement d'arrêt détecté")
                         break
                     except asyncio.TimeoutError:
                         # Timeout normal, continuer la boucle
                         continue
                         
                 except asyncio.CancelledError:
-                    logger.info("🛑 Boucle principale annulée")
+                    logger.info("[STOP] Boucle principale annulée")
                     break
                 except Exception as e:
-                    logger.error(f"❌ Erreur dans la boucle principale: {e}")
+                    logger.error(f"[ERROR] Erreur dans la boucle principale: {e}")
                     # En cas d'erreur, attendre un peu avant de continuer
                     await asyncio.sleep(1)
                     
         except KeyboardInterrupt:
-            logger.info("🛑 Arrêt demandé par l'utilisateur")
+            logger.info("[STOP] Arrêt demandé par l'utilisateur")
         except Exception as e:
-            logger.error(f"❌ Erreur dans la boucle principale: {e}")
+            logger.error(f"[ERROR] Erreur dans la boucle principale: {e}")
         finally:
             # Arrêt avec timeout pour éviter les blocages
             try:
@@ -295,7 +295,7 @@ class PostFlowRunner:
                 logger.warning("⚠️ Timeout lors de l'arrêt, arrêt forcé")
                 self.is_running = False
             except asyncio.CancelledError:
-                logger.info("🛑 Arrêt annulé - signal reçu")
+                logger.info("[STOP] Arrêt annulé - signal reçu")
                 self.is_running = False
             except Exception as e:
                 logger.warning(f"⚠️ Erreur lors de l'arrêt: {e}")
@@ -311,6 +311,22 @@ class PostFlowRunner:
             # Afficher les métadonnées si disponibles
             if metadata:
                 logger.info(f"📊 Métadonnées: {metadata}")
+            
+            # === VÉRIFICATION PRÉALABLE DES DOUBLONS ===
+            if self.upload_tracker and not force:
+                file_metadata = metadata or self._extract_metadata_from_path(Path(file_path))
+                shot_id = file_metadata.get('shot_id', '')
+                version = file_metadata.get('version', 'v001')
+                
+                duplicate = self.upload_tracker.is_duplicate(file_path, shot_id, version)
+                if duplicate:
+                    status = duplicate.get('status', 'UNKNOWN')
+                    if status == 'COMPLETED':
+                        logger.info(f"✅ Fichier déjà traité, ignoré: {Path(file_path).name}")
+                        return
+                    elif status in ['CREATED', 'PROCESSING', 'REPROCESSING']:
+                        logger.info(f"🔄 Fichier déjà en traitement, ignoré: {Path(file_path).name}")
+                        return
             
             # Ajouter le fichier à la queue au lieu de le traiter directement
             if self.upload_queue:
@@ -335,12 +351,12 @@ class PostFlowRunner:
                 await self._process_file_workflow(Path(file_path), force=force)
             
         except Exception as e:
-            logger.error(f"❌ Erreur ajout fichier à la queue {file_path}: {e}")
+            logger.error(f"[ERROR] Erreur ajout fichier à la queue {file_path}: {e}")
             # Fallback : essayer traitement direct
             try:
                 await self._process_file_workflow(Path(file_path), force=force)
             except Exception as e2:
-                logger.error(f"❌ Erreur traitement direct {file_path}: {e2}")
+                logger.error(f"[ERROR] Erreur traitement direct {file_path}: {e2}")
     
     async def _process_file_workflow(self, file_path: Path, force: bool = False):
         """Workflow complet de traitement d'un fichier"""
@@ -352,16 +368,45 @@ class PostFlowRunner:
                 logger.error(f"❌ Fichier instable, abandon: {file_path}")
                 return
             
-            # === NOUVELLE LOGIQUE DE TRACKING ===
+            # === VÉRIFICATION DES DOUBLONS ===
             upload_id = None
             if self.upload_tracker:
                 metadata = self._extract_metadata_from_path(file_path)
-                upload_id = self.upload_tracker.add_upload(
-                    str(file_path),
-                    metadata.get('shot_id', ''),
-                    metadata.get('version', 'v001'),
-                    metadata
-                )
+                shot_id = metadata.get('shot_id', '')
+                version = metadata.get('version', 'v001')
+                
+                # Vérifier si le fichier est déjà traité
+                duplicate = self.upload_tracker.is_duplicate(str(file_path), shot_id, version)
+                if duplicate and not force:
+                    status = duplicate.get('status', 'UNKNOWN')
+                    if status == 'COMPLETED':
+                        logger.info(f"✅ Fichier déjà traité avec succès: {file_path.name}")
+                        logger.info(f"📋 Upload ID existant: {duplicate.get('upload_id', 'N/A')}")
+                        return duplicate.get('upload_id')
+                    elif status in ['CREATED', 'PROCESSING']:
+                        logger.info(f"🔄 Fichier en cours de traitement: {file_path.name}")
+                        logger.info(f"📋 Upload ID existant: {duplicate.get('upload_id', 'N/A')}")
+                        return duplicate.get('upload_id')
+                    else:
+                        logger.warning(f"⚠️ Fichier précédemment échoué, nouveau traitement: {file_path.name}")
+                
+                # Ajouter nouveau tracking ou récupérer l'existant
+                if duplicate and force:
+                    upload_id = duplicate.get('upload_id')
+                    logger.info(f"🔄 Retraitement forcé: {file_path.name} (ID: {upload_id})")
+                    # Mettre à jour le statut pour indiquer un nouveau traitement
+                    self.upload_tracker.update_upload(upload_id, {
+                        'status': 'REPROCESSING',
+                        'reprocessing_at': datetime.now().isoformat()
+                    })
+                else:
+                    upload_id = self.upload_tracker.add_upload(
+                        str(file_path),
+                        shot_id,
+                        version,
+                        metadata
+                    )
+                    logger.info(f"📋 Nouveau tracking créé: {file_path.name} (ID: {upload_id})")
             
             # 1. Générer la miniature avec upload vers Google Drive pour Discord
             thumbnail_path = None
@@ -378,7 +423,7 @@ class PostFlowRunner:
             
             # 2. Vérifier et rafraîchir le token si nécessaire
             if not await self._check_and_refresh_token():
-                logger.error("❌ Token Frame.io invalide")
+                logger.error("[ERROR] Token Frame.io invalide")
                 return
             
             # 3. Upload vers Frame.io avec la nouvelle méthode
@@ -387,7 +432,7 @@ class PostFlowRunner:
                 try:
                     frameio_link = await self._upload_to_frameio(file_path)
                 except Exception as e:
-                    logger.error(f"❌ Erreur upload Frame.io: {e}")
+                    logger.error(f"[ERROR] Erreur upload Frame.io: {e}")
             
             # 4. Upload thumbnail vers Google Drive et mise à jour Google Sheets
             thumbnail_drive_url = thumbnail_url  # Déjà uploadé à l'étape 1
@@ -400,14 +445,14 @@ class PostFlowRunner:
                         metadata, frameio_link, thumbnail_drive_url, file_path
                     )
                 except Exception as e:
-                    logger.error(f"❌ Erreur mise à jour Google Sheets: {e}")
+                    logger.error(f"[ERROR] Erreur mise à jour Google Sheets: {e}")
             
             # 6. Notification Discord avec thumbnail
             if self.config.get('workflow', {}).get('enable_discord_notifications', True):
                 try:
                     await self._send_file_notification(file_path, frameio_link, thumbnail_url)
                 except Exception as e:
-                    logger.error(f"❌ Erreur notification Discord: {e}")
+                    logger.error(f"[ERROR] Erreur notification Discord: {e}")
             
             # Mettre à jour les métriques
             self.metrics['files_processed'] += 1
@@ -422,12 +467,12 @@ class PostFlowRunner:
                         'status': 'COMPLETED'
                     })
                 except Exception as e:
-                    logger.error(f"❌ Erreur finalisation tracking: {e}")
+                    logger.error(f"[ERROR] Erreur finalisation tracking: {e}")
             
-            logger.info(f"🎉 Workflow terminé avec succès: {file_path.name}")
+            logger.info(f"[PARTY] Workflow terminé avec succès: {file_path.name}")
             
         except Exception as e:
-            logger.error(f"❌ Erreur workflow: {e}")
+            logger.error(f"[ERROR] Erreur workflow: {e}")
             self.metrics['uploads_failed'] += 1
             
             # Mettre à jour le tracker avec l'erreur
@@ -439,7 +484,7 @@ class PostFlowRunner:
                         'processing_time': datetime.now().isoformat()
                     })
                 except Exception as track_error:
-                    logger.error(f"❌ Erreur tracking échec: {track_error}")
+                    logger.error(f"[ERROR] Erreur tracking échec: {track_error}")
     
     async def _generate_thumbnail(self, file_path: Path) -> tuple[Optional[str], Optional[str]]:
         """Génère une thumbnail pour le fichier"""
@@ -458,7 +503,7 @@ class PostFlowRunner:
             return thumbnail_path, None
             
         except Exception as e:
-            logger.error(f"❌ Erreur génération thumbnail: {e}")
+            logger.error(f"[ERROR] Erreur génération thumbnail: {e}")
             return None, None
     
     async def _upload_to_frameio(self, file_path: Path) -> Optional[str]:
@@ -473,7 +518,7 @@ class PostFlowRunner:
             scene_name = metadata.get('scene_name', '')
             
             if not shot_name:
-                logger.error(f"❌ Impossible d'extraire shot_name de: {file_path}")
+                logger.error(f"[ERROR] Impossible d'extraire shot_name de: {file_path}")
                 return None
             
             # Utiliser la méthode de production avec remote_upload via Cloudflare/RangeServer
@@ -489,12 +534,12 @@ class PostFlowRunner:
                 return result
             else:
                 self.metrics['uploads_failed'] += 1
-                logger.error(f"❌ Upload Frame.io échoué pour: {file_path.name}")
+                logger.error(f"[ERROR] Upload Frame.io échoué pour: {file_path.name}")
                 return None
             
         except Exception as e:
             self.metrics['uploads_failed'] += 1
-            logger.error(f"❌ Erreur upload Frame.io: {e}")
+            logger.error(f"[ERROR] Erreur upload Frame.io: {e}")
             return None
     
     async def _check_and_refresh_token(self) -> bool:
@@ -516,7 +561,7 @@ class PostFlowRunner:
             return False
             
         except Exception as e:
-            logger.error(f"❌ Erreur vérification token: {e}")
+            logger.error(f"[ERROR] Erreur vérification token: {e}")
             return False
     
     async def _wait_for_file_stability(self, file_path: Path, max_wait: int = 60, check_interval: int = 2) -> bool:
@@ -550,7 +595,7 @@ class PostFlowRunner:
                 return await self._standard_stability_check(file_path, max_wait, check_interval)
                 
         except Exception as e:
-            logger.error(f"❌ Erreur vérification stabilité: {file_path} - {e}")
+            logger.error(f"[ERROR] Erreur vérification stabilité: {file_path} - {e}")
             return False
     
     async def _standard_stability_check(self, file_path: Path, max_wait: int = 60, check_interval: int = 2) -> bool:
@@ -598,7 +643,7 @@ class PostFlowRunner:
             return False
             
         except Exception as e:
-            logger.error(f"❌ Erreur vérification stabilité standard: {file_path} - {e}")
+            logger.error(f"[ERROR] Erreur vérification stabilité standard: {file_path} - {e}")
             return False
     
     def _extract_metadata_from_path(self, file_path: Path) -> Dict[str, str]:
@@ -654,7 +699,7 @@ class PostFlowRunner:
             return metadata
             
         except Exception as e:
-            logger.error(f"❌ Erreur extraction métadonnées: {e}")
+            logger.error(f"[ERROR] Erreur extraction métadonnées: {e}")
             return {}
     
     async def _upload_thumbnail_to_drive(self, thumbnail_path: str, shot_name: str, nomenclature: str) -> Optional[str]:
@@ -677,7 +722,7 @@ class PostFlowRunner:
                 return None
                 
         except Exception as e:
-            logger.error(f"❌ Erreur upload thumbnail vers Drive: {e}")
+            logger.error(f"[ERROR] Erreur upload thumbnail vers Drive: {e}")
             return None
     
     async def _update_sheets_with_processing_info(self, metadata: dict, frameio_link: str = None, 
@@ -690,7 +735,7 @@ class PostFlowRunner:
             
             nomenclature = metadata.get('nomenclature', '')
             if not nomenclature:
-                logger.error("❌ Pas de nomenclature disponible pour Google Sheets")
+                logger.error("[ERROR] Pas de nomenclature disponible pour Google Sheets")
                 return
             
             # Préparer les données de mise à jour avec formules Google Sheets
@@ -726,7 +771,7 @@ class PostFlowRunner:
                 logger.info(f"✅ Google Sheets mis à jour avec formules pour: {nomenclature}")
             
         except Exception as e:
-            logger.error(f"❌ Erreur mise à jour Sheets: {e}")
+            logger.error(f"[ERROR] Erreur mise à jour Sheets: {e}")
     
     async def _send_file_notification(self, file_path: Path, frameio_link: str = None, thumbnail_url: str = None):
         """Envoie une notification Discord pour un fichier traité"""
@@ -738,7 +783,7 @@ class PostFlowRunner:
             
             message = f"🎬 Fichier traité: {file_path.name}"
             if frameio_link:
-                message += f"\n🔗 Frame.io: {frameio_link}"
+                message += f"\n[LINK] Frame.io: {frameio_link}"
             
             # Si on utilise le user_notifier
             if self.user_notifier:
@@ -757,7 +802,7 @@ class PostFlowRunner:
                 logger.debug(f"⚠️ Notification fichier Discord non envoyée: {file_path.name}")
             
         except Exception as e:
-            logger.error(f"❌ Erreur notification Discord: {e}")
+            logger.error(f"[ERROR] Erreur notification Discord: {e}")
     
     async def _send_discord_notification(self, title: str, message: str):
         """Envoie une notification Discord de façon asynchrone"""
@@ -805,7 +850,7 @@ class PostFlowRunner:
             return True
             
         except Exception as e:
-            logger.error(f"❌ Erreur vérification synchronisation: {e}")
+            logger.error(f"[ERROR] Erreur vérification synchronisation: {e}")
             return False
     
     async def shutdown(self):
@@ -813,7 +858,7 @@ class PostFlowRunner:
         if not self.is_running:
             return
             
-        logger.info("🛑 Arrêt du pipeline PostFlow v2.0...")
+        logger.info("[STOP] Arrêt du pipeline PostFlow v2.0...")
         
         self.is_running = False
         
@@ -826,7 +871,7 @@ class PostFlowRunner:
             try:
                 await asyncio.wait_for(
                     self._send_discord_notification(
-                        "🛑 PostFlow v2.0 arrêté",
+                        "[STOP] PostFlow v2.0 arrêté",
                         "Le pipeline de traitement a été arrêté"
                     ),
                     timeout=5.0
@@ -838,7 +883,7 @@ class PostFlowRunner:
         
         # Arrêter le watcher
         if self.watcher:
-            logger.info("🛑 Arrêt du watcher...")
+            logger.info("[STOP] Arrêt du watcher...")
             try:
                 self.watcher.stop()
                 logger.info("✅ Watcher arrêté")
@@ -847,7 +892,7 @@ class PostFlowRunner:
         
         # Arrêter la queue d'upload
         if self.upload_queue:
-            logger.info("🛑 Arrêt de la queue d'upload...")
+            logger.info("[STOP] Arrêt de la queue d'upload...")
             try:
                 await self.upload_queue.stop()
                 logger.info("✅ Queue d'upload arrêtée")
@@ -867,7 +912,7 @@ class PostFlowRunner:
             current_task = asyncio.current_task()
             tasks = [task for task in asyncio.all_tasks() if not task.done() and task != current_task]
             if tasks:
-                logger.info(f"🛑 Annulation de {len(tasks)} tâches asyncio...")
+                logger.info(f"[STOP] Annulation de {len(tasks)} tâches asyncio...")
                 for task in tasks:
                     if not task.done():
                         task.cancel()
@@ -952,7 +997,7 @@ class PostFlowRunner:
                         logger.info(f"✅ Traitement terminé: {file_path.name}")
                         return True
                     elif item_status['status'] == 'FAILED':
-                        logger.error(f"❌ Traitement échoué: {file_path.name}")
+                        logger.error(f"[ERROR] Traitement échoué: {file_path.name}")
                         return False
                     
                     await asyncio.sleep(1)
@@ -965,7 +1010,7 @@ class PostFlowRunner:
                 return True
                 
         except Exception as e:
-            logger.error(f"❌ Erreur traitement fichier: {e}")
+            logger.error(f"[ERROR] Erreur traitement fichier: {e}")
             return False
     
     async def _queue_file_processor(self, file_path: str, metadata: Dict[str, Any] = None, force: bool = False):
@@ -977,5 +1022,5 @@ class PostFlowRunner:
             await self._process_file_workflow(Path(file_path), force=force)
             
         except Exception as e:
-            logger.error(f"❌ [Queue] Erreur traitement {file_path}: {e}")
+            logger.error(f"[ERROR] [Queue] Erreur traitement {file_path}: {e}")
             raise  # Re-raise pour que la queue gère le retry

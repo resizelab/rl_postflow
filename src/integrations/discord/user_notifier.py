@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-🔔 Discord Notifications avec Users Google Sheets
-=================================================
+[BELL] Discord Notifications avec Users Google Sheets
+=================            'scene_completed': NotificationTemplate(
+                title="🎉 Scène Terminée",==============================
 
 Système d'intégration pour utiliser les ID Discord des users depuis Google Sheets
 dans les notifications Discord avec templates personnalisés.
@@ -89,7 +90,7 @@ class DiscordUserNotifier:
                 ]
             ),
             'review_requested': NotificationTemplate(
-                title="👁️ Review Demandée",
+                title="👀 Review Demandée",
                 message="Votre review est demandée pour le plan **{shot_name}**",
                 color=0xff9900,  # Orange
                 include_mention=True,
@@ -100,7 +101,7 @@ class DiscordUserNotifier:
                 ]
             ),
             'scene_complete': NotificationTemplate(
-                title="🎉 Scène Terminée",
+                title="[PARTY] Scène Terminée",
                 message="Félicitations ! La scène **{scene}** est terminée",
                 color=0x9900ff,  # Violet
                 include_mention=True,
@@ -486,7 +487,7 @@ class DiscordUserNotifier:
                         "inline": True
                     },
                     {
-                        "name": "🎯 Taux de succès",
+                        "name": "[DART] Taux de succès",
                         "value": f"{success_rate:.1f}%",
                         "inline": True
                     }
@@ -516,21 +517,21 @@ class DiscordUserNotifier:
         try:
             template = NotificationTemplate(
                 title="✅ Upload terminé !",
-                message=f"📄 **Fichier**: {file_name}",
+                message=f"[DOCUMENT] **Fichier**: {file_name}",
                 color=0x00FF00,  # Vert
                 fields=[]
             )
             
             if additional_info:
                 template.fields.append({
-                    "name": "🎯 Détails",
+                    "name": "[DART] Détails",
                     "value": additional_info,
                     "inline": False
                 })
             
             if frameio_link:
                 template.fields.append({
-                    "name": "🔗 Frame.io",
+                    "name": "[LINK] Frame.io",
                     "value": f"[Accéder au fichier]({frameio_link})",
                     "inline": False
                 })

@@ -88,7 +88,7 @@ class SyncChecker:
             return True
             
         except Exception as e:
-            logger.error(f"❌ Erreur vérification synchronisation: {e}")
+            logger.error(f"[ERROR] Erreur vérification synchronisation: {e}")
             return False
     
     async def _scan_and_compare_files(self, scan_path: Path) -> Tuple[List[Path], List[Path], List[Path]]:
@@ -129,16 +129,28 @@ class SyncChecker:
         
         # Identifier les fichiers manqués
         for file_path in found_files:
-            file_path_str = str(file_path)
+            file_path_str = str(file_path.absolute())  # Utiliser le chemin absolu
             
-            if file_path_str not in tracked_files:
+            # Vérifier d'abord par chemin exact
+            matched_upload = None
+            if file_path_str in tracked_files:
+                matched_upload = tracked_files[file_path_str]
+            else:
+                # Si pas de match exact, chercher par nom de fichier
+                file_name = file_path.name
+                for tracked_path, upload_data in tracked_files.items():
+                    if Path(tracked_path).name == file_name:
+                        matched_upload = upload_data
+                        logger.debug(f"🔍 Match par nom de fichier: {file_name}")
+                        break
+            
+            if not matched_upload:
                 # Fichier non traité du tout
                 missing_files.append(file_path)
                 logger.warning(f"⚠️ Fichier non traité: {file_path.name}")
             else:
                 # Fichier traité, vérifier le statut
-                upload_data = tracked_files[file_path_str]
-                status = upload_data.get('status', 'UNKNOWN')
+                status = matched_upload.get('status', 'UNKNOWN')
                 
                 if status == 'COMPLETED':
                     processed_files.append(file_path)
@@ -187,7 +199,7 @@ class SyncChecker:
                 await asyncio.sleep(1)
                 
             except Exception as e:
-                logger.error(f"❌ Erreur traitement {file_path.name}: {e}")
+                logger.error(f"[ERROR] Erreur traitement {file_path.name}: {e}")
                 continue
         
         logger.info(f"✅ Traitement de récupération terminé ({len(files_to_process)} fichiers traités)")
@@ -246,5 +258,5 @@ async def startup_sync_check(config: Dict[str, Any], config_manager: ConfigManag
         return await checker.startup_sync_check(process_file_callback, max_files_to_process)
         
     except Exception as e:
-        logger.error(f"❌ Erreur fonction startup_sync_check: {e}")
+        logger.error(f"[ERROR] Erreur fonction startup_sync_check: {e}")
         return False

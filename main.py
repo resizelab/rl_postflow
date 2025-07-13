@@ -3,13 +3,13 @@
 🎬 RL PostFlow - Main Pipeline Controller
 =======================================
 
-Point d'entrée principal du pipeline d'intégration LucidLink → Frame.io
+Point d'entrée principal du pipeline d'intégration LucidLink  ->  Frame.io
 - Orchestration de toutes les intégrations
 - Interface avec le dashboard web
 - Surveillance en temps réel
 - Gestion des erreurs centralisée
 
-Version: 4.1.4 (Compatibilité Windows)
+Version: 4.1.5 (Emojis & Duplicate Detection Complete)
 Date: 12 juillet 2025
 """
 
@@ -33,7 +33,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler(log_dir / 'postflow.log'),
+        logging.FileHandler(log_dir / 'postflow.log', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )
@@ -110,7 +110,7 @@ class RLPostFlowPipeline:
             logger.info("✅ Composants de base initialisés")
             
         except Exception as e:
-            logger.error(f"❌ Erreur lors de l'initialisation des composants: {e}")
+            logger.error(f"[ERROR] Erreur lors de l'initialisation des composants: {e}")
             raise
     
     def _load_configurations(self):
@@ -125,7 +125,7 @@ class RLPostFlowPipeline:
             logger.info("✅ Configurations chargées via bootstrap")
             
         except Exception as e:
-            logger.error(f"❌ Erreur lors du chargement des configurations: {e}")
+            logger.error(f"[ERROR] Erreur lors du chargement des configurations: {e}")
             raise
     
     def _initialize_error_handler(self):
@@ -147,26 +147,26 @@ class RLPostFlowPipeline:
             logger.info("✅ Gestionnaire d'erreurs initialisé")
             
         except Exception as e:
-            logger.error(f"❌ Erreur lors de l'initialisation du gestionnaire d'erreurs: {e}")
+            logger.error(f"[ERROR] Erreur lors de l'initialisation du gestionnaire d'erreurs: {e}")
     
     def print_banner(self):
         """Affiche la bannière de démarrage"""
         print("\n" + "="*80)
-        print("🎬 RL POSTFLOW - PIPELINE D'INTÉGRATION v4.1.3 (Modularisé)")
+        print("🎬 RL POSTFLOW - PIPELINE D'INTÉGRATION v4.1.5 (Emojis & Duplicate Detection Complete)")
         print("="*80)
-        print("Pipeline automatisé LucidLink → Frame.io")
-        print("• 🔐 Authentification OAuth Web App autonome")
+        print("Pipeline automatisé LucidLink  ->  Frame.io")
+        print("• 🔑 Authentification OAuth Web App autonome")
         print("• 📁 Gestion automatique des structures Frame.io")
         print("• 📤 Upload intelligent avec retry")
         print("• 🎛️ Dashboard web intégré")
-        print("• 📢 Notifications Discord")
+        print("• 🔔 Notifications Discord")
         print("• 🧩 Architecture modulaire")
         print("="*80)
     
     async def run_pipeline(self):
         """Lance le pipeline principal PostFlow v2.0"""
         if not BOOTSTRAP_AVAILABLE:
-            logger.error("❌ Bootstrap modules not available")
+            logger.error("[ERROR] Bootstrap modules not available")
             return False
         
         try:
@@ -235,18 +235,18 @@ class RLPostFlowPipeline:
             
             # Vérifier les composants essentiels
             if not frameio_ok:
-                logger.error("❌ Frame.io requis pour le fonctionnement")
+                logger.error("[ERROR] Frame.io requis pour le fonctionnement")
                 return False
             
             if not watcher_ok:
-                logger.error("❌ Watcher requis pour le fonctionnement")
+                logger.error("[ERROR] Watcher requis pour le fonctionnement")
                 return False
             
             # Lancer le runner principal
             return await self.runner.run_pipeline()
             
         except Exception as e:
-            logger.error(f"❌ Erreur lors du lancement du pipeline: {e}")
+            logger.error(f"[ERROR] Erreur lors du lancement du pipeline: {e}")
             return False
     
     def _print_component_status(self, components_status: Dict[str, bool]):
@@ -260,12 +260,12 @@ class RLPostFlowPipeline:
             if component == 'dashboard' and not dashboard_config.get('enabled', True):
                 print(f"⚪ {component.capitalize()}: Désactivé")
             else:
-                icon = "✅" if status else "❌"
+                icon = "✅" if status else "[ERROR]"
                 print(f"{icon} {component.capitalize()}: {'OK' if status else 'Erreur'}")
     
     async def shutdown(self):
         """Arrêt propre du pipeline"""
-        logger.info("🛑 Arrêt du pipeline PostFlow v2.0...")
+        logger.info("[STOP] Arrêt du pipeline PostFlow v2.0...")
         
         if self.runner:
             await self.runner.shutdown()
@@ -310,32 +310,36 @@ class RLPostFlowPipeline:
     async def process_file(self, file_path: Path, force: bool = False) -> bool:
         """Traite un fichier spécifique"""
         if not self.runner:
-            logger.error("❌ Runner non initialisé")
+            logger.error("[ERROR] Runner non initialisé")
             return False
         
         return await self.runner.process_file(file_path, force)
 
 
 def setup_signal_handlers(pipeline: RLPostFlowPipeline):
-    """Configure les gestionnaires de signaux pour arrêt propre"""
+    """Configure les gestionnaires de signaux pour arrêt propre (compatible Windows/Mac)"""
     def signal_handler(signum, frame):
-        logger.info(f"🛑 Signal {signum} reçu, arrêt en cours...")
+        logger.info(f"[STOP] Signal {signum} reçu, arrêt en cours...")
         pipeline.is_running = False
         pipeline._shutdown_event.set()
         
         # Forcer l'arrêt si le signal est reçu plusieurs fois
         if hasattr(signal_handler, 'called'):
-            logger.warning("🛑 Signal reçu plusieurs fois, arrêt forcé")
+            logger.warning("[STOP] Signal reçu plusieurs fois, arrêt forcé")
             sys.exit(1)
         signal_handler.called = True
     
+    # SIGINT est supporté sur toutes les plateformes
     signal.signal(signal.SIGINT, signal_handler)
-    signal.signal(signal.SIGTERM, signal_handler)
+    
+    # SIGTERM n'est pas supporté sur Windows
+    if hasattr(signal, 'SIGTERM'):
+        signal.signal(signal.SIGTERM, signal_handler)
 
 
 async def main():
     """Fonction principale"""
-    parser = argparse.ArgumentParser(description='RL PostFlow Pipeline v4.1.3 (Modularisé)')
+    parser = argparse.ArgumentParser(description='RL PostFlow Pipeline v4.1.5 (Emojis & Duplicate Detection Complete)')
     parser.add_argument('--config', type=Path, help='Chemin vers le fichier de configuration')
     parser.add_argument('--file', type=Path, help='Traiter un fichier spécifique')
     parser.add_argument('--no-dashboard', action='store_true', help='Désactiver le dashboard')
@@ -371,11 +375,11 @@ async def main():
         
         if args.test:
             # Mode test - vérifier les composants
-            logger.info("🧪 Mode test - Vérification des composants...")
+            logger.info("[TEST] Mode test - Vérification des composants...")
             
             # Tester les modules bootstrap
             if not BOOTSTRAP_AVAILABLE:
-                logger.error("❌ Bootstrap modules not available")
+                logger.error("[ERROR] Bootstrap modules not available")
                 return 1
             
             # Tester les composants individuellement
@@ -386,19 +390,19 @@ async def main():
                 
                 # Test Frame.io
                 frameio_ok, frameio_auth, frameio_manager = await initialize_frameio(config, config_manager)
-                logger.info(f"{'✅' if frameio_ok else '❌'} Frame.io: {'OK' if frameio_ok else 'Erreur'}")
+                logger.info(f"{'✅' if frameio_ok else '[ERROR]'} Frame.io: {'OK' if frameio_ok else 'Erreur'}")
                 
                 # Test infrastructure
                 infrastructure_ok, infrastructure_manager = await initialize_infrastructure(config, pipeline_config, config_manager)
-                logger.info(f"{'✅' if infrastructure_ok else '❌'} Infrastructure: {'OK' if infrastructure_ok else 'Erreur'}")
+                logger.info(f"{'✅' if infrastructure_ok else '[ERROR]'} Infrastructure: {'OK' if infrastructure_ok else 'Erreur'}")
                 
                 # Test dashboard
                 dashboard_ok, dashboard_initializer = start_dashboard(config, pipeline_config, config_manager)
-                logger.info(f"{'✅' if dashboard_ok else '❌'} Dashboard: {'OK' if dashboard_ok else 'Erreur'}")
+                logger.info(f"{'✅' if dashboard_ok else '[ERROR]'} Dashboard: {'OK' if dashboard_ok else 'Erreur'}")
                 
                 # Test error handler
                 error_handler_ok = ERROR_HANDLER_AVAILABLE
-                logger.info(f"{'✅' if error_handler_ok else '❌'} Error Handler: {'OK' if error_handler_ok else 'Erreur'}")
+                logger.info(f"{'✅' if error_handler_ok else '[ERROR]'} Error Handler: {'OK' if error_handler_ok else 'Erreur'}")
                 
                 # Arrêter les composants de test
                 if dashboard_initializer:
@@ -408,15 +412,15 @@ async def main():
                 
                 print(f"\n📊 RÉSULTATS DES TESTS")
                 print("-" * 50)
-                print(f"{'✅' if frameio_ok else '❌'} Frame.io: {'OK' if frameio_ok else 'Erreur'}")
-                print(f"{'✅' if infrastructure_ok else '❌'} Infrastructure: {'OK' if infrastructure_ok else 'Erreur'}")
-                print(f"{'✅' if dashboard_ok else '❌'} Dashboard: {'OK' if dashboard_ok else 'Erreur'}")
-                print(f"{'✅' if error_handler_ok else '❌'} Error Handler: {'OK' if error_handler_ok else 'Erreur'}")
+                print(f"{'✅' if frameio_ok else '[ERROR]'} Frame.io: {'OK' if frameio_ok else 'Erreur'}")
+                print(f"{'✅' if infrastructure_ok else '[ERROR]'} Infrastructure: {'OK' if infrastructure_ok else 'Erreur'}")
+                print(f"{'✅' if dashboard_ok else '[ERROR]'} Dashboard: {'OK' if dashboard_ok else 'Erreur'}")
+                print(f"{'✅' if error_handler_ok else '[ERROR]'} Error Handler: {'OK' if error_handler_ok else 'Erreur'}")
                 
                 return 0 if all([frameio_ok, infrastructure_ok, error_handler_ok]) else 1
                 
             except Exception as e:
-                logger.error(f"❌ Erreur lors des tests: {e}")
+                logger.error(f"[ERROR] Erreur lors des tests: {e}")
                 return 1
         
         if args.file:
@@ -425,12 +429,12 @@ async def main():
             
             # Vérifier que le fichier existe
             if not args.file.exists():
-                logger.error(f"❌ Fichier non trouvé: {args.file}")
+                logger.error(f"[ERROR] Fichier non trouvé: {args.file}")
                 return 1
             
             # Vérifier que c'est bien un fichier
             if not args.file.is_file():
-                logger.error(f"❌ Le chemin spécifié n'est pas un fichier: {args.file}")
+                logger.error(f"[ERROR] Le chemin spécifié n'est pas un fichier: {args.file}")
                 return 1
             
             # Initialiser les composants nécessaires pour le traitement
@@ -442,7 +446,7 @@ async def main():
                 nomenclature_info = validate_strict_nomenclature(str(args.file))
                 logger.info(f"✅ Nomenclature validée: {nomenclature_info['shot_id']} {nomenclature_info['version']}")
             except Exception as e:
-                logger.error(f"❌ Fichier non conforme à la nomenclature: {e}")
+                logger.error(f"[ERROR] Fichier non conforme à la nomenclature: {e}")
                 return 1
             
             # Traiter le fichier avec le workflow complet
@@ -482,11 +486,11 @@ async def main():
                     logger.info(f"✅ Traitement terminé avec succès: {args.file.name}")
                     return 0
                 else:
-                    logger.error(f"❌ Échec du traitement: {args.file.name}")
+                    logger.error(f"[ERROR] Échec du traitement: {args.file.name}")
                     return 1
                     
             except Exception as e:
-                logger.error(f"❌ Erreur lors du traitement: {e}")
+                logger.error(f"[ERROR] Erreur lors du traitement: {e}")
                 return 1
         
         # Lancer le pipeline normal (mode surveillance)
@@ -494,10 +498,10 @@ async def main():
         return 0 if result else 1
         
     except KeyboardInterrupt:
-        logger.info("🛑 Interruption clavier détectée")
+        logger.info("[STOP] Interruption clavier détectée")
         return 0
     except Exception as e:
-        logger.error(f"❌ Erreur fatale: {e}")
+        logger.error(f"[ERROR] Erreur fatale: {e}")
         return 1
     finally:
         # S'assurer que le pipeline est correctement fermé
@@ -514,15 +518,19 @@ if __name__ == "__main__":
         exit_code = asyncio.run(main())
         sys.exit(exit_code)
     except KeyboardInterrupt:
-        logger.info("🛑 Arrêt demandé par l'utilisateur")
+        logger.info("[STOP] Arrêt demandé par l'utilisateur")
         sys.exit(0)
     except Exception as e:
-        logger.error(f"💥 Erreur fatale: {e}")
+        logger.error(f"[BOOM] Erreur fatale: {e}")
         sys.exit(1)
     finally:
-        # S'assurer que tous les processus sont terminés
+        # S'assurer que tous les processus sont terminés (compatible Windows/Mac)
         try:
-            # Nettoyer les processus enfants
-            os.killpg(os.getpgrp(), signal.SIGTERM)
-        except:
+            # Sur Windows, utiliser une approche différente
+            if os.name == 'nt':  # Windows
+                # Sur Windows, os.killpg n'existe pas
+                pass
+            else:  # Unix/Linux/macOS
+                os.killpg(os.getpgrp(), signal.SIGTERM)
+        except Exception:
             pass

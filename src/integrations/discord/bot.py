@@ -101,7 +101,7 @@ class DiscordBot:
             
             embed.add_field(
                 name="Bot Status",
-                value="✅ Online",
+                value="[OK] Online",
                 inline=True
             )
             
@@ -203,7 +203,7 @@ class DiscordBot:
         if mention_user_id:
             message_parts.append(f"Hey <@{mention_user_id}>")
         
-        message_parts.append(f"🎬 Le plan **{shot_nomenclature}** est maintenant à l'étape **{stage}**")
+        message_parts.append(f"[MOVIE] Le plan **{shot_nomenclature}** est maintenant à l'étape **{stage}**")
         
         if frameio_link:
             message_parts.append(f"📽️ [Voir sur Frame.io]({frameio_link})")

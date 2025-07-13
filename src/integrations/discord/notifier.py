@@ -26,7 +26,7 @@ class DiscordNotifierConfig:
     webhook_url: str
     channel_name: str = "postproduction"
     bot_name: str = "RL PostFlow Bot"
-    avatar_url: str = "https://cdn.discordapp.com/emojis/🎬.png"
+    avatar_url: str = "https://cdn.discordapp.com/emojis/[MOVIE].png"
 
 
 class DiscordNotifier:
@@ -43,12 +43,12 @@ class DiscordNotifier:
             # Dictionnaire simple
             self.webhook_url = config.get('webhook_url')
             self.bot_name = config.get('username', 'RL PostFlow Bot')
-            self.avatar_url = config.get('avatar_url', 'https://cdn.discordapp.com/emojis/🎬.png')
+            self.avatar_url = config.get('avatar_url', 'https://cdn.discordapp.com/emojis/[MOVIE].png')
         elif hasattr(config, 'get'):
             # Configuration manager
             self.webhook_url = config.get('discord.webhook_url')
             self.bot_name = config.get('discord.username', 'RL PostFlow Bot')
-            self.avatar_url = config.get('discord.avatar_url', 'https://cdn.discordapp.com/emojis/🎬.png')
+            self.avatar_url = config.get('discord.avatar_url', 'https://cdn.discordapp.com/emojis/[MOVIE].png')
         else:
             # DiscordNotifierConfig
             self.webhook_url = config.webhook_url
@@ -120,27 +120,27 @@ class DiscordNotifier:
         
         # Create embed
         embed = {
-            "title": "Shot Upload Complete",
+            "title": "✅ Shot Upload Complete",
             "description": f"Le plan {shot_nomenclature} est prêt pour review",
             "color": 0x00ff00,  # Green
             "fields": [
                 {
-                    "name": "Plan",
+                    "name": "🎬 Plan",
                     "value": shot_nomenclature,
                     "inline": True
                 },
                 {
-                    "name": "Séquence",
+                    "name": "🎞️ Séquence",
                     "value": scene_name,
                     "inline": True
                 },
                 {
-                    "name": "Version",
+                    "name": "📄 Version",
                     "value": version,
                     "inline": True
                 },
                 {
-                    "name": "Review Link",
+                    "name": "🔗 Review Link",
                     "value": f"[Voir sur Frame.io]({frameio_link})",
                     "inline": False
                 }
@@ -185,22 +185,22 @@ class DiscordNotifier:
         
         # Create embed
         embed = {
-            "title": "Shot Status Update",
+            "title": "📊 Shot Status Update",
             "description": f"Shot {shot_nomenclature} has progressed in the pipeline",
             "color": self._get_status_color(current_status),
             "fields": [
                 {
-                    "name": "Previous Status",
+                    "name": "📝 Previous Status",
                     "value": f"{self._get_status_emoji(previous_status)} {previous_status.replace('_', ' ').title()}",
                     "inline": True
                 },
                 {
-                    "name": "Current Status", 
+                    "name": "🎯 Current Status", 
                     "value": f"{self._get_status_emoji(current_status)} {current_status.replace('_', ' ').title()}",
                     "inline": True
                 },
                 {
-                    "name": "Stage",
+                    "name": "🔧 Stage",
                     "value": f"{self._get_stage_emoji(stage)} {stage.replace('_', ' ').title()}",
                     "inline": True
                 }
@@ -214,7 +214,7 @@ class DiscordNotifier:
         # Add Frame.io link if available
         if frameio_link:
             embed["fields"].append({
-                "name": "Review Link",
+                "name": "🔗 Review Link",
                 "value": f"[Voir sur Frame.io]({frameio_link})",
                 "inline": False
             })
@@ -222,7 +222,7 @@ class DiscordNotifier:
         # Add notes if available
         if notes:
             embed["fields"].append({
-                "name": "Notes",
+                "name": "📝 Notes",
                 "value": notes,
                 "inline": False
             })
@@ -248,7 +248,7 @@ class DiscordNotifier:
         if mention_user_id:
             message_parts.append(f"Hey <@{mention_user_id}>")
         
-        message_parts.append(f"🎉 **Scene Completed**: {scene_name}")
+        message_parts.append(f"[PARTY] **Scene Completed**: {scene_name}")
         
         content = " ".join(message_parts)
         
