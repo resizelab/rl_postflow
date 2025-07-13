@@ -1,0 +1,93 @@
+{
+    "version": "0.1.1",
+    "workflow": "RL PostFlow - Une Nuit dans la Manche",
+    "description": "Architecture modulaire - Compatible Mac/Windows - Correction erreurs JavaScript",
+    
+    "paths": {
+        "lucidlink": {
+            "windows": {
+                "description": "Chemin LucidLink sur Windows - La lettre de lecteur peut varier",
+                "base_pattern": ":/Volumes/resizelab/o2b-undllm",
+                "auto_detect": true,
+                "possible_drives": ["C:", "D:", "E:", "F:", "G:", "H:", "I:", "J:", "K:", "L:", "M:", "N:", "O:", "P:"],
+                "fallback": "E:/Volumes/resizelab/o2b-undllm",
+                "panel_source": "E:/Volumes/resizelab/o2b-undllm/2_IN/_ELEMENTS/TOOLS/ae_panel_script"
+            },
+            "mac": {
+                "description": "Chemin LucidLink sur macOS - Testé et validé",
+                "base_path": "/Volumes/resizelab/o2b-undllm",
+                "auto_detect": true,
+                "panel_source": "/Volumes/resizelab/o2b-undllm/2_IN/_ELEMENTS/TOOLS/ae_panel_script"
+            }
+        },
+        "exports": {
+            "animation": {
+                "relative_path": "SEQUENCES/{sequence}/_EB/{shot}/1_VIDEO",
+                "description": "Export PNG 8-bits pour animation"
+            },
+            "final": {
+                "relative_path": "4_OUT/2_FROM_ANIM/{sequence}/{shot}",
+                "sequence_path": "4_OUT/2_FROM_ANIM/{sequence}/_ALL",
+                "description": "Export ProRes final"
+            }
+        },
+        "project_sequences": "SEQUENCES",
+        "eb_folder": "_EB"
+    },
+    
+    "formats": {
+        "png_animation": {
+            "name": "PNG 8-bits Animation",
+            "extension": "png", 
+            "width": 2560,
+            "height": 1440,
+            "channels": "RGB",
+            "depth": 8,
+            "padding": 5,
+            "padding_format": "[#####]",
+            "path_suffix": "1_VIDEO",
+            "note": "Configuration actuelle dans le panel - Format After Effects standard"
+        },
+        "prores_wip": {
+            "name": "ProRes LT WIP",
+            "codec": "Apple ProRes 422 LT",
+            "extension": "mov",
+            "width": 1920,
+            "height": 1080,
+            "framerate": 25,
+            "quality": "LT"
+        },
+        "prores_final": {
+            "name": "ProRes HQ Final",
+            "codec": "Apple ProRes 422 HQ", 
+            "extension": "mov",
+            "width": 2560,
+            "height": 1440,
+            "framerate": 25,
+            "quality": "HQ"
+        }
+    },
+    
+    "versioning": {
+        "wip_pattern": "v{number:03d}",
+        "final_version": "vDEF",
+        "start_number": 1
+    },
+    
+    "nomenclature": {
+        "sequence_pattern": "SQ\\d{2}",
+        "shot_pattern": "UNDLM_\\d{5}",
+        "version_pattern": "v\\d{3}|vDEF"
+    },
+    
+    "ui": {
+        "panel_title": "🎬 RL PostFlow",
+        "themes": {
+            "dark": {
+                "background": "#2D2D2D",
+                "text": "#FFFFFF",
+                "accent": "#007ACC"
+            }
+        }
+    }
+}

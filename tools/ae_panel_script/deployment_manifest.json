@@ -1,0 +1,36 @@
+{
+  "version": "1.6.0",
+  "deployment_date": "2025-07-13T23:48:41.920046",
+  "files": [
+    {
+      "name": "RL_PostFlow_Panel.jsx",
+      "size_kb": 41.4,
+      "type": "After Effects Script"
+    },
+    {
+      "name": "install_rl_postflow_complete.jsx",
+      "size_kb": 12.9,
+      "type": "After Effects Script"
+    },
+    {
+      "name": "templates/RL PostFlow.aom",
+      "size_kb": 623.2,
+      "type": "Other"
+    },
+    {
+      "name": "templates/RL PostFlow.ars",
+      "size_kb": 15.0,
+      "type": "Other"
+    },
+    {
+      "name": "config.json",
+      "size_kb": 3.1,
+      "type": "Other"
+    },
+    {
+      "name": "README.md",
+      "size_kb": 6.7,
+      "type": "Documentation"
+    }
+  ]
+}
