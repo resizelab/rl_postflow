@@ -132,3 +132,28 @@ config/production_config.json
 config/google_credentials.json
 config/private.key
 config/public.key
+
+# Environnements virtuels
+.venv/
+.venv-*/
+venv/
+ENV/
+env/
+
+# Fichiers de thumbnails générés
+output/thumbnails/*.jpg
+output/thumbnails/*.png
+
+# Documentation de développement
+COMMIT_MESSAGE_*.md
+MISSION_ACCOMPLISHED_*.md
+REPOSITORY_STRUCTURE.md
+
+# Outils de validation et debug
+tools/validation/add_safe_emojis.py
+tools/validation/cleanup_emojis*.py
+tools/validation/fix_remaining_codes.py
+tools/validation/test_*.py
+
+# Dashboard de développement
+dashboard.py

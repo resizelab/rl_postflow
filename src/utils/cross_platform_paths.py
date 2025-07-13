@@ -14,6 +14,7 @@ import platform
 import logging
 from pathlib import Path, PurePath, PurePosixPath, PureWindowsPath
 from typing import Dict, List, Optional, Tuple, Union
+from .safe_logging import safe_log_info, safe_log_error, safe_log_warning
 
 logger = logging.getLogger(__name__)
 
@@ -33,8 +34,8 @@ class CrossPlatformPathManager:
         # Configuration des chemins base selon l'OS
         self.base_paths = self._detect_base_paths()
         
-        logger.info(f"🖥️ Plateforme détectée: {self.current_os}")
-        logger.info(f"📁 Chemins de base détectés: {self.base_paths}")
+        safe_log_info(logger, f"🖥️ Plateforme détectée: {self.current_os}")
+        safe_log_info(logger, f"📁 Chemins de base détectés: {self.base_paths}")
     
     def _detect_base_paths(self) -> Dict[str, str]:
         """Détecte les chemins de base selon la plateforme"""
@@ -53,12 +54,12 @@ class CrossPlatformPathManager:
             for candidate in windows_candidates:
                 if os.path.exists(candidate):
                     paths['lucidlink_base'] = candidate
-                    logger.info(f"✅ Chemin LucidLink Windows trouvé: {candidate}")
+                    safe_log_info(logger, f"✅ Chemin LucidLink Windows trouvé: {candidate}")
                     break
             else:
                 # Chemin par défaut même s'il n'existe pas encore
                 paths['lucidlink_base'] = "E:\\Volumes\\resizelab\\o2b-undllm"
-                logger.warning(f"⚠️ Aucun chemin LucidLink trouvé, utilisation du défaut: {paths['lucidlink_base']}")
+                safe_log_warning(logger, f"⚠️ Aucun chemin LucidLink trouvé, utilisation du défaut: {paths['lucidlink_base']}")
         
         elif self.is_macos:
             # Chemins macOS typiques pour LucidLink
@@ -72,12 +73,12 @@ class CrossPlatformPathManager:
             for candidate in macos_candidates:
                 if os.path.exists(candidate):
                     paths['lucidlink_base'] = candidate
-                    logger.info(f"✅ Chemin LucidLink macOS trouvé: {candidate}")
+                    safe_log_info(logger, f"✅ Chemin LucidLink macOS trouvé: {candidate}")
                     break
             else:
                 # Chemin par défaut même s'il n'existe pas encore
                 paths['lucidlink_base'] = "/Volumes/resizelab/o2b-undllm"
-                logger.warning(f"⚠️ Aucun chemin LucidLink trouvé, utilisation du défaut: {paths['lucidlink_base']}")
+                safe_log_warning(logger, f"⚠️ Aucun chemin LucidLink trouvé, utilisation du défaut: {paths['lucidlink_base']}")
         
         elif self.is_linux:
             # Chemins Linux typiques pour LucidLink
@@ -90,12 +91,12 @@ class CrossPlatformPathManager:
             for candidate in linux_candidates:
                 if os.path.exists(candidate):
                     paths['lucidlink_base'] = candidate
-                    logger.info(f"✅ Chemin LucidLink Linux trouvé: {candidate}")
+                    safe_log_info(logger, f"✅ Chemin LucidLink Linux trouvé: {candidate}")
                     break
             else:
                 # Chemin par défaut
                 paths['lucidlink_base'] = "/mnt/lucidlink/resizelab/o2b-undllm"
-                logger.warning(f"⚠️ Aucun chemin LucidLink trouvé, utilisation du défaut: {paths['lucidlink_base']}")
+                safe_log_warning(logger, f"⚠️ Aucun chemin LucidLink trouvé, utilisation du défaut: {paths['lucidlink_base']}")
         
         return paths
     
