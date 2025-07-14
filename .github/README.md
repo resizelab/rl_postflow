@@ -3,7 +3,7 @@
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-pytest-orange.svg)](tests/)
-[![Version](https://img.shields.io/badge/Version-4.1.4-red.svg)](https://github.com/resizelab/rl_postflow/releases)
+[![Version](https://img.shields.io/badge/Version-4.1.9-red.svg)](https://github.com/resizelab/rl_postflow/releases)
 [![Windows](https://img.shields.io/badge/Windows-Compatible-brightgreen.svg)](docs/WINDOWS_GUIDE.md)
 [![Multi-Platform](https://img.shields.io/badge/Multi--Platform-macOS%20%7C%20Windows%20%7C%20Linux-blue.svg)](docs/DEPLOYMENT_STRATEGY.md)
 
@@ -29,6 +29,89 @@
 - **Dashboard web** : Interface de monitoring en temps réel
 - **Gestion d'erreurs** : Système de retry et alertes
 - **Métriques** : Suivi des performances et statistiques
+
+## 🆕 Nouveautés v4.1.9 - **CORRECTIONS CRITIQUES & OPTIMISATIONS PIPELINE**
+
+### 🔧 **Corrections Majeures**
+- ✅ **Google Sheets Tracker** : Fix complet des bugs de compatibilité GoogleConnectionManager
+- ✅ **Optimized Sheets Adapter** : Correction du mapping des colonnes de recherche  
+- ✅ **Processing illimité** : Suppression de toutes les limitations (3 → 999 fichiers)
+- ✅ **Double synchronisation** : Élimination des appels sync en double au démarrage
+
+### 🎨 **Améliorations UX**
+- 🖼️ **Discord Thumbnails** : Intégration directe des images dans les embeds (fini les liens)
+- 🚀 **Architecture Hostinger** : Upload optimisé FTP pour thumbnails haute performance
+- 👥 **User Notifier** : Notifications Discord enrichies avec mentions utilisateurs
+- ⚡ **Sync Checker** : Détection intelligente nom + taille + date (±2s tolerance)
+
+### 🛠️ **Corrections Techniques**
+- 🔄 **Upload Tracker** : Enregistrement file_mtime pour détection précise des changements
+- 🔍 **File Matching** : Critères multiples pour éviter les re-uploads inutiles
+- 🚫 **Anti-boucles** : Prévention des traitements en boucle infinie
+- 📊 **Queue Processing** : Traitement séquentiel optimal (max_concurrent=1)
+
+### 🧹 **Nettoyage Repository**
+- 🏗️ **Architecture Thumbnail** : Organisation propre `src/utils/thumbnail/`
+- ⚙️ **Hostinger Config** : Configuration FTP avec exemple `.json.example`
+- 🗑️ **Suppression deprecated** : Nettoyage fichiers legacy et backups inutiles
+
+## 🆕 Nouveautés v4.1.8 - **AFTER EFFECTS PANEL v1.6.0**
+
+### 🎬 **Panel After Effects Complet**
+- ✅ **Auto-versioning intelligent** : Renommage compositions (v001 → v002 → v003)
+- ✅ **Template system** : Configuration PNG 8-bits + ProRes LT/HQ prête à l'emploi
+- ✅ **Routage intelligent** : PNG → EB structure, ProRes → LucidLink
+- ✅ **Déploiement automatisé** : Package 702KB, installation 1-clic cross-platform
+
+### 🔗 **Infrastructure Webhook**
+- 🎣 **Frame.io webhooks** : Intégration temps réel avec validation signatures
+- 🚇 **Tunnel ngrok** : Développement local avec exposition sécurisée
+- 🏗️ **Services architecture** : Structure `src/services/` pour composants backend
+
+## 🆕 Nouveautés v4.1.7 - **CONNEXIONS PERSISTANTES GOOGLE**
+
+### ⚡ **Optimisations Performance**
+- ✅ **GoogleConnectionManager** : Singleton avec cache 4 connexions simultanées
+- ✅ **Performance +57.2%** : 6.13s → 2.63s (gain 3.50s par cycle)
+- ✅ **Batch operations** : Optimized Sheets avec réutilisation connexions
+- ✅ **Auto-refresh** : Gestion expiration tokens sans reconnexion
+
+### 🐛 **Corrections Frame.io**
+- 🔧 **Re-uploads fix** : Fin des uploads redondants avec détection `🎉 COMPLETED`
+- 🎯 **Path matching** : Amélioration avec fallback nom fichier
+- 📊 **Stats temps réel** : Métriques connexions avec `get_stats()`
+
+## 🆕 Nouveautés v4.1.6 - **SUPPORT DOSSIERS _ALL**
+
+### 📁 **Format Séquence _ALL**
+- ✅ **Pattern étendu** : `SQ##_UNDLM_v###.ext` dans dossiers `_ALL`
+- ✅ **Nomenclature dual** : Support automatique standard + séquence
+- ✅ **Frame.io mapping** : Configuration `{sequence}_ALL` avec validation
+- ✅ **Workflow simplifié** : Upload direct séquences complètes
+
+### 🎯 **Cas d'Usage**
+- 📦 **Export par séquence** : Fichiers consolidés dans dossiers `_ALL`
+- 🔄 **Détection automatique** : Reconnaissance des deux formats simultanément
+- 📊 **Validation stricte** : Structure `.../SQ##/_ALL/` vs `.../SQ##/UNDLM_#####/`
+
+## 🆕 Nouveautés v4.1.5 - **SYNC CHECKER & DISCORD THUMBNAILS**
+
+### 🔍 **Sync Checker Intelligent**
+- ✅ **Détection manqués** : Scan automatique LucidLink vs tracking JSON
+- ✅ **Correspondance stricte** : Nom + taille + date (`file_mtime`) ±2s tolérance
+- ✅ **Récupération auto** : Processing des fichiers non-synchronisés (max 999)
+- ✅ **Anti-doublon** : Prévention boucles infinies avec critères multiples
+
+### 🖼️ **Discord Thumbnails Intégrés**
+- 🎨 **Affichage direct** : Images dans embeds Discord (fini les liens)
+- 🚀 **Architecture Hostinger** : Upload FTP optimisé resize-lab.com/thumbnails
+- 👥 **User Notifier** : Intégration Google Sheets pour mentions utilisateurs
+- 📈 **Performance** : ~200ms par thumbnail, 100% fiabilité détection
+
+### 📊 **Métriques Validées**
+- ⚡ **Détection** : 9 fichiers en 0.02s
+- 🎯 **Correspondance** : 100% fiabilité critères multiples
+- 🔄 **Processing** : 0 conflits avec max_concurrent=1
 
 ## 🆕 Nouveautés v4.1.4 - **COMPATIBILITÉ WINDOWS COMPLÈTE**
 
