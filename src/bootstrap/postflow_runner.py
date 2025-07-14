@@ -126,6 +126,9 @@ class PostFlowRunner:
                     # Initialiser le gestionnaire avec les credentials
                     connection_manager.initialize(credentials_file, spreadsheet_id)
                     
+                    # Ajouter le GoogleConnectionManager au config_manager pour les autres composants
+                    self.config_manager.google_connection_manager = connection_manager
+                    
                     # Tester la connexion
                     if connection_manager.test_connection(spreadsheet_id):
                         # Créer l'adaptateur optimisé pour Sheets
@@ -136,8 +139,8 @@ class PostFlowRunner:
                             worksheet_name
                         )
                         
-                        # Créer le tracker avec l'adaptateur optimisé
-                        self.sheets_tracker = SheetsTracker(spreadsheet_id)
+                        # Créer le tracker avec l'adaptateur optimisé et le GoogleConnectionManager
+                        self.sheets_tracker = SheetsTracker(spreadsheet_id, user_manager=connection_manager)
                         self.sheets_tracker.status_adapter = self.sheets_adapter
                         
                         logger.info("✅ Google Sheets tracker initialisé avec connexions persistantes")
@@ -156,7 +159,7 @@ class PostFlowRunner:
             # Initialiser le générateur de thumbnails
             thumbnail_config = self.config.get('thumbnails', {})
             if thumbnail_config.get('enabled', True):
-                self.thumbnail_generator = ThumbnailGenerator(thumbnail_config)
+                self.thumbnail_generator = ThumbnailGenerator(self.config_manager)
             
             # Initialiser le notificateur Discord
             discord_config = self.config.get('discord', {})
@@ -433,9 +436,9 @@ class PostFlowRunner:
                 metadata = self._extract_metadata_from_path(file_path)
                 shot_name = metadata.get('shot_name', '')
                 
-                # Générer et uploader directement depuis la vidéo vers Google Drive
+                # Générer et uploader directement depuis la vidéo vers Hostinger
                 if self.thumbnail_generator:
-                    thumbnail_url = await self.thumbnail_generator.generate_with_drive_upload(
+                    thumbnail_url = self.thumbnail_generator.generate_with_hostinger_upload(
                         str(file_path), shot_name
                     )
             
@@ -515,7 +518,7 @@ class PostFlowRunner:
             if not self.thumbnail_generator:
                 return None, None
             
-            thumbnail_path = await self.thumbnail_generator.generate_thumbnail(str(file_path))
+            thumbnail_path = self.thumbnail_generator.generate(str(file_path))
             
             # Upload vers le serveur HTTP pour URL temporaire
             if thumbnail_path and self.infrastructure_manager and self.infrastructure_manager.get_http_server():
@@ -732,8 +735,8 @@ class PostFlowRunner:
                 logger.warning("⚠️ Thumbnail generator non disponible")
                 return None
             
-            # Utiliser la méthode Drive intégrée du ThumbnailGenerator
-            drive_url = await self.thumbnail_generator.generate_with_drive_upload(
+            # Utiliser la méthode Hostinger intégrée du ThumbnailGenerator
+            drive_url = self.thumbnail_generator.generate_with_hostinger_upload(
                 thumbnail_path, shot_name
             )
             
@@ -856,27 +859,21 @@ class PostFlowRunner:
     async def startup_sync_check(self) -> bool:
         """Vérification de synchronisation au démarrage du pipeline"""
         try:
-            logger.info("🔍 === VÉRIFICATION DE SYNCHRONISATION AU DÉMARRAGE ===")
+            from src.bootstrap.sync_checker import SyncChecker
             
-            if not self.upload_tracker:
-                logger.warning("⚠️ Upload tracker non disponible, pas de vérification")
-                return False
+            # Créer et utiliser le vrai SyncChecker
+            checker = SyncChecker(
+                self.config, 
+                self.config_manager, 
+                self.upload_tracker,
+                self.discord_notifier or self.user_notifier
+            )
             
-            # Chemin de base LucidLink (détection automatique cross-platform)
-            from src.utils.cross_platform_paths import CrossPlatformPathManager
-            path_manager = CrossPlatformPathManager()
-            
-            default_base_path = path_manager.build_lucidlink_path('o2b-undllm')
-            lucidlink_base = self.config.get('lucidlink', {}).get('base_path', str(default_base_path))
-            scan_path = Path(lucidlink_base) / "4_OUT" / "2_FROM_ANIM"
-            
-            if not scan_path.exists():
-                logger.warning(f"⚠️ Chemin LucidLink non trouvé: {scan_path}")
-                return False
-            
-            # Logique de synchronisation simplifiée pour l'exemple
-            logger.info("✅ Vérification de synchronisation terminée")
-            return True
+            # Lancer la vérification avec callback et sans limitation de fichiers
+            return await checker.startup_sync_check(
+                process_file_callback=self._handle_new_file,
+                max_files_to_process=999  # Traiter tous les fichiers
+            )
             
         except Exception as e:
             logger.error(f"[ERROR] Erreur vérification synchronisation: {e}")

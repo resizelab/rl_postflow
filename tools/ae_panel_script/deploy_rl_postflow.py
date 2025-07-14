@@ -13,7 +13,7 @@ from datetime import datetime
 
 class RLPostFlowDeployer:
     def __init__(self):
-        self.version = "1.6.0"
+        self.version = "1.6.1"
         self.files_to_deploy = [
             # Panel principal
             "RL_PostFlow_Panel.jsx",
@@ -156,7 +156,7 @@ class RLPostFlowDeployer:
             return False
         
         # Créer le dossier de destination
-        dest_path = os.path.join(lucid_path, "o2b-undllm", "4_OUT", "2_FROM_ANIM", "_TOOLS", "ae_panel_script")
+        dest_path = os.path.join(lucid_path, "o2b-undllm", "2_IN", "_ELEMENTS", "TOOLS", "ae_panel_script")
         templates_dest = os.path.join(dest_path, "templates")
         
         try:

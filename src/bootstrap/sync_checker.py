@@ -37,7 +37,7 @@ class SyncChecker:
         self.upload_tracker = upload_tracker
         self.discord_notifier = discord_notifier
         
-    async def startup_sync_check(self, process_file_callback=None, max_files_to_process: int = 3) -> bool:
+    async def startup_sync_check(self, process_file_callback=None, max_files_to_process: int = 999) -> bool:
         """
         Vérification de synchronisation au démarrage du pipeline.
         Compare les fichiers sur LucidLink avec le JSON de tracking pour identifier
@@ -130,19 +130,50 @@ class SyncChecker:
         # Identifier les fichiers manqués
         for file_path in found_files:
             file_path_str = str(file_path.absolute())  # Utiliser le chemin absolu
+            file_name = file_path.name
             
             # Vérifier d'abord par chemin exact
             matched_upload = None
             if file_path_str in tracked_files:
                 matched_upload = tracked_files[file_path_str]
+                logger.debug(f"🔍 Match par chemin exact: {file_name}")
             else:
-                # Si pas de match exact, chercher par nom de fichier
-                file_name = file_path.name
+                # Si pas de match exact, chercher par nom de fichier ET vérifier les métadonnées (nom + taille + date)
                 for tracked_path, upload_data in tracked_files.items():
-                    if Path(tracked_path).name == file_name:
-                        matched_upload = upload_data
-                        logger.debug(f"🔍 Match par nom de fichier: {file_name}")
-                        break
+                    tracked_filename = upload_data.get('filename', Path(tracked_path).name)
+                    
+                    # Match par nom de fichier ET vérification de métadonnées (taille + date)
+                    if tracked_filename == file_name:
+                        try:
+                            # Récupérer les informations du fichier actuel
+                            current_stat = file_path.stat()
+                            current_size = current_stat.st_size
+                            current_mtime = current_stat.st_mtime
+                            
+                            # Récupérer les informations du fichier tracké
+                            tracked_size = upload_data.get('file_size', 0)
+                            tracked_mtime = upload_data.get('file_mtime', 0)  # Date de modification
+                            
+                            # Correspondance stricte : nom + taille + date
+                            if (tracked_size > 0 and current_size == tracked_size and
+                                tracked_mtime > 0 and abs(current_mtime - tracked_mtime) < 2):  # Tolérance 2 secondes
+                                matched_upload = upload_data
+                                logger.debug(f"🔍 Match complet (nom+taille+date): {file_name} ({current_size} bytes)")
+                                break
+                            elif tracked_size > 0 and current_size == tracked_size and tracked_mtime == 0:
+                                # Ancien tracking sans date, utiliser nom + taille seulement
+                                matched_upload = upload_data
+                                logger.debug(f"🔍 Match par nom+taille (pas de date tracée): {file_name} ({current_size} bytes)")
+                                break
+                            else:
+                                # Fichier avec même nom mais métadonnées différentes = probablement re-sorti
+                                logger.debug(f"🔄 Fichier modifié détecté: {file_name} (taille: {current_size} vs {tracked_size}, date: {current_mtime} vs {tracked_mtime})")
+                                # Ne pas marquer comme matched_upload - sera retraité
+                                
+                        except Exception as e:
+                            logger.debug(f"Erreur vérification métadonnées pour {file_name}: {e}")
+                            # En cas d'erreur, ne pas assumer une correspondance
+                            continue
             
             if not matched_upload:
                 # Fichier non traité du tout
@@ -153,9 +184,9 @@ class SyncChecker:
                 status = matched_upload.get('status', 'UNKNOWN')
                 
                 # Vérifier les statuts de completion (avec et sans emoji)
-                if status in ['COMPLETED', '🎉 COMPLETED']:
+                if status in ['COMPLETED', '🎉 COMPLETED', 'SUCCESS', '✅ SUCCESS']:
                     processed_files.append(file_path)
-                    logger.debug(f"✅ Fichier traité: {file_path.name}")
+                    logger.info(f"✅ Fichier déjà traité: {file_path.name} (statut: {status})")
                 else:
                     # Fichier en cours ou échoué
                     missing_files.append(file_path)
@@ -239,7 +270,7 @@ class SyncChecker:
 
 async def startup_sync_check(config: Dict[str, Any], config_manager: ConfigManager, 
                            upload_tracker: Optional[Any] = None, discord_notifier: Optional[Any] = None,
-                           process_file_callback=None, max_files_to_process: int = 3) -> bool:
+                           process_file_callback=None, max_files_to_process: int = 999) -> bool:
     """
     Fonction d'initialisation de vérification de synchronisation pour compatibilité avec main.py
     

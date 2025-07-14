@@ -197,6 +197,7 @@ class UploadTracker:
                 "shot_id": shot_id,
                 "version": version,
                 "file_size": file_path_obj.stat().st_size if file_path_obj.exists() else 0,
+                "file_mtime": file_path_obj.stat().st_mtime if file_path_obj.exists() else 0,
                 "file_hash": file_hash,
                 "created_at": datetime.now().isoformat(),
                 "last_updated": datetime.now().isoformat(),

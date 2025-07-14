@@ -402,14 +402,16 @@ class DiscordUserNotifier:
             if thumbnail_url:
                 template.fields.append({
                     "name": "🖼️ Aperçu",
-                    "value": f"[Thumbnail]({thumbnail_url})",
+                    "value": f"[Voir le thumbnail]({thumbnail_url})",
                     "inline": False
                 })
+                # Activer l'affichage du thumbnail comme image dans l'embed
+                template.include_thumbnail = True
             
             # Récupérer l'ID Discord si utilisateur spécifié
             discord_id = self.get_user_discord_id(user_identifier) if user_identifier else None
             
-            return await self._send_notification_async(template, discord_id)
+            return await self._send_notification_async(template, discord_id, thumbnail_url)
             
         except Exception as e:
             logger.error(f"❌ Erreur notification fichier traité: {e}")
@@ -438,7 +440,7 @@ class DiscordUserNotifier:
             
             discord_id = self.get_user_discord_id(user_identifier) if user_identifier else None
             
-            return await self._send_notification_async(template, discord_id)
+            return await self._send_notification_async(template, discord_id, None)
             
         except Exception as e:
             logger.error(f"❌ Erreur notification système: {e}")
@@ -494,7 +496,7 @@ class DiscordUserNotifier:
                 ]
             )
             
-            return await self._send_notification_async(template)
+            return await self._send_notification_async(template, None, None)
             
         except Exception as e:
             logger.error(f"❌ Erreur rapport pipeline: {e}")
@@ -538,7 +540,7 @@ class DiscordUserNotifier:
             
             discord_id = self.get_user_discord_id(user_identifier) if user_identifier else None
             
-            return await self._send_notification_async(template, discord_id)
+            return await self._send_notification_async(template, discord_id, None)
             
         except Exception as e:
             logger.error(f"❌ Erreur notification upload: {e}")
@@ -583,20 +585,21 @@ class DiscordUserNotifier:
             
             discord_id = self.get_user_discord_id(user_identifier) if user_identifier else None
             
-            return await self._send_notification_async(template, discord_id)
+            return await self._send_notification_async(template, discord_id, None)
             
         except Exception as e:
             logger.error(f"❌ Erreur notification erreur: {e}")
             return False
     
     async def _send_notification_async(self, template: NotificationTemplate, 
-                                     discord_id: str = None) -> bool:
+                                     discord_id: str = None, thumbnail_url: str = None) -> bool:
         """
         Envoie une notification de façon asynchrone.
         
         Args:
             template: Template de notification
             discord_id: ID Discord pour mention
+            thumbnail_url: URL du thumbnail à afficher comme image
             
         Returns:
             bool: Succès de l'envoi
@@ -620,6 +623,10 @@ class DiscordUserNotifier:
                 "timestamp": get_paris_time().isoformat(),
                 "fields": template.fields or []
             }
+            
+            # Ajouter l'image thumbnail si disponible et template l'active
+            if thumbnail_url and template.include_thumbnail:
+                embed["image"] = {"url": thumbnail_url}
             
             # Exécuter la notification de façon asynchrone
             loop = asyncio.get_event_loop()

@@ -1,17 +1,17 @@
 
-# 🚀 RAPPORT DÉPLOIEMENT RL POSTFLOW v1.6.0
+# 🚀 RAPPORT DÉPLOIEMENT RL POSTFLOW v1.6.1
 
 ## 📅 Date de déploiement
-2025-07-13 23:48:42
+2025-07-14 14:24:11
 
 ## 📊 Résumé
 - **Statut**: ✅ SUCCÈS
 - **Fichiers déployés**: 6
-- **Taille totale**: 702.3 KB
+- **Taille totale**: 709.2 KB
 
 ## 📂 Fichiers déployés
-- **RL_PostFlow_Panel.jsx** (41.4 KB) - After Effects Script
-- **install_rl_postflow_complete.jsx** (12.9 KB) - After Effects Script
+- **RL_PostFlow_Panel.jsx** (44.5 KB) - After Effects Script
+- **install_rl_postflow_complete.jsx** (16.7 KB) - After Effects Script
 - **templates/RL PostFlow.aom** (623.2 KB) - Other
 - **templates/RL PostFlow.ars** (15.0 KB) - Other
 - **config.json** (3.1 KB) - Other
@@ -37,7 +37,7 @@ python test_rl_postflow.py
 python validate_js.py
 ```
 
-## 🔧 Fonctionnalités v1.6.0
+## 🔧 Fonctionnalités v1.6.1
 
 - ✅ Interface simplifiée (PNG, ProRes LT, ProRes HQ)
 - ✅ Auto-versioning intelligent (ON/OFF)

@@ -3,7 +3,7 @@
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-pytest-orange.svg)](tests/)
-[![Version](https://img.shields.io/badge/Version-4.1.4-red.svg)](https://github.com/resizelab/rl_postflow/releases)
+[![Version](https://img.shields.io/badge/Version-4.1.9-red.svg)](https://github.com/resizelab/rl_postflow/releases)
 [![Windows](https://img.shields.io/badge/Windows-Compatible-brightgreen.svg)](docs/WINDOWS_GUIDE.md)
 [![Multi-Platform](https://img.shields.io/badge/Multi--Platform-macOS%20%7C%20Windows%20%7C%20Linux-blue.svg)](docs/DEPLOYMENT_STRATEGY.md)
 
@@ -29,6 +29,46 @@
 - **Dashboard web** : Interface de monitoring en temps réel
 - **Gestion d'erreurs** : Système de retry et alertes
 - **Métriques** : Suivi des performances et statistiques
+
+## 🆕 Nouveautés v4.1.9 - **CORRECTIONS CRITIQUES & OPTIMISATIONS**
+
+### 🔧 **Corrections Majeures**
+- ✅ **Google Sheets Tracker** : Fix complet des bugs de compatibilité GoogleConnectionManager
+- ✅ **Optimized Sheets Adapter** : Correction du mapping des colonnes de recherche  
+- ✅ **Processing illimité** : Suppression de toutes les limitations (3 → 999 fichiers)
+- ✅ **Double synchronisation** : Élimination des appels sync en double au démarrage
+
+### 🎨 **Améliorations UX**
+- 🖼️ **Discord Thumbnails** : Intégration directe des images dans les embeds (fini les liens)
+- 🚀 **Architecture Hostinger** : Upload optimisé FTP pour thumbnails haute performance
+- 👥 **User Notifier** : Notifications Discord enrichies avec mentions utilisateurs
+- ⚡ **Sync Checker** : Détection intelligente nom + taille + date (±2s tolerance)
+
+### 🛠️ **Corrections Techniques**
+- 🔄 **Upload Tracker** : Enregistrement file_mtime pour détection précise des changements
+- 🔍 **File Matching** : Critères multiples pour éviter les re-uploads inutiles
+- 🚫 **Anti-boucles** : Prévention des traitements en boucle infinie
+- 📊 **Queue Processing** : Traitement séquentiel optimal (max_concurrent=1)
+
+## 🆕 Nouveautés v4.1.5 - **SYNC CHECKER & DISCORD THUMBNAILS**
+
+### 🔍 **Système de Synchronisation Avancé**
+- ✅ **Sync Checker intelligent** : Détection automatique des fichiers manqués au démarrage
+- ✅ **Correspondance stricte** : Validation par nom + taille + date de modification
+- ✅ **Récupération automatique** : Traitement des fichiers non-synchronisés
+- ✅ **Prévention des boucles** : Système anti-doublon avec critères multiples
+
+### 🖼️ **Amélioration Discord**
+- 🔄 **Thumbnails intégrés** : Affichage direct des images dans les embeds Discord
+- 🎨 **Notifications visuelles** : Templates enrichis avec preview automatique
+- 🚀 **Architecture Hostinger** : Upload optimisé des thumbnails via FTP
+- ✅ **User Notifier amélioré** : Intégration Google Sheets pour mentions utilisateurs
+
+### 🛠️ **Corrections Techniques**
+- 🔧 **Google Sheets Tracker** : Correction des bugs de compatibilité API
+- 📊 **Optimized Sheets Adapter** : Fix du mapping des colonnes de recherche
+- 🔄 **Upload Tracker** : Enregistrement de file_mtime pour détection précise
+- ⚡ **Suppression limites** : Processing illimité (999 fichiers max)
 
 ## 🆕 Nouveautés v4.1.4 - **COMPATIBILITÉ WINDOWS COMPLÈTE**
 

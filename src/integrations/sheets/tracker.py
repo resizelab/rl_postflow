@@ -71,11 +71,24 @@ class SheetsTracker:
         self._sheet_cache = {}
         self._last_refresh = None
     
+    def _get_sheets_service(self):
+        """Obtient le service Google Sheets de manière compatible avec différents user_managers."""
+        if not self.user_manager:
+            raise ValueError("User manager non disponible")
+        
+        # Compatibilité avec GoogleConnectionManager
+        if hasattr(self.user_manager, 'get_sheets_service'):
+            return self.user_manager.get_sheets_service()
+        # Compatibilité avec ancien user_manager
+        elif hasattr(self.user_manager, 'get_service'):
+            return self.user_manager.get_service()
+        else:
+            raise ValueError("User manager incompatible: méthode get_service() ou get_sheets_service() requise")
+    
     async def verify_connection(self):
         """Vérifier la connexion à Google Sheets."""
         try:
-            # Tester l'accès au spreadsheet
-            service = self.user_manager.get_service()
+            service = self._get_sheets_service()
             
             # Obtenir les informations du spreadsheet
             spreadsheet = service.spreadsheets().get(
@@ -137,7 +150,7 @@ class SheetsTracker:
                 nomenclature_col = "A"
             
             # Lire la colonne de nomenclature
-            service = self.user_manager.get_service()
+            service = self._get_sheets_service()
             range_name = f"{sheet_name}!{nomenclature_col}:{nomenclature_col}"
             
             result = service.spreadsheets().values().get(
@@ -271,7 +284,7 @@ class SheetsTracker:
             sheet_name = mapping.get("default_sheet", "Feuille1")
             
             # Lire la ligne complète
-            service = self.user_manager.get_service()
+            service = self._get_sheets_service()
             range_name = f"{sheet_name}!{row_number}:{row_number}"
             
             result = service.spreadsheets().values().get(
@@ -311,7 +324,7 @@ class SheetsTracker:
             sheet_name = mapping.get("default_sheet", "Feuille1")
             
             # Lire toutes les données
-            service = self.user_manager.get_service()
+            service = self._get_sheets_service()
             range_name = f"{sheet_name}!A:Z"  # Lire toutes les colonnes
             
             result = service.spreadsheets().values().get(

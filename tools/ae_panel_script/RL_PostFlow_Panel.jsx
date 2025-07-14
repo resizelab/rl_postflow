@@ -3,7 +3,7 @@
  * Export Timeline & Plans avec Versioning Automatique
  * Compatible After Effects 2025+ - Workflow Animation Mixte
  * 
- * Version: 1.6.0 - Auto-versioning avec renommage + Templates corrects
+ * Version: 1.6.2 - UI améliorée : emojis ProRes + contrôles file de rendu
  * Workflow: RL PostFlow - Basé sur sélection dans project panel
  */
 
@@ -340,7 +340,7 @@ var PathManager = (function() {
             // Détecter si c'est une séquence complète (pas de numéro de plan _00xxx)
             var hasShot = comp.name.indexOf("_00") > 0;
             var isSequenceExport = !shot || (!hasShot && comp.name.indexOf("_v") > 0);
-            var targetName = isSequenceExport ? sequence : shot;
+            var targetName = isSequenceExport ? "UNDLM" : shot;
             
             basePath = buildExportPathNew(sequence, shot, "final", isSequenceExport);
             
@@ -623,7 +623,7 @@ var ExportManager = (function() {
                 var isSequenceExport = !shot || (!hasShot && comp.name.indexOf("_v") > 0);
                 
                 var basePath = PathManager.buildExportPathNew(sequence, shot, "final", isSequenceExport);
-                var baseFilename = isSequenceExport ? (sequence + "_" + sequence) : (sequence + "_" + shot); // Pattern complet
+                var baseFilename = isSequenceExport ? (sequence + "_UNDLM") : (sequence + "_" + shot); // Pattern corrigé pour les séquences
                 
                 Utils.log("🔍 Auto-version ProRes - Type: " + (isSequenceExport ? "Séquence" : "Plan"));
                 Utils.log("🔍 Auto-version ProRes - Scan dans: " + basePath);
@@ -772,12 +772,54 @@ var ExportManager = (function() {
         }
     }
     
+    function pauseRenderQueue() {
+        try {
+            if (app.project.renderQueue.canQueueInAME) {
+                Utils.log("Mise en pause de la file de rendu...");
+                app.project.renderQueue.pauseRendering(true);
+                Utils.log("File de rendu mise en pause.");
+            } else {
+                Utils.log("Impossible de mettre en pause : file de rendu non active.");
+            }
+        } catch (e) {
+            Utils.log("ERREUR Pause: " + e.toString());
+        }
+    }
+    
+    function stopRenderQueue() {
+        try {
+            Utils.log("Arrêt de la file de rendu...");
+            app.project.renderQueue.stopRendering();
+            Utils.log("File de rendu arrêtée.");
+        } catch (e) {
+            Utils.log("ERREUR Arrêt: " + e.toString());
+        }
+    }
+    
+    function getRenderQueueStatus() {
+        try {
+            var rq = app.project.renderQueue;
+            var status = {
+                numItems: rq.numItems,
+                rendering: rq.rendering,
+                canQueueInAME: rq.canQueueInAME
+            };
+            return status;
+        } catch (e) {
+            Utils.log("ERREUR Status: " + e.toString());
+            return null;
+        }
+    }
+    
     // API publique du module
     return {
         exportPNG8bit: exportPNG8bit,
         exportProRes: exportProRes,
         exportProResDEF: exportProResDEF,
-        startRenderQueue: startRenderQueue
+        startRenderQueue: startRenderQueue,
+        pauseRenderQueue: pauseRenderQueue,
+        stopRenderQueue: stopRenderQueue,
+        getRenderQueueStatus: getRenderQueueStatus
     };
 })();
 
@@ -801,7 +843,7 @@ var UIManager = (function() {
         headerGroup.orientation = "column";
         headerGroup.alignChildren = ["center", "center"];
         
-        var titleLabel = headerGroup.add("statictext", undefined, "🎬 RL PostFlow v1.6.0");
+        var titleLabel = headerGroup.add("statictext", undefined, "� RL PostFlow v1.6.2");
         titleLabel.graphics.font = ScriptUI.newFont("dialog", "bold", 16);
         
         var subtitleLabel = headerGroup.add("statictext", undefined, "Export basé sur sélection");
@@ -838,15 +880,33 @@ var UIManager = (function() {
         var pngBtn = exportGroup.add("button", undefined, "📸 PNG 8-bits (Ebsynth)");
         pngBtn.preferredSize.height = 30;
         
-        var proresLTBtn = exportGroup.add("button", undefined, "� ProRes LT (WIP)");
+        var proresLTBtn = exportGroup.add("button", undefined, "🎯 ProRes LT (WIP)");
         proresLTBtn.preferredSize.height = 30;
         
-        var proresHQBtn = exportGroup.add("button", undefined, "� ProRes HQ (DEF)");
+        var proresHQBtn = exportGroup.add("button", undefined, "💎 ProRes HQ (DEF)");
         proresHQBtn.preferredSize.height = 30;
         
         var renderBtn = exportGroup.add("button", undefined, "🚀 Démarrer File de Rendu");
         renderBtn.preferredSize.height = 35;
         renderBtn.graphics.font = ScriptUI.newFont("dialog", "bold", 12);
+        
+        // Contrôles de la file de rendu
+        var queueControlGroup = exportGroup.add("group");
+        queueControlGroup.orientation = "row";
+        queueControlGroup.alignment = "fill";
+        queueControlGroup.spacing = 5;
+        
+        var pauseBtn = queueControlGroup.add("button", undefined, "⏸️ Pause");
+        pauseBtn.preferredSize.height = 28;
+        pauseBtn.preferredSize.width = 70;
+        
+        var stopBtn = queueControlGroup.add("button", undefined, "⏹️ Stop");
+        stopBtn.preferredSize.height = 28;
+        stopBtn.preferredSize.width = 70;
+        
+        var statusBtn = queueControlGroup.add("button", undefined, "📊 Status");
+        statusBtn.preferredSize.height = 28;
+        statusBtn.preferredSize.width = 70;
         
         // Log panel
         var logGroup = mainGroup.add("panel", undefined, "Journal");
@@ -961,13 +1021,34 @@ var UIManager = (function() {
             ExportManager.startRenderQueue();
         };
         
+        pauseBtn.onClick = function() {
+            ExportManager.pauseRenderQueue();
+        };
+        
+        stopBtn.onClick = function() {
+            if (confirm("Êtes-vous sûr de vouloir arrêter la file de rendu ?\n\nTous les rendus en cours seront interrompus.")) {
+                ExportManager.stopRenderQueue();
+            }
+        };
+        
+        statusBtn.onClick = function() {
+            var status = ExportManager.getRenderQueueStatus();
+            if (status) {
+                var message = "=== STATUS FILE DE RENDU ===\n";
+                message += "Éléments en file: " + status.numItems + "\n";
+                message += "Rendu en cours: " + (status.rendering ? "OUI" : "NON") + "\n";
+                message += "Disponible pour AME: " + (status.canQueueInAME ? "OUI" : "NON");
+                Utils.log(message);
+            }
+        };
+        
         clearBtn.onClick = function() {
             logPanel.text = "";
         };
         
         // Initialisation
         updateSelectionInfo();
-        Utils.log("Panel RL PostFlow initialisé.");
+        Utils.log("Panel RL PostFlow v1.6.2 initialisé - Contrôles de rendu améliorés!");
         Utils.log("Sélectionnez des compositions dans le project panel pour commencer.");
         
         return mainGroup;

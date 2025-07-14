@@ -193,8 +193,8 @@ class OptimizedSheetsStatusAdapter:
             # Utiliser gspread pour une recherche plus simple
             worksheet = self.connection_manager.get_worksheet(self.spreadsheet_id, self.worksheet_name)
             
-            # Rechercher dans la colonne des noms de shots (colonne A)
-            shot_cells = worksheet.findall(shot_name, in_column=1)
+            # Rechercher dans la colonne des noms complets de shots (colonne 4 = SHOT_NAME)
+            shot_cells = worksheet.findall(shot_name, in_column=4)
             
             if shot_cells:
                 # Retourner la première occurrence

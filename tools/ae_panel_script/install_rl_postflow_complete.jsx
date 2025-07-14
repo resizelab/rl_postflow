@@ -1,7 +1,10 @@
 /*
- * RL PostFlow Panel - INSTALLEUR COMPLET
+ * RL PostFlow Panel -         report += "🖥️ Système détecté: " + system.name + "\n";
+        report += "🔍 Méthode: " + system.detection + "\n";
+        report += "📍 Version AE: " + app.buildName + " " + app.version + "\n";
+        report += "🛠️ $.os: " + system.os + "\n\n";ALLEUR COMPLET
  * Installation complète en une seule fois : Panel + Templates + Configuration
- * Version: 1.6.0
+ * Version: 1.6.2
  */
 
 function installRLPostFlowComplete() {
@@ -9,7 +12,7 @@ function installRLPostFlowComplete() {
         var welcomeMsg = "🎬 INSTALLEUR RL POSTFLOW COMPLET\n" +
                         "══════════════════════════════════════\n\n" +
                         "Cet installeur va configurer automatiquement :\n\n" +
-                        "✅ Panel RL PostFlow v1.6.0 (interface)\n" +
+                        "✅ Panel RL PostFlow v1.6.2 (interface)\n" +
                         "✅ Templates PNG 8-bits et ProRes\n" +
                         "✅ Auto-versioning intelligent avec renommage\n" +
                         "✅ Détection LucidLink automatique\n" +
@@ -23,17 +26,19 @@ function installRLPostFlowComplete() {
         
         // === PHASE 1: DÉTECTION SYSTÈME ===
         var system = detectSystem();
-        var report = "📋 RAPPORT INSTALLATION COMPLÈTE\n";
+        var report = "📋 RAPPORT INSTALLATION RL POSTFLOW v1.6.2\n";
         report += "══════════════════════════════════════\n\n";
         report += "🖥️ Système détecté: " + system.name + "\n";
-        report += "📍 Version AE: " + app.buildName + " " + app.version + "\n\n";
+        report += "� Méthode: " + system.detection + "\n";
+        report += "�📍 Version AE: " + app.buildName + " " + app.version + "\n";
+        report += "🛠️ $.os: " + system.os + "\n\n";
         
         // === PHASE 2: VÉRIFICATION LUCIDLINK ===
         report += "🔍 PHASE 1: VÉRIFICATION LUCIDLINK\n";
         report += "─────────────────────────────────────\n";
         
-        var lucidPath = detectLucidLink(system);
-        if (!lucidPath) {
+        var lucidInfo = detectLucidLink(system);
+        if (!lucidInfo) {
             alert("❌ ERREUR CRITIQUE: LucidLink non détecté\n\n" +
                   "Vérifiez que LucidLink est monté :\n" +
                   "• macOS: /Volumes/resizelab/\n" +
@@ -42,13 +47,19 @@ function installRLPostFlowComplete() {
             return false;
         }
         
-        report += "✅ LucidLink détecté: " + lucidPath + "\n\n";
+        report += "✅ LucidLink détecté: " + lucidInfo.basePath + "\n";
+        if (lucidInfo.panelPath) {
+            report += "✅ Panel trouvé: " + lucidInfo.panelPath + "\n";
+        } else {
+            report += "⚠️ Panel non trouvé - recherche dynamique en cours\n";
+        }
+        report += "\n";
         
         // === PHASE 3: INSTALLATION PANEL ===
         report += "🔧 PHASE 2: INSTALLATION PANEL\n";
         report += "─────────────────────────────────────\n";
         
-        var panelInstall = installPanel(system, lucidPath);
+        var panelInstall = installPanel(system, lucidInfo);
         if (panelInstall.success) {
             report += "✅ Panel installé: " + panelInstall.path + "\n";
             report += "📄 Fichier: RL_PostFlow_Panel.jsx (" + panelInstall.size + " KB)\n";
@@ -62,7 +73,7 @@ function installRLPostFlowComplete() {
         report += "🎨 PHASE 3: INSTALLATION TEMPLATES\n";
         report += "─────────────────────────────────────\n";
         
-        var templatesInstall = installTemplates(system, lucidPath);
+        var templatesInstall = installTemplates(system, lucidInfo);
         if (templatesInstall.success) {
             report += "✅ Templates installés: " + templatesInstall.count + " fichiers\n";
             for (var i = 0; i < templatesInstall.files.length; i++) {
@@ -90,7 +101,7 @@ function installRLPostFlowComplete() {
             report += "🎯 WORKFLOW PRÊT:\n";
             report += "• Auto-versioning: v001 → v002 → v003\n";
             report += "• Export PNG: Templates automatiques\n";
-            report += "• Export ProRes: LT (WIP) / HQ (DEF)\n";
+            report += "• Export ProRes: � LT (WIP) / 💎 HQ (DEF)\n";
             report += "• Structure: Compatible animation RL\n\n";
         } else if (hasPanel && !hasTemplates) {
             report += "✅ INSTALLATION PANEL RÉUSSIE!\n\n";
@@ -114,7 +125,7 @@ function installRLPostFlowComplete() {
             report += "• Manuel: Copiez les fichiers depuis LucidLink\n\n";
         }
         
-        report += "📁 FICHIERS SOURCES: " + lucidPath + "4_OUT/2_FROM_ANIM/_TOOLS/ae_panel_script/\n";
+        report += "📁 FICHIERS SOURCES: " + (lucidInfo.panelPath || lucidInfo.basePath + "ae_panel_script/") + "\n";
         report += "🎬 RL PostFlow " + (hasPanel ? "installé" : "disponible") + " pour animation !";
         
         alert(report);
@@ -128,62 +139,118 @@ function installRLPostFlowComplete() {
 }
 
 function detectSystem() {
-    // DÉTECTION PRIMAIRE via chemins système (plus fiable que $.os)
-    var testMacPath = new Folder("/Applications");
-    var testWinPath = new Folder("C:/Program Files");
+    // DÉTECTION PRIMAIRE via chemins système spécifiques
     var testMacVolumes = new Folder("/Volumes");
+    var testMacApps = new Folder("/Applications");
+    var testMacUsers = new Folder("/Users");
+    var testWinProgramFiles = new Folder("C:/Program Files");
+    var testWinWindows = new Folder("C:/Windows");
     
     var isMac = false;
     var isWindows = false;
     
-    // Test macOS d'abord (plus spécifique)
-    if (testMacPath.exists || testMacVolumes.exists) {
+    // Test macOS d'abord - critères stricts
+    if (testMacVolumes.exists && testMacUsers.exists) {
+        // Double vérification : /Volumes ET /Users = vraiment macOS
         isMac = true;
         isWindows = false;
     } 
-    // Test Windows en fallback
-    else if (testWinPath.exists) {
-        isWindows = true;
-        isMac = false;
+    else if (testMacApps.exists && testMacVolumes.exists) {
+        // Alternative : /Applications ET /Volumes
+        isMac = true;
+        isWindows = false;
     }
-    // Fallback $.os si aucun test physique ne fonctionne
+    // Test Windows seulement si macOS PAS détecté
+    else if (testWinProgramFiles.exists || testWinWindows.exists) {
+        isMac = false;
+        isWindows = true;
+    }
+    // Fallback $.os si aucun test physique concluant
     else {
         var osString = $.os.toLowerCase();
-        isWindows = osString.indexOf("windows") >= 0;
         isMac = osString.indexOf("mac") >= 0 || osString.indexOf("macintosh") >= 0;
+        isWindows = osString.indexOf("windows") >= 0;
     }
     
     return {
         isWindows: isWindows,
         isMac: isMac,
-        name: isMac ? "macOS" : isWindows ? "Windows" : "Inconnu (" + $.os + ")",
-        os: $.os,
-        detection: isMac ? "Volumes/Applications" : isWindows ? "Program Files" : "$.os fallback"
+        name: isMac ? "macOS" : (isWindows ? "Windows" : "Inconnu"),
+        os: $.os
     };
 }
 
 function detectLucidLink(system) {
+    var basePaths = [];
+    
     if (system.isMac) {
-        var macPath = "/Volumes/resizelab/o2b-undllm/";
-        var testFolder = new Folder(macPath);
-        return testFolder.exists ? macPath : null;
+        basePaths.push("/Volumes/resizelab/o2b-undllm/");
     } else if (system.isWindows) {
         var drives = ["E:", "F:", "G:", "H:", "I:", "J:", "K:", "L:"];
         for (var i = 0; i < drives.length; i++) {
-            var winPath = drives[i] + "/Volumes/resizelab/o2b-undllm/";
-            var testFolder = new Folder(winPath);
-            if (testFolder.exists) {
-                return winPath;
+            basePaths.push(drives[i] + "/Volumes/resizelab/o2b-undllm/");
+        }
+    }
+    
+    // Tester chaque chemin de base et trouver le dossier ae_panel_script
+    for (var i = 0; i < basePaths.length; i++) {
+        var testFolder = new Folder(basePaths[i]);
+        if (testFolder.exists) {
+            // Chercher ae_panel_script dans différents emplacements possibles
+            var possiblePaths = [
+                basePaths[i] + "2_IN/_ELEMENTS/TOOLS/ae_panel_script/",
+                basePaths[i] + "4_OUT/2_FROM_ANIM/_TOOLS/ae_panel_script/",
+                basePaths[i] + "_TOOLS/ae_panel_script/"
+            ];
+            
+            for (var j = 0; j < possiblePaths.length; j++) {
+                var panelFolder = new Folder(possiblePaths[j]);
+                var panelFile = new File(possiblePaths[j] + "RL_PostFlow_Panel.jsx");
+                if (panelFolder.exists && panelFile.exists) {
+                    return {
+                        basePath: basePaths[i],
+                        panelPath: possiblePaths[j]
+                    };
+                }
             }
+            
+            // Si on trouve la base mais pas le panel, retourner quand même la base
+            return {
+                basePath: basePaths[i],
+                panelPath: null
+            };
         }
     }
     return null;
 }
 
-function installPanel(system, lucidPath) {
+function installPanel(system, lucidInfo) {
     try {
-        // Fichier source
-        var sourcePath = lucidPath + "4_OUT/2_FROM_ANIM/_TOOLS/ae_panel_script/RL_PostFlow_Panel.jsx";
+        // Utiliser le chemin détecté automatiquement ou rechercher
+        var sourcePath;
+        if (lucidInfo.panelPath) {
+            sourcePath = lucidInfo.panelPath + "RL_PostFlow_Panel.jsx";
+        } else {
+            // Recherche dans les emplacements possibles
+            var possiblePaths = [
+                lucidInfo.basePath + "2_IN/_ELEMENTS/TOOLS/ae_panel_script/RL_PostFlow_Panel.jsx",
+                lucidInfo.basePath + "4_OUT/2_FROM_ANIM/_TOOLS/ae_panel_script/RL_PostFlow_Panel.jsx",
+                lucidInfo.basePath + "_TOOLS/ae_panel_script/RL_PostFlow_Panel.jsx"
+            ];
+            
+            for (var i = 0; i < possiblePaths.length; i++) {
+                var testFile = new File(possiblePaths[i]);
+                if (testFile.exists) {
+                    sourcePath = possiblePaths[i];
+                    break;
+                }
+            }
+        }
+        
+        if (!sourcePath) {
+            return { success: false, error: "Fichier panel non trouvé sur LucidLink" };
+        }
+        
         var sourceFile = new File(sourcePath);
         
         if (!sourceFile.exists) {
@@ -250,7 +317,7 @@ function installPanel(system, lucidPath) {
     }
 }
 
-function installTemplates(system, lucidPath) {
+function installTemplates(system, lucidInfo) {
     try {
         // Fichiers source templates
         var templateFiles = [
@@ -270,14 +337,36 @@ function installTemplates(system, lucidPath) {
         
         for (var i = 0; i < templateFiles.length; i++) {
             var template = templateFiles[i];
-            var sourcePath = lucidPath + "4_OUT/2_FROM_ANIM/_TOOLS/ae_panel_script/templates/" + template.name;
-            var sourceFile = new File(sourcePath);
+            var sourcePath;
             
-            if (sourceFile.exists) {
-                var destFile = new File(destPath + template.name);
-                if (sourceFile.copy(destFile) && destFile.exists) {
-                    installedFiles.push(template.name + " (" + template.desc + ")");
-                    successCount++;
+            // Recherche dynamique des templates
+            if (lucidInfo.panelPath) {
+                sourcePath = lucidInfo.panelPath + "templates/" + template.name;
+            } else {
+                // Recherche dans les emplacements possibles
+                var possiblePaths = [
+                    lucidInfo.basePath + "2_IN/_ELEMENTS/TOOLS/ae_panel_script/templates/" + template.name,
+                    lucidInfo.basePath + "4_OUT/2_FROM_ANIM/_TOOLS/ae_panel_script/templates/" + template.name,
+                    lucidInfo.basePath + "_TOOLS/ae_panel_script/templates/" + template.name
+                ];
+                
+                for (var j = 0; j < possiblePaths.length; j++) {
+                    var testFile = new File(possiblePaths[j]);
+                    if (testFile.exists) {
+                        sourcePath = possiblePaths[j];
+                        break;
+                    }
+                }
+            }
+            
+            if (sourcePath) {
+                var sourceFile = new File(sourcePath);
+                if (sourceFile.exists) {
+                    var destFile = new File(destPath + template.name);
+                    if (sourceFile.copy(destFile) && destFile.exists) {
+                        installedFiles.push(template.name + " (" + template.desc + ")");
+                        successCount++;
+                    }
                 }
             }
         }

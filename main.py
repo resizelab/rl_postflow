@@ -311,25 +311,9 @@ class RLPostFlowPipeline:
             # Initialiser le service webhook
             webhook_ok = await self._initialize_webhook_service()
             
-            # Effectuer la vérification de synchronisation au démarrage
-            logger.info("🔄 Vérification de synchronisation au démarrage...")
-            try:
-                sync_ok = await startup_sync_check(
-                    self.config, 
-                    self.config_manager,
-                    self.runner.upload_tracker if hasattr(self.runner, 'upload_tracker') else None,
-                    self.runner.discord_notifier if hasattr(self.runner, 'discord_notifier') else None,
-                    self.runner._handle_new_file,  # Callback pour traiter les fichiers manqués
-                    max_files_to_process=3
-                )
-                
-                if sync_ok:
-                    logger.info("✅ Vérification de synchronisation terminée")
-                else:
-                    logger.warning("⚠️ Vérification de synchronisation échouée")
-                    
-            except Exception as e:
-                logger.warning(f"⚠️ Erreur lors de la vérification de synchronisation: {e}")
+            # Effectuer la vérification de synchronisation au démarrage (sera fait par le runner)
+            # logger.info("🔄 Vérification de synchronisation au démarrage...")
+            # [Supprimé - fait par postflow_runner.py pour éviter les doublons]
             
             # Afficher le statut des composants
             components_status = {
@@ -457,6 +441,7 @@ async def main():
     parser.add_argument('--upload-only', action='store_true', help='Mode upload uniquement')
     parser.add_argument('--debug', action='store_true', help='Mode debug')
     parser.add_argument('--test', action='store_true', help='Test des composants uniquement')
+    parser.add_argument('--test-hostinger', action='store_true', help='Test de la connexion Hostinger FTP/SFTP')
     parser.add_argument('--force', action='store_true', help='Forcer le re-traitement même si le fichier a déjà été traité')
     
     args = parser.parse_args()
@@ -497,6 +482,92 @@ async def main():
                 # Test configuration
                 config, pipeline_config, config_manager = load_config(args.config)
                 logger.info("✅ Configuration: OK")
+                
+                # Test du module thumbnail Hostinger
+                logger.info("[TEST] Test du module thumbnail Hostinger...")
+                try:
+                    from src.utils.thumbnail import ThumbnailGenerator
+                    
+                    # Initialiser le générateur thumbnail
+                    thumb_gen = ThumbnailGenerator(config_manager)
+                    logger.info("✅ ThumbnailGenerator initialisé")
+                    
+                    # Vérifier le statut
+                    status = thumb_gen.get_status()
+                    if status['hostinger_configured']:
+                        logger.info("✅ Hostinger configuré")
+                        
+                        # Test de connexion
+                        if thumb_gen.uploader and thumb_gen.uploader.test_connection():
+                            logger.info("✅ Connexion Hostinger opérationnelle")
+                        else:
+                            logger.warning("⚠️ Connexion Hostinger échouée")
+                    else:
+                        logger.warning("⚠️ Hostinger non configuré - thumbnails locaux uniquement")
+                        
+                except Exception as e:
+                    logger.error(f"❌ Erreur test thumbnail: {e}")
+                
+                # Test des autres composants...
+                logger.info("✅ Tests des composants terminés")
+                return 0
+                
+            except Exception as e:
+                logger.error(f"[ERROR] Erreur durant les tests: {e}")
+                return 1
+        
+        if args.test_hostinger:
+            # Mode test Hostinger - vérifier la connexion FTP/SFTP
+            logger.info("[TEST-HOSTINGER] Test de connexion Hostinger...")
+            
+            try:
+                print("🔧 Test de connexion Hostinger FTP/SFTP...")
+                
+                # Importer et tester l'uploader Hostinger
+                from src.utils.thumbnail.hostinger_uploader import HostingerUploader
+                
+                # Créer l'uploader avec la configuration
+                hostinger_uploader = HostingerUploader("config/hostinger_config.json")
+                print("✅ HostingerUploader créé")
+                
+                # Vérifier la configuration
+                if not hostinger_uploader.is_enabled():
+                    print("❌ Configuration Hostinger manquante ou désactivée")
+                    print("💡 Vérifiez le fichier config/hostinger_config.json")
+                    return 1
+                
+                print("✅ Configuration Hostinger chargée")
+                
+                # Tester la connexion
+                print("📋 Test de connexion...")
+                if hostinger_uploader.test_connection():
+                    print("✅ Connexion Hostinger réussie!")
+                    print("🎉 Votre serveur Hostinger est prêt pour l'upload de thumbnails!")
+                    
+                    # Afficher les informations de configuration
+                    config = hostinger_uploader.config
+                    method = config.get('upload', {}).get('method', 'ftp').upper()
+                    url_base = config.get('upload', {}).get('url_base', 'N/A')
+                    print(f"📍 Méthode: {method}")
+                    print(f"🌐 URL de base: {url_base}")
+                    print(f"📁 Dossier distant: {config.get('upload', {}).get('remote_path', 'N/A')}")
+                    
+                    return 0
+                else:
+                    print("❌ Échec de connexion Hostinger")
+                    print("💡 Vérifiez vos credentials FTP/SFTP dans la configuration")
+                    return 1
+                    
+            except ImportError as e:
+                logger.error(f"[ERROR] Module Hostinger non disponible: {e}")
+                print("❌ Module paramiko requis pour SFTP")
+                print("💡 Installez avec: pip install paramiko")
+                return 1
+            except Exception as e:
+                logger.error(f"[ERROR] Erreur durant le test Hostinger: {e}")
+                import traceback
+                traceback.print_exc()
+                return 1
                 
                 # Test Frame.io
                 frameio_ok, frameio_auth, frameio_manager = await initialize_frameio(config, config_manager)

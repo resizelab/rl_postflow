@@ -1,0 +1,41 @@
+{
+  "hostinger": {
+    "enabled": true,
+    "site_url": "https://resize-lab.com/",
+    "ftp": {
+      "host": "185.224.137.134",
+      "port": 21,
+      "username": "u167443400",
+      "password": "__Resize93110",
+      "use_ssl": false
+    },
+    "sftp": {
+      "host": "resize-lab.com",
+      "port": 22,
+      "username": "u167443400",
+      "password": "__Resize93110",
+      "private_key_path": null
+    },
+    "upload": {
+      "method": "ftp",
+      "remote_path": "/domains/resize-lab.com/public_html/thumbnails",
+      "url_base": "https://resize-lab.com/thumbnails",
+      "create_directories": true,
+      "file_permissions": "644",
+      "directory_permissions": "755",
+      "timeout": 30,
+      "retry_attempts": 3,
+      "retry_delay": 2
+    },
+    "thumbnails": {
+      "organize_by_date": true,
+      "date_format": "%Y/%m",
+      "file_naming": "{shot_id}_{version}_{timestamp}.jpg",
+      "max_file_size_mb": 5,
+      "allowed_extensions": [".jpg", ".jpeg", ".png", ".webp"],
+      "quality": 85,
+      "cleanup_old_files": false,
+      "cleanup_days": 30
+    }
+  }
+}
