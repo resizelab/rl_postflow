@@ -6,8 +6,8 @@
 Contient la boucle principale du pipeline et le workflow de traitement.
 Extrait de main.py pour une meilleure organisation.
 
-Version: 4.1.1
-Date: 9 juillet 2025
+Version: 4.1.5
+Date: 14 juillet 2025
 """
 
 import asyncio
@@ -16,6 +16,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional
 from src.utils.config import ConfigManager
+
+# Version du pipeline (synchronisée avec main.py)
+POSTFLOW_VERSION = "4.1.5"
+POSTFLOW_VERSION_NAME = "Emojis & Duplicate Detection Complete"
 
 logger = logging.getLogger(__name__)
 
@@ -109,36 +113,45 @@ class PostFlowRunner:
             # Initialiser le tracker d'uploads
             self.upload_tracker = UploadTracker()
             
-            # Initialiser le tracker Google Sheets
+            # Initialiser le tracker Google Sheets avec connexions persistantes
             sheets_config = self.config.get('google_sheets', {})
             if sheets_config.get('enabled', True):
                 try:
-                    # Initialiser avec les credentials appropriés
-                    from src.integrations.sheets.auth import GoogleSheetsAuth, GoogleSheetsConfig
+                    # Initialiser le gestionnaire de connexions Google persistantes
+                    from src.integrations.google import connection_manager, OptimizedSheetsStatusAdapter
                     
-                    # Créer la configuration Google Sheets
-                    gs_config = GoogleSheetsConfig(
-                        credentials_file=sheets_config.get('service_account_file', 'config/google_credentials.json'),
-                        spreadsheet_id=sheets_config.get('spreadsheet_id'),
-                        worksheet_shots_tracks=sheets_config.get('worksheet_shots_tracks', 'SHOTS_TRACK'),
-                        worksheet_users=sheets_config.get('worksheet_users', 'USERS_INFOS')
-                    )
+                    credentials_file = sheets_config.get('service_account_file', 'config/google_credentials.json')
+                    spreadsheet_id = sheets_config.get('spreadsheet_id')
                     
-                    # Créer l'authentification
-                    sheets_auth = GoogleSheetsAuth(gs_config)
-                    if sheets_auth.connect():
-                        # Créer le gestionnaire d'utilisateurs avec l'auth client
-                        from src.integrations.sheets.users import SheetsUserManager
-                        user_manager = SheetsUserManager(sheets_auth)
-                        # Passer directement le spreadsheet_id au lieu du dict de config
-                        self.sheets_tracker = SheetsTracker(sheets_config.get('spreadsheet_id'), user_manager=user_manager)
-                        logger.info("✅ Google Sheets tracker initialisé avec authentification complète")
+                    # Initialiser le gestionnaire avec les credentials
+                    connection_manager.initialize(credentials_file, spreadsheet_id)
+                    
+                    # Tester la connexion
+                    if connection_manager.test_connection(spreadsheet_id):
+                        # Créer l'adaptateur optimisé pour Sheets
+                        worksheet_name = sheets_config.get('worksheet_shots_tracks', 'SHOTS_TRACK')
+                        self.sheets_adapter = OptimizedSheetsStatusAdapter(
+                            connection_manager, 
+                            spreadsheet_id, 
+                            worksheet_name
+                        )
+                        
+                        # Créer le tracker avec l'adaptateur optimisé
+                        self.sheets_tracker = SheetsTracker(spreadsheet_id)
+                        self.sheets_tracker.status_adapter = self.sheets_adapter
+                        
+                        logger.info("✅ Google Sheets tracker initialisé avec connexions persistantes")
+                        logger.info(f"📊 Stats connexions: {connection_manager.get_stats()}")
                     else:
-                        logger.warning("⚠️ Impossible de se connecter à Google Sheets, utilisation du mode simulation")
-                        self.sheets_tracker = SheetsTracker(sheets_config.get('spreadsheet_id'))
+                        logger.warning("⚠️ Test connexion Google Sheets échoué, mode simulation")
+                        self.sheets_tracker = SheetsTracker(spreadsheet_id)
+                        self.sheets_adapter = None
+                        
                 except Exception as e:
-                    logger.warning(f"⚠️ Erreur initialisation Google Sheets: {e}, utilisation du mode simulation")
+                    logger.warning(f"⚠️ Erreur initialisation connexions Google persistantes: {e}")
+                    logger.warning("⚠️ Fallback vers mode simulation")
                     self.sheets_tracker = SheetsTracker(sheets_config.get('spreadsheet_id'))
+                    self.sheets_adapter = None
             
             # Initialiser le générateur de thumbnails
             thumbnail_config = self.config.get('thumbnails', {})
@@ -174,12 +187,17 @@ class PostFlowRunner:
                         
                         # Initialiser le User Notifier avec intégration Google Sheets
                         try:
-                            user_manager = SheetsUserManager(self.config)
-                            self.user_notifier = DiscordUserNotifier(
-                                discord_notifier=self.discord_notifier,
-                                user_manager=user_manager
-                            )
-                            logger.info("✅ Discord User Notifier initialisé avec intégration Google Sheets")
+                            # Utiliser le user_manager existant du sheets_tracker si disponible
+                            if self.sheets_tracker and hasattr(self.sheets_tracker, 'user_manager') and self.sheets_tracker.user_manager:
+                                user_manager = self.sheets_tracker.user_manager
+                                self.user_notifier = DiscordUserNotifier(
+                                    discord_notifier=self.discord_notifier,
+                                    user_manager=user_manager
+                                )
+                                logger.info("✅ Discord User Notifier initialisé avec intégration Google Sheets")
+                            else:
+                                logger.info("ℹ️ Pas d'user_manager disponible, utilisation du Discord Notifier standard")
+                                self.user_notifier = None
                         except Exception as e:
                             logger.warning(f"⚠️ Impossible d'initialiser User Notifier: {e}")
                             logger.info("🔄 Utilisation du Discord Notifier standard")
@@ -211,8 +229,8 @@ class PostFlowRunner:
             logger.error(f"[ERROR] Erreur lors de l'initialisation des intégrations: {e}")
     
     async def run_pipeline(self):
-        """Lance le pipeline principal PostFlow v2.0"""
-        logger.info("🚀 Démarrage du pipeline PostFlow v2.0...")
+        f"""Lance le pipeline principal PostFlow v{POSTFLOW_VERSION}"""
+        logger.info(f"🚀 Démarrage du pipeline PostFlow v{POSTFLOW_VERSION}...")
         
         # Stocker la boucle d'événements pour les callbacks
         self._event_loop = asyncio.get_running_loop()
@@ -238,7 +256,7 @@ class PostFlowRunner:
         
         # Boucle principale
         try:
-            logger.info("🔄 Pipeline PostFlow v2.0 en cours d'exécution...")
+            logger.info(f"🔄 Pipeline PostFlow v{POSTFLOW_VERSION} en cours d'exécution...")
             
             # Démarrer la queue d'upload
             if self.upload_queue:
@@ -253,8 +271,8 @@ class PostFlowRunner:
             notifier = self.user_notifier or self.discord_notifier
             if notifier:
                 await self._send_discord_notification(
-                    "🚀 PostFlow v2.0 démarré",
-                    "Le pipeline de traitement est maintenant actif"
+                    f"🚀 PostFlow v{POSTFLOW_VERSION} démarré",
+                    f"Le pipeline de traitement {POSTFLOW_VERSION_NAME} est maintenant actif"
                 )
             
             # Boucle principale avec arrêt propre
@@ -321,10 +339,10 @@ class PostFlowRunner:
                 duplicate = self.upload_tracker.is_duplicate(file_path, shot_id, version)
                 if duplicate:
                     status = duplicate.get('status', 'UNKNOWN')
-                    if status == 'COMPLETED':
+                    if status in ['COMPLETED', '🎉 COMPLETED']:
                         logger.info(f"✅ Fichier déjà traité, ignoré: {Path(file_path).name}")
                         return
-                    elif status in ['CREATED', 'PROCESSING', 'REPROCESSING']:
+                    elif status in ['CREATED', 'PROCESSING', 'REPROCESSING', '⏳ WAITING_APPROVAL', '🔄 UPLOADING', '⚙️ PROCESSING', '🔄 REPROCESSING']:
                         logger.info(f"🔄 Fichier déjà en traitement, ignoré: {Path(file_path).name}")
                         return
             
@@ -379,11 +397,11 @@ class PostFlowRunner:
                 duplicate = self.upload_tracker.is_duplicate(str(file_path), shot_id, version)
                 if duplicate and not force:
                     status = duplicate.get('status', 'UNKNOWN')
-                    if status == 'COMPLETED':
+                    if status in ['COMPLETED', '🎉 COMPLETED']:
                         logger.info(f"✅ Fichier déjà traité avec succès: {file_path.name}")
                         logger.info(f"📋 Upload ID existant: {duplicate.get('upload_id', 'N/A')}")
                         return duplicate.get('upload_id')
-                    elif status in ['CREATED', 'PROCESSING']:
+                    elif status in ['CREATED', 'PROCESSING', '⏳ WAITING_APPROVAL', '🔄 UPLOADING', '⚙️ PROCESSING']:
                         logger.info(f"🔄 Fichier en cours de traitement: {file_path.name}")
                         logger.info(f"📋 Upload ID existant: {duplicate.get('upload_id', 'N/A')}")
                         return duplicate.get('upload_id')
@@ -396,7 +414,7 @@ class PostFlowRunner:
                     logger.info(f"🔄 Retraitement forcé: {file_path.name} (ID: {upload_id})")
                     # Mettre à jour le statut pour indiquer un nouveau traitement
                     self.upload_tracker.update_upload(upload_id, {
-                        'status': 'REPROCESSING',
+                        'status': '🔄 REPROCESSING',
                         'reprocessing_at': datetime.now().isoformat()
                     })
                 else:
@@ -454,6 +472,11 @@ class PostFlowRunner:
                 except Exception as e:
                     logger.error(f"[ERROR] Erreur notification Discord: {e}")
             
+            # Marquer comme approuvé automatiquement pour l'instant (peut être modifié pour workflow d'approbation)
+            if upload_id and self.upload_tracker:
+                self.upload_tracker.approve_upload(upload_id, "auto-approved")
+                self.upload_tracker.start_upload(upload_id)
+            
             # Mettre à jour les métriques
             self.metrics['files_processed'] += 1
             
@@ -464,7 +487,7 @@ class PostFlowRunner:
                         'frameio_link': frameio_link,
                         'thumbnail_url': thumbnail_drive_url,
                         'processing_time': datetime.now().isoformat(),
-                        'status': 'COMPLETED'
+                        'status': '🎉 COMPLETED'
                     })
                 except Exception as e:
                     logger.error(f"[ERROR] Erreur finalisation tracking: {e}")
@@ -479,7 +502,7 @@ class PostFlowRunner:
             if upload_id and self.upload_tracker:
                 try:
                     self.upload_tracker.update_upload(upload_id, {
-                        'status': 'FAILED',
+                        'status': '❌ FAILED',
                         'error': str(e),
                         'processing_time': datetime.now().isoformat()
                     })
@@ -727,10 +750,10 @@ class PostFlowRunner:
     
     async def _update_sheets_with_processing_info(self, metadata: dict, frameio_link: str = None, 
                                                 thumbnail_drive_url: str = None, file_path: Path = None):
-        """Met à jour Google Sheets avec les informations de traitement"""
+        """Met à jour Google Sheets avec les informations de traitement - Version optimisée"""
         try:
-            if not self.sheets_tracker:
-                logger.warning("⚠️ Sheets tracker non disponible")
+            if not self.sheets_adapter:
+                logger.warning("⚠️ Adaptateur Google Sheets non disponible")
                 return
             
             nomenclature = metadata.get('nomenclature', '')
@@ -738,13 +761,17 @@ class PostFlowRunner:
                 logger.error("[ERROR] Pas de nomenclature disponible pour Google Sheets")
                 return
             
+            # Trouver la ligne du shot
+            row_number = await self.sheets_adapter.find_shot_row(nomenclature)
+            if not row_number:
+                logger.warning(f"⚠️ Shot non trouvé dans Google Sheets: {nomenclature}")
+                return
+            
             # Préparer les données de mise à jour avec formules Google Sheets
             update_data = {
                 'version': metadata.get('version', ''),
                 'file_name': metadata.get('filename', file_path.name if file_path else ''),
-                'file_size': metadata.get('file_size', 0),
                 'processing_date': datetime.now().isoformat(),
-                'pipeline_status': 'PROCESSED'
             }
             
             # Frame.io link avec formule LIEN_HYPERTEXTE
@@ -757,21 +784,23 @@ class PostFlowRunner:
             
             # Thumbnail avec formule =IMAGE()
             if thumbnail_drive_url:
-                image_formula = f'=IMAGE("{thumbnail_drive_url}")'
-                update_data['thumbnail_url'] = image_formula
+                update_data['thumbnail_url'] = thumbnail_drive_url  # L'adaptateur gère la formule IMAGE()
                 logger.info(f"🖼️ Formule thumbnail préparée")
             
-            # Mettre à jour via le tracker
-            if hasattr(self.sheets_tracker, 'update_shot_status'):
-                await self.sheets_tracker.update_shot_status(
-                    nomenclature=nomenclature,
-                    status="PROCESSED",
-                    additional_data=update_data
-                )
+            # Mettre à jour avec l'adaptateur optimisé (connexion persistante)
+            success = await self.sheets_adapter.update_status(
+                row_number=row_number,
+                status="PROCESSED", 
+                additional_data=update_data
+            )
+            
+            if success:
                 logger.info(f"✅ Google Sheets mis à jour avec formules pour: {nomenclature}")
+            else:
+                logger.error(f"❌ Échec mise à jour Google Sheets pour: {nomenclature}")
             
         except Exception as e:
-            logger.error(f"[ERROR] Erreur mise à jour Sheets: {e}")
+            logger.error(f"[ERROR] Erreur mise à jour Sheets optimisée: {e}")
     
     async def _send_file_notification(self, file_path: Path, frameio_link: str = None, thumbnail_url: str = None):
         """Envoie une notification Discord pour un fichier traité"""
@@ -854,11 +883,11 @@ class PostFlowRunner:
             return False
     
     async def shutdown(self):
-        """Arrêt propre du pipeline PostFlow v2.0"""
+        f"""Arrêt propre du pipeline PostFlow v{POSTFLOW_VERSION}"""
         if not self.is_running:
             return
             
-        logger.info("[STOP] Arrêt du pipeline PostFlow v2.0...")
+        logger.info(f"[STOP] Arrêt du pipeline PostFlow v{POSTFLOW_VERSION}...")
         
         self.is_running = False
         
@@ -871,7 +900,7 @@ class PostFlowRunner:
             try:
                 await asyncio.wait_for(
                     self._send_discord_notification(
-                        "[STOP] PostFlow v2.0 arrêté",
+                        f"[STOP] PostFlow v{POSTFLOW_VERSION} arrêté",
                         "Le pipeline de traitement a été arrêté"
                     ),
                     timeout=5.0
@@ -936,7 +965,7 @@ class PostFlowRunner:
         if self.metrics['last_token_refresh']:
             print(f"Dernier rafraîchissement: {self.metrics['last_token_refresh']}")
         
-        logger.info("✅ Pipeline PostFlow v2.0 arrêté")
+        logger.info(f"✅ Pipeline PostFlow v{POSTFLOW_VERSION} arrêté")
     
     def get_status(self) -> Dict[str, Any]:
         """Retourne le statut du pipeline pour le dashboard"""

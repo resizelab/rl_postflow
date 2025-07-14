@@ -54,6 +54,23 @@
           "SHORT_0042_v02.mp4",
           "FILM_123456_v1234.avi"
         ]
+      },
+      "sequence_all": {
+        "name": "Format séquence _ALL",
+        "description": "Format pour les fichiers dans les dossiers _ALL avec séquence et projet",
+        "regex": "^(?P<sequence>SQ\\d{2})_(?P<project>UNDLM)_v(?P<version>\\d{3})\\.(mov|mp4|avi|mkv)$",
+        "format": "{sequence}_{project}_v{version:03d}.{ext}",
+        "components": {
+          "sequence": "Format SQ + 2 digits (SQ01-SQ99)",
+          "project": "UNDLM",
+          "version": "3 digits (001-999)",
+          "extensions": [".mov", ".mp4", ".avi", ".mkv"]
+        },
+        "examples": [
+          "SQ01_UNDLM_v001.mov",
+          "SQ02_UNDLM_v002.mp4",
+          "SQ10_UNDLM_v015.avi"
+        ]
       }
     },
     "active_pattern": "with_sequence",
@@ -84,7 +101,12 @@
           "OUTRO": {"number": 3, "name": "SEQ_OUTRO"}
         },
         "auto_detect": true,
-        "fallback_sequence": {"number": 1, "name": "SEQ_GENERAL"}
+        "fallback_sequence": {"number": 1, "name": "SEQ_GENERAL"},
+        "all_folders": {
+          "use_all_folders": true,
+          "all_folder_template": "{sequence}_ALL",
+          "all_folder_pattern": "^(SQ\\d{2})_ALL$"
+        }
       }
     }
   }

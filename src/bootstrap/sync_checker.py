@@ -152,7 +152,8 @@ class SyncChecker:
                 # Fichier traité, vérifier le statut
                 status = matched_upload.get('status', 'UNKNOWN')
                 
-                if status == 'COMPLETED':
+                # Vérifier les statuts de completion (avec et sans emoji)
+                if status in ['COMPLETED', '🎉 COMPLETED']:
                     processed_files.append(file_path)
                     logger.debug(f"✅ Fichier traité: {file_path.name}")
                 else:

@@ -13,27 +13,19 @@ from pathlib import Path
 
 class ShotStatus(Enum):
     """Status of a shot in the production pipeline."""
-    PENDING = "pending"
-    SOURCES_VERIFIED = "sources_verified"
-    AE_READY = "ae_ready"
-    AE_IN_PROGRESS = "ae_in_progress"
-    AE_COMPLETED = "ae_completed"
-    EBSYNTH_READY = "ebsynth_ready"
-    EBSYNTH_IN_PROGRESS = "ebsynth_in_progress"
-    EBSYNTH_COMPLETED = "ebsynth_completed"
-    REVIEW_UPLOADED = "review_uploaded"
-    REVIEW_APPROVED = "review_approved"
-    FINAL_DELIVERY = "final_delivery"
-    ERROR = "error"
+    PENDING = "⏳ pending"
+    SOURCES_VERIFIED = "✅ sources_verified"
+    REVIEW_UPLOADED = "📤 review_uploaded"
+    REVIEW_APPROVED = "👍 review_approved"
+    FINAL_DELIVERY = "🎉 final_delivery"
+    ERROR = "❌ error"
 
 
 class PipelineStage(Enum):
     """Stages of the production pipeline."""
-    SOURCE_VERIFICATION = "source_verification"
-    AFTER_EFFECTS = "after_effects"
-    EBSYNTH_PROCESSING = "ebsynth_processing"
-    REVIEW_PROCESS = "review_process"
-    FINAL_DELIVERY = "final_delivery"
+    SOURCE_VERIFICATION = "🔍 source_verification"
+    REVIEW_PROCESS = "📋 review_process"
+    FINAL_DELIVERY = "🚀 final_delivery"
 
 
 @dataclass
@@ -66,10 +58,6 @@ class ShotProgress:
         # Update stage based on status
         if new_status in [ShotStatus.PENDING, ShotStatus.SOURCES_VERIFIED]:
             self.stage = PipelineStage.SOURCE_VERIFICATION
-        elif new_status in [ShotStatus.AE_READY, ShotStatus.AE_IN_PROGRESS, ShotStatus.AE_COMPLETED]:
-            self.stage = PipelineStage.AFTER_EFFECTS
-        elif new_status in [ShotStatus.EBSYNTH_READY, ShotStatus.EBSYNTH_IN_PROGRESS, ShotStatus.EBSYNTH_COMPLETED]:
-            self.stage = PipelineStage.EBSYNTH_PROCESSING
         elif new_status in [ShotStatus.REVIEW_UPLOADED, ShotStatus.REVIEW_APPROVED]:
             self.stage = PipelineStage.REVIEW_PROCESS
         elif new_status == ShotStatus.FINAL_DELIVERY:

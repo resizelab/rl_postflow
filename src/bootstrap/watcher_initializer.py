@@ -54,7 +54,7 @@ class WatcherInitializer:
             path_manager = CrossPlatformPathManager()
             
             # Chemin par défaut cross-platform
-            default_watch_path = path_manager.build_lucidlink_path('o2b-undllm', '4_OUT', '2_FROM_ANIM')
+            default_watch_path = path_manager.build_lucidlink_path('4_OUT', '2_FROM_ANIM')
             watch_path = self.config.get('lucidlink', {}).get('watch_path', str(default_watch_path))
             
             logger.info(f"📁 Chemin de surveillance: {watch_path}")
@@ -77,6 +77,12 @@ class WatcherInitializer:
         except Exception as e:
             logger.error(f"❌ Erreur lors de l'initialisation du watcher: {e}")
             return False
+    
+    def initialize_processed_files(self, upload_tracker=None):
+        """Initialiser les fichiers déjà traités pour éviter le double traitement."""
+        if self.watcher and upload_tracker:
+            self.watcher.initialize_processed_files(upload_tracker)
+            logger.info("✅ Fichiers déjà traités initialisés")
     
     def _configure_watcher(self, watcher_config: Dict[str, Any]):
         """Configure le watcher avec les paramètres du pipeline"""

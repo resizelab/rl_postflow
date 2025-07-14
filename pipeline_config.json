@@ -35,6 +35,14 @@
       "require_comments": true
     }
   },
+  "webhook": {
+    "enabled": true,
+    "port": 8080,
+    "auto_start": true,
+    "auto_configure_frameio": true,
+    "tunnel_timeout": 60,
+    "health_check_interval": 30
+  },
   "google_sheets": {
     "credentials_file": "",
     "spreadsheet_id": "",
@@ -42,6 +50,22 @@
     "sync_enabled": false,
     "auto_update": true,
     "backup_enabled": true
+  },
+  "watcher": {
+    "enabled": true,
+    "polling_interval": 2,
+    "max_events_per_minute": 60,
+    "ignore_patterns": [
+      "*.tmp",
+      "*.part",
+      "*~*",
+      ".DS_Store"
+    ],
+    "stability_check": {
+      "enabled": true,
+      "wait_time": 3,
+      "max_checks": 5
+    }
   },
   "auto_processing": {
     "enabled": false,

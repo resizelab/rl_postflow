@@ -10,9 +10,22 @@ import logging
 from typing import Dict, Any, Optional, List
 from datetime import datetime
 from pathlib import Path
+from enum import Enum
 import os
 
 logger = logging.getLogger(__name__)
+
+
+class UploadStatus(Enum):
+    """Statuts d'upload avec emojis et contexte."""
+    WAITING_APPROVAL = "⏳ WAITING_APPROVAL"     # Fichier créé, en attente d'approbation pour upload
+    APPROVED = "✅ APPROVED"                     # Approuvé pour upload
+    UPLOADING = "🔄 UPLOADING"                  # Upload en cours vers Frame.io
+    PROCESSING = "⚙️ PROCESSING"                # Traitement Frame.io en cours
+    COMPLETED = "🎉 COMPLETED"                  # Upload terminé avec succès
+    FAILED = "❌ FAILED"                        # Échec d'upload
+    REJECTED = "🚫 REJECTED"                    # Rejeté (ne sera pas uploadé)
+    REPROCESSING = "🔄 REPROCESSING"            # Retraitement forcé
 
 
 class UploadTracker:
@@ -187,7 +200,7 @@ class UploadTracker:
                 "file_hash": file_hash,
                 "created_at": datetime.now().isoformat(),
                 "last_updated": datetime.now().isoformat(),
-                "status": "CREATED",
+                "status": "⏳ WAITING_APPROVAL",
                 "frameio_data": {
                     "file_id": None,
                     "upload_status": "PENDING",
@@ -399,3 +412,153 @@ class UploadTracker:
         except Exception as e:
             logger.error(f"❌ Erreur nettoyage: {e}")
             return 0
+    
+    def approve_upload(self, upload_id: str, approved_by: str = None) -> bool:
+        """
+        Approuve un upload pour le traitement.
+        
+        Args:
+            upload_id: ID de l'upload
+            approved_by: Qui a approuvé l'upload
+            
+        Returns:
+            bool: True si approuvé avec succès
+        """
+        updates = {
+            'status': UploadStatus.APPROVED.value,
+            'approved_by': approved_by,
+            'approved_at': datetime.now().isoformat()
+        }
+        return self.update_upload(upload_id, updates)
+    
+    def reject_upload(self, upload_id: str, reason: str = None, rejected_by: str = None) -> bool:
+        """
+        Rejette un upload.
+        
+        Args:
+            upload_id: ID de l'upload
+            reason: Raison du rejet
+            rejected_by: Qui a rejeté l'upload
+            
+        Returns:
+            bool: True si rejeté avec succès
+        """
+        updates = {
+            'status': UploadStatus.REJECTED.value,
+            'rejection_reason': reason,
+            'rejected_by': rejected_by,
+            'rejected_at': datetime.now().isoformat()
+        }
+        return self.update_upload(upload_id, updates)
+    
+    def start_upload(self, upload_id: str) -> bool:
+        """
+        Marque un upload comme en cours.
+        
+        Args:
+            upload_id: ID de l'upload
+            
+        Returns:
+            bool: True si mis à jour avec succès
+        """
+        updates = {
+            'status': UploadStatus.UPLOADING.value,
+            'upload_started_at': datetime.now().isoformat()
+        }
+        return self.update_upload(upload_id, updates)
+    
+    def mark_processing(self, upload_id: str) -> bool:
+        """
+        Marque un upload comme en traitement Frame.io.
+        
+        Args:
+            upload_id: ID de l'upload
+            
+        Returns:
+            bool: True si mis à jour avec succès
+        """
+        updates = {
+            'status': UploadStatus.PROCESSING.value,
+            'processing_started_at': datetime.now().isoformat()
+        }
+        return self.update_upload(upload_id, updates)
+    
+    def mark_completed(self, upload_id: str, frameio_data: Dict[str, Any] = None) -> bool:
+        """
+        Marque un upload comme terminé avec succès.
+        
+        Args:
+            upload_id: ID de l'upload
+            frameio_data: Données Frame.io (file_id, review_link, etc.)
+            
+        Returns:
+            bool: True si mis à jour avec succès
+        """
+        updates = {
+            'status': UploadStatus.COMPLETED.value,
+            'completed_at': datetime.now().isoformat()
+        }
+        
+        if frameio_data:
+            for key, value in frameio_data.items():
+                updates[f'frameio_data.{key}'] = value
+        
+        return self.update_upload(upload_id, updates)
+    
+    def mark_failed(self, upload_id: str, error_message: str = None) -> bool:
+        """
+        Marque un upload comme échoué.
+        
+        Args:
+            upload_id: ID de l'upload
+            error_message: Message d'erreur
+            
+        Returns:
+            bool: True si mis à jour avec succès
+        """
+        updates = {
+            'status': UploadStatus.FAILED.value,
+            'failed_at': datetime.now().isoformat(),
+            'error_message': error_message
+        }
+        return self.update_upload(upload_id, updates)
+    
+    def get_pending_approvals(self) -> List[Dict[str, Any]]:
+        """
+        Retourne tous les uploads en attente d'approbation.
+        
+        Returns:
+            List: Liste des uploads en attente
+        """
+        return self.list_uploads(status=UploadStatus.WAITING_APPROVAL.value)
+    
+    def get_approved_uploads(self) -> List[Dict[str, Any]]:
+        """
+        Retourne tous les uploads approuvés mais pas encore uploadés.
+        
+        Returns:
+            List: Liste des uploads approuvés
+        """
+        return self.list_uploads(status=UploadStatus.APPROVED.value)
+    
+    def get_status_emoji(self, status: str) -> str:
+        """
+        Retourne l'emoji correspondant au statut.
+        
+        Args:
+            status: Statut de l'upload
+            
+        Returns:
+            str: Emoji du statut
+        """
+        status_map = {
+            UploadStatus.WAITING_APPROVAL.value: "⏳",
+            UploadStatus.APPROVED.value: "✅", 
+            UploadStatus.UPLOADING.value: "🔄",
+            UploadStatus.PROCESSING.value: "⚙️",
+            UploadStatus.COMPLETED.value: "🎉",
+            UploadStatus.FAILED.value: "❌",
+            UploadStatus.REJECTED.value: "🚫",
+            UploadStatus.REPROCESSING.value: "🔄"
+        }
+        return status_map.get(status, "❓")

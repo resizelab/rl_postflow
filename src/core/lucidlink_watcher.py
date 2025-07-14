@@ -39,8 +39,10 @@ class LucidLinkExportHandler(FileSystemEventHandler):
         self.callback = callback
         self.watch_patterns = watch_patterns or [
             r'^SQ\d{2}_UNDLM_\d{5}_v\d{3}\.(mov|mp4|avi|mxf)$',  # Nomenclature ULTRA-STRICTE: SQ01_UNDLM_00003_v001.mov
+            r'^SQ\d{2}_UNDLM_v\d{3}\.(mov|mp4|avi|mxf)$',        # Format séquence _ALL: SQ02_UNDLM_v001.mov
         ]
         self.processing_files = set()
+        self.processed_files = set()  # Fichiers déjà traités avec succès
         
     def on_created(self, event):
         """Fichier créé."""
@@ -50,7 +52,12 @@ class LucidLinkExportHandler(FileSystemEventHandler):
     def on_modified(self, event):
         """Fichier modifié."""
         if not event.is_directory:
-            self._handle_file_event(event.src_path, 'modified')
+            # Ignorer les événements modified pour les fichiers déjà traités
+            file_path = event.src_path
+            if file_path in self.processed_files:
+                logger.debug(f"🔄 Événement modified ignoré pour fichier déjà traité: {os.path.basename(file_path)}")
+                return
+            self._handle_file_event(file_path, 'modified')
     
     def on_moved(self, event):
         """Fichier déplacé."""
@@ -108,17 +115,26 @@ class LucidLinkExportHandler(FileSystemEventHandler):
                     
                     # Appeler le callback
                     if self.callback:
-                        if asyncio.iscoroutinefunction(self.callback):
-                            # Callback async - créer une nouvelle boucle d'événements
-                            try:
-                                loop = asyncio.new_event_loop()
-                                asyncio.set_event_loop(loop)
-                                loop.run_until_complete(self.callback(file_path, metadata))
-                            finally:
-                                loop.close()
-                        else:
-                            # Callback sync
-                            self.callback(file_path, metadata)
+                        try:
+                            if asyncio.iscoroutinefunction(self.callback):
+                                # Callback async - créer une nouvelle boucle d'événements
+                                try:
+                                    loop = asyncio.new_event_loop()
+                                    asyncio.set_event_loop(loop)
+                                    loop.run_until_complete(self.callback(file_path, metadata))
+                                finally:
+                                    loop.close()
+                            else:
+                                # Callback sync
+                                self.callback(file_path, metadata)
+                            
+                            # Marquer comme traité avec succès
+                            self.processed_files.add(file_path)
+                            logger.debug(f"✅ Fichier marqué comme traité: {os.path.basename(file_path)}")
+                            
+                        except Exception as e:
+                            logger.error(f"❌ Erreur callback pour {os.path.basename(file_path)}: {e}")
+                            raise
                 else:
                     logger.warning(f"⚠️ Fichier instable ignoré: {os.path.basename(file_path)}")
                     
@@ -220,7 +236,7 @@ class LucidLinkExportHandler(FileSystemEventHandler):
         }
         
         try:
-            # Nomenclature supportée: SQ01_UNDLM_00001_v001.mov
+            # Format standard: SQ01_UNDLM_00001_v001.mov
             match = re.match(r'^(SQ\d{2})_UNDLM_(\d{5})_v(\d{3})\.', file_name)
             if match:
                 scene_num = match.group(1)
@@ -235,8 +251,23 @@ class LucidLinkExportHandler(FileSystemEventHandler):
                 })
                 return shot_info
             
-            # Si le pattern strict ne correspond pas, laisser "Unknown"
-            logger.warning(f"⚠️ Nom de fichier non conforme à la nomenclature SQ##_UNDLM_#####_v###: {file_name}")
+            # Format séquence _ALL: SQ02_UNDLM_v001.mov
+            match = re.match(r'^(SQ\d{2})_UNDLM_v(\d{3})\.', file_name)
+            if match:
+                scene_num = match.group(1)
+                version = f"v{match.group(2)}"
+                
+                shot_info.update({
+                    'shot_name': f'{scene_num}_ALL',
+                    'scene_name': scene_num,
+                    'version': version,
+                    'nomenclature': f'{scene_num}_UNDLM_{version}',
+                    'is_sequence_all': True
+                })
+                return shot_info
+            
+            # Si aucun pattern ne correspond, laisser "Unknown"
+            logger.warning(f"⚠️ Nom de fichier non conforme aux nomenclatures supportées: {file_name}")
             
         except Exception as e:
             logger.error(f"❌ Erreur parsing nom fichier: {e}")
@@ -271,11 +302,24 @@ class LucidLinkExportHandler(FileSystemEventHandler):
                 logger.error(f"❌ Validation échouée - Nom de scène: Nom de scène invalide: {scene_name}")
                 return False
             
-            # Nom de plan
+            # Nom de plan (accepter les formats _ALL et standard)
             shot_name = metadata.get('shot_name', '')
-            if shot_name == 'Unknown' or 'UNDLM_' not in shot_name:
+            is_sequence_all = metadata.get('is_sequence_all', False)
+            if shot_name == 'Unknown':
                 logger.error(f"❌ Validation échouée - Nom de plan: Nom de plan invalide: {shot_name}")
                 return False
+            
+            # Validation différente selon le type
+            if is_sequence_all:
+                # Pour les séquences _ALL: shot_name doit être SQ##_ALL
+                if not re.match(r'^SQ\d{2}_ALL$', shot_name):
+                    logger.error(f"❌ Validation échouée - Format _ALL: Nom de plan invalide pour séquence _ALL: {shot_name}")
+                    return False
+            else:
+                # Pour le format standard: shot_name doit contenir UNDLM_
+                if 'UNDLM_' not in shot_name:
+                    logger.error(f"❌ Validation échouée - Format standard: Nom de plan invalide: {shot_name}")
+                    return False
             
             # Format version
             version = metadata.get('version', '')
@@ -318,6 +362,7 @@ class LucidLinkExportHandler(FileSystemEventHandler):
         """
         valid_patterns = [
             r'^SQ\d{2}_UNDLM_\d{5}_v\d{3}\.(mov|mp4|avi|mxf)$',  # SQ01_UNDLM_00001_v001.mov ULTRA-STRICT
+            r'^SQ\d{2}_UNDLM_v\d{3}\.(mov|mp4|avi|mxf)$',        # SQ02_UNDLM_v001.mov (format _ALL)
         ]
         
         for pattern in valid_patterns:
@@ -327,9 +372,12 @@ class LucidLinkExportHandler(FileSystemEventHandler):
         
         logger.error(f"❌ Aucun pattern valide pour: {file_name}")
         logger.error(f"📋 Patterns acceptés (ULTRA-STRICT - casse exacte et extensions minuscules):")
+        logger.error(f"   Format standard:")
         logger.error(f"   • SQ01_UNDLM_00001_v001.mov")
         logger.error(f"   • SQ02_UNDLM_00015_v003.mp4")
-        logger.error(f"   • SQ99_UNDLM_99999_v999.mxf")
+        logger.error(f"   Format séquence _ALL:")
+        logger.error(f"   • SQ01_UNDLM_v001.mov")
+        logger.error(f"   • SQ02_UNDLM_v003.mp4")
         
         return False
 
@@ -337,12 +385,14 @@ class LucidLinkExportHandler(FileSystemEventHandler):
         """
         Valider que le fichier se trouve dans la bonne structure de dossier.
         
-        Structure attendue: .../SQxx/UNDLM_xxxxx/SQxx_UNDLM_xxxxx_vyyy.mov
+        Structure attendue: 
+        - Standard: .../SQxx/UNDLM_xxxxx/SQxx_UNDLM_xxxxx_vyyy.mov
+        - Séquence _ALL: .../SQxx/_ALL/SQxx_UNDLM_vyyy.mov
         
         Args:
             file_path: Chemin complet du fichier
             scene_name: Nom de la scène (ex: SQ01)
-            shot_name: Nom du plan (ex: UNDLM_00003)
+            shot_name: Nom du plan (ex: UNDLM_00003 ou SQ01_ALL)
             
         Returns:
             bool: True si la structure est valide, False sinon
@@ -359,29 +409,53 @@ class LucidLinkExportHandler(FileSystemEventHandler):
             logger.debug(f"   • Scene attendue: {scene_name}")
             logger.debug(f"   • Plan attendu: {shot_name}")
             
-            # Vérifier que le fichier n'est PAS directement dans le dossier SQxx
-            if parent_dir == scene_name:
-                logger.error(f"❌ ERREUR STRUCTURE: Le fichier est directement dans {scene_name}/ au lieu d'être dans {scene_name}/{shot_name}/")
-                logger.error(f"   📂 Chemin actuel: {file_path}")
-                logger.error(f"   ✅ Chemin attendu: ...//{scene_name}/{shot_name}/{path_obj.name}")
-                return False
+            # Détecter si c'est un fichier de séquence _ALL
+            is_sequence_all = shot_name.endswith('_ALL')
             
-            # Vérifier que le fichier est dans le bon sous-dossier du plan
-            if parent_dir != shot_name:
-                logger.error(f"❌ ERREUR STRUCTURE: Le fichier n'est pas dans le bon dossier de plan")
-                logger.error(f"   📂 Dossier actuel: {parent_dir}")
-                logger.error(f"   ✅ Dossier attendu: {shot_name}")
-                return False
+            if is_sequence_all:
+                # Pour les séquences _ALL: structure .../SQxx/_ALL/
+                expected_parent = "_ALL"
+                
+                if parent_dir != expected_parent:
+                    logger.error(f"❌ ERREUR STRUCTURE (_ALL): Le fichier n'est pas dans le dossier _ALL")
+                    logger.error(f"   📂 Dossier actuel: {parent_dir}")
+                    logger.error(f"   ✅ Dossier attendu: {expected_parent}")
+                    return False
+                
+                if grandparent_dir != scene_name:
+                    logger.error(f"❌ ERREUR STRUCTURE (_ALL): Le dossier _ALL n'est pas dans la bonne scène")
+                    logger.error(f"   📂 Scène actuelle: {grandparent_dir}")
+                    logger.error(f"   ✅ Scène attendue: {scene_name}")
+                    return False
+                
+                logger.info(f"✅ Structure _ALL validée: ...//{scene_name}/_ALL/{path_obj.name}")
+                return True
             
-            # Vérifier que le dossier du plan est dans le bon dossier de scène
-            if grandparent_dir != scene_name:
-                logger.error(f"❌ ERREUR STRUCTURE: Le dossier du plan n'est pas dans la bonne scène")
-                logger.error(f"   📂 Scène actuelle: {grandparent_dir}")
-                logger.error(f"   ✅ Scène attendue: {scene_name}")
-                return False
-            
-            logger.info(f"✅ Structure de chemin validée: ...//{scene_name}/{shot_name}/{path_obj.name}")
-            return True
+            else:
+                # Pour le format standard: structure .../SQxx/UNDLM_xxxxx/
+                # Vérifier que le fichier n'est PAS directement dans le dossier SQxx
+                if parent_dir == scene_name:
+                    logger.error(f"❌ ERREUR STRUCTURE: Le fichier est directement dans {scene_name}/ au lieu d'être dans {scene_name}/{shot_name}/")
+                    logger.error(f"   📂 Chemin actuel: {file_path}")
+                    logger.error(f"   ✅ Chemin attendu: ...//{scene_name}/{shot_name}/{path_obj.name}")
+                    return False
+                
+                # Vérifier que le fichier est dans le bon sous-dossier du plan
+                if parent_dir != shot_name:
+                    logger.error(f"❌ ERREUR STRUCTURE: Le fichier n'est pas dans le bon dossier de plan")
+                    logger.error(f"   📂 Dossier actuel: {parent_dir}")
+                    logger.error(f"   ✅ Dossier attendu: {shot_name}")
+                    return False
+                
+                # Vérifier que le dossier du plan est dans le bon dossier de scène
+                if grandparent_dir != scene_name:
+                    logger.error(f"❌ ERREUR STRUCTURE: Le dossier du plan n'est pas dans la bonne scène")
+                    logger.error(f"   📂 Scène actuelle: {grandparent_dir}")
+                    logger.error(f"   ✅ Scène attendue: {scene_name}")
+                    return False
+                
+                logger.info(f"✅ Structure de chemin validée: ...//{scene_name}/{shot_name}/{path_obj.name}")
+                return True
             
         except Exception as e:
             logger.error(f"❌ Erreur validation structure chemin: {e}")
@@ -407,10 +481,28 @@ class LucidLinkWatcher:
         self.sheets_tracker = sheets_tracker
         self.observer = None
         self.is_running = False
+        self.handler = None
         
         # Vérifier que le dossier existe
         if not self.watch_directory.exists():
             raise FileNotFoundError(f"Dossier de surveillance non trouvé: {watch_directory}")
+    
+    def initialize_processed_files(self, upload_tracker=None):
+        """Initialiser la liste des fichiers déjà traités à partir du tracker."""
+        if self.handler and upload_tracker:
+            try:
+                # Obtenir tous les uploads du tracker
+                uploads = upload_tracker.get_all_uploads()
+                for upload_id, upload_data in uploads.items():
+                    file_path = upload_data.get('file_path')
+                    if file_path and os.path.exists(file_path):
+                        self.handler.processed_files.add(file_path)
+                        logger.debug(f"📁 Fichier marqué comme déjà traité: {os.path.basename(file_path)}")
+                
+                logger.info(f"✅ {len(self.handler.processed_files)} fichiers marqués comme déjà traités")
+                
+            except Exception as e:
+                logger.error(f"❌ Erreur initialisation fichiers traités: {e}")
     
     def start(self):
         """Démarrer la surveillance."""
@@ -423,11 +515,11 @@ class LucidLinkWatcher:
             self.observer = Observer()
             
             # Créer le handler
-            handler = LucidLinkExportHandler(self.workflow_callback)
+            self.handler = LucidLinkExportHandler(self.workflow_callback)
             
             # Ajouter la surveillance récursive
             self.observer.schedule(
-                handler,
+                self.handler,
                 str(self.watch_directory),
                 recursive=True
             )

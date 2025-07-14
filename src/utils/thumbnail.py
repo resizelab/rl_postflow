@@ -635,33 +635,9 @@ class ThumbnailGenerator:
 
     def _setup_google_drive(self):
         """Configure Google Drive pour l'upload des thumbnails."""
-        try:
-            from google.oauth2.service_account import Credentials
-            from googleapiclient.discovery import build
-            
-            # Lire la configuration
-            with open('config/integrations.json', 'r', encoding='utf-8') as f:
-                config = json.load(f)
-            
-            # Configurer les services Google
-            scope = [
-                'https://www.googleapis.com/auth/spreadsheets',
-                'https://www.googleapis.com/auth/drive'
-            ]
-            creds = Credentials.from_service_account_file('config/google_credentials.json', scopes=scope)
-            
-            # Service Google Drive
-            self._drive_service = build('drive', 'v3', credentials=creds)
-            
-            # Configurer le dossier des thumbnails
-            self._setup_drive_folder()
-            
-            logger.info("✅ Google Drive configuré pour thumbnails")
-            return True
-            
-        except Exception as e:
-            logger.warning(f"⚠️ Erreur configuration Google Drive: {e}")
-            return False
+        # Désactivé temporairement - problème de quota service account
+        logger.warning("⚠️ Google Drive désactivé temporairement (quota service account)")
+        return False
     
     def _setup_drive_folder(self):
         """Crée et configure le dossier Google Drive pour les thumbnails."""

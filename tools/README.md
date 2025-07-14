@@ -4,6 +4,37 @@
 
 ## 📁 **Contenu du Dossier**
 
+### **🎬 After Effects Panel Script**
+- **Dossier** : [`ae_panel_script/`](ae_panel_script/)
+- **Script Principal** : [`ae_panel_script/RL_PostFlow_Panel.jsx`](ae_panel_script/RL_PostFlow_Panel.jsx)
+- **Documentation** : [`ae_panel_script/README.md`](ae_panel_script/README.md)
+- **Installation** : [`ae_panel_script/INSTALLATION.md`](ae_panel_script/INSTALLATION.md)
+
+**Panel After Effects pour export automatique** avec détection LucidLink et versioning automatique.
+
+#### **✅ Version 0.1.1 - Nouvelle Architecture**
+- **Correction erreur Mac** : "Illegal 'return' outside of a function body"
+- **Architecture modulaire** : 8 modules JavaScript indépendants
+- **Compatible** : macOS/Windows + After Effects 2025+
+
+#### **Installation Rapide :**
+```bash
+# macOS - User Presets (recommandé)
+cd /Volumes/resizelab/o2b-undllm/2_IN/_ELEMENTS/TOOLS/ae_panel_script/
+./install_macos_user_presets.sh
+
+# Windows - User Presets (recommandé)
+cd E:\Volumes\resizelab\o2b-undllm\2_IN\_ELEMENTS\TOOLS\ae_panel_script\
+.\install_windows_user_presets.ps1
+```
+
+#### **Formats d'Export :**
+- **PNG 8-bits 1440p** : Animation workflow (structure EB locale)
+- **ProRes LT 1080p** : Versions WIP (v001, v002...)
+- **ProRes HQ 1440p** : Version définitive (vDEF)
+
+---
+
 ### **🎬 After Effects Generator v2**
 - **Dossier** : [`after_effects_generator_v2/`](after_effects_generator_v2/)
 - **Script Principal** : [`after_effects_generator_v2/generate_ae_projects_v2.py`](after_effects_generator_v2/generate_ae_projects_v2.py)

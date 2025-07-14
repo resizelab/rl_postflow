@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webhook Manager - RL PostFlow</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .status-badge {
+            font-size: 0.9em;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+        }
+        .status-active { background: #28a745; color: white; }
+        .status-inactive { background: #6c757d; color: white; }
+        .status-error { background: #dc3545; color: white; }
+        .webhook-url {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            word-break: break-all;
+        }
+        .events-table {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h1 class="text-white mb-1">
+                            <i class="fas fa-webhook me-2"></i>
+                            Webhook Manager
+                        </h1>
+                        <p class="text-white-50 mb-0">Gestion des webhooks Frame.io</p>
+                    </div>
+                    <a href="/" class="btn btn-outline-light">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Retour au Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statut du Service -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-server me-2"></i>
+                            Statut du Service
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="status-badge status-inactive" id="service-status">
+                                <i class="fas fa-circle me-2"></i>
+                                Chargement...
+                            </span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">URL Publique:</label>
+                            <div class="webhook-url" id="webhook-url">
+                                Aucune URL disponible
+                            </div>
+                            <div class="mt-2">
+                                <button class="btn btn-sm btn-outline-primary" onclick="copyWebhookUrl()">
+                                    <i class="fas fa-copy me-1"></i> Copier
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" onclick="testWebhook()">
+                                    <i class="fas fa-vial me-1"></i> Tester
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="border-end">
+                                    <div class="h4 mb-0 text-primary" id="events-count">0</div>
+                                    <small class="text-muted">Événements traités</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="h4 mb-0 text-info" id="uptime">--</div>
+                                <small class="text-muted">Temps de fonctionnement</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-cog me-2"></i>
+                            Configuration
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Port:</label>
+                            <input type="number" class="form-control" id="webhook-port" value="8080" readonly>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Tunnel Cloudflare:</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="tunnel-enabled" checked disabled>
+                                <label class="form-check-label" for="tunnel-enabled">
+                                    Activé (recommandé)
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-success" onclick="startWebhook()">
+                                <i class="fas fa-play me-2"></i>
+                                Démarrer le Service
+                            </button>
+                            <button class="btn btn-danger" onclick="stopWebhook()">
+                                <i class="fas fa-stop me-2"></i>
+                                Arrêter le Service
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Derniers Événements -->
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>
+                            Derniers Événements Frame.io
+                        </h5>
+                        <button class="btn btn-sm btn-outline-primary" onclick="refreshEvents()">
+                            <i class="fas fa-sync-alt me-1"></i>
+                            Actualiser
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="events-table">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Horodatage</th>
+                                        <th>Type d'événement</th>
+                                        <th>Fichier</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="events-tbody">
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-4">
+                                            Aucun événement reçu
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    
+    <script>
+        // Configuration
+        const socket = io();
+        let webhookData = {};
+
+        // Connexion WebSocket
+        socket.on('connect', function() {
+            console.log('Connecté au serveur WebSocket');
+            requestWebhookUpdate();
+        });
+
+        socket.on('webhook_update', function(data) {
+            console.log('Mise à jour webhook reçue:', data);
+            updateWebhookDisplay(data);
+        });
+
+        // Fonctions API
+        async function requestWebhookUpdate() {
+            try {
+                const response = await fetch('/api/webhook/status');
+                const data = await response.json();
+                updateWebhookDisplay(data);
+            } catch (error) {
+                console.error('Erreur lors de la récupération du statut:', error);
+            }
+        }
+
+        function updateWebhookDisplay(data) {
+            webhookData = data;
+            
+            // Statut du service
+            const statusBadge = document.getElementById('service-status');
+            const webhookUrl = document.getElementById('webhook-url');
+            const eventsCount = document.getElementById('events-count');
+            
+            if (data.status === 'active') {
+                statusBadge.className = 'status-badge status-active';
+                statusBadge.innerHTML = '<i class="fas fa-circle me-2"></i>Actif';
+            } else if (data.status === 'inactive') {
+                statusBadge.className = 'status-badge status-inactive';
+                statusBadge.innerHTML = '<i class="fas fa-circle me-2"></i>Inactif';
+            } else {
+                statusBadge.className = 'status-badge status-error';
+                statusBadge.innerHTML = '<i class="fas fa-circle me-2"></i>Erreur';
+            }
+            
+            // URL du webhook
+            if (data.webhook_url) {
+                webhookUrl.textContent = data.webhook_url;
+            } else {
+                webhookUrl.textContent = 'Aucune URL disponible';
+            }
+            
+            // Compteur d'événements
+            eventsCount.textContent = data.events_processed || 0;
+            
+            // Mettre à jour les événements
+            updateEventsTable(data.webhook_stats?.events || []);
+        }
+
+        function updateEventsTable(events) {
+            const tbody = document.getElementById('events-tbody');
+            
+            if (!events || events.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            Aucun événement reçu
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = events.slice(-10).reverse().map(event => `
+                <tr>
+                    <td>${new Date(event.timestamp).toLocaleString()}</td>
+                    <td>
+                        <span class="badge bg-info">${event.event_type}</span>
+                    </td>
+                    <td>${event.file_name || 'N/A'}</td>
+                    <td>
+                        <span class="badge bg-${getStatusColor(event.status)}">${event.status || 'N/A'}</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="viewEventDetails('${event.file_id}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function getStatusColor(status) {
+            switch(status) {
+                case 'active': return 'success';
+                case 'processing': return 'warning';
+                case 'failed': return 'danger';
+                default: return 'secondary';
+            }
+        }
+
+        // Actions
+        async function copyWebhookUrl() {
+            const url = document.getElementById('webhook-url').textContent;
+            if (url && url !== 'Aucune URL disponible') {
+                try {
+                    await navigator.clipboard.writeText(url);
+                    showNotification('URL copiée dans le presse-papiers', 'success');
+                } catch (error) {
+                    console.error('Erreur lors de la copie:', error);
+                    showNotification('Erreur lors de la copie', 'error');
+                }
+            }
+        }
+
+        async function testWebhook() {
+            try {
+                const response = await fetch('/api/webhook/test', { method: 'POST' });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showNotification('Test webhook réussi', 'success');
+                } else {
+                    showNotification('Erreur test webhook: ' + data.error, 'error');
+                }
+            } catch (error) {
+                console.error('Erreur test webhook:', error);
+                showNotification('Erreur lors du test', 'error');
+            }
+        }
+
+        async function startWebhook() {
+            showNotification('Démarrage du service webhook...', 'info');
+            // TODO: Implémenter l'API de démarrage
+        }
+
+        async function stopWebhook() {
+            showNotification('Arrêt du service webhook...', 'info');
+            // TODO: Implémenter l'API d'arrêt
+        }
+
+        function refreshEvents() {
+            requestWebhookUpdate();
+            showNotification('Événements actualisés', 'success');
+        }
+
+        function viewEventDetails(fileId) {
+            console.log('Voir détails pour:', fileId);
+            // TODO: Implémenter la vue détaillée
+        }
+
+        function showNotification(message, type = 'info') {
+            // Simple notification system
+            const alertClass = type === 'success' ? 'alert-success' : 
+                             type === 'error' ? 'alert-danger' : 'alert-info';
+            
+            const alert = document.createElement('div');
+            alert.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+            alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            alert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.parentNode.removeChild(alert);
+                }
+            }, 5000);
+        }
+
+        // Actualisation automatique
+        setInterval(requestWebhookUpdate, 30000); // Toutes les 30 secondes
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            requestWebhookUpdate();
+        });
+    </script>
+</body>
+</html>

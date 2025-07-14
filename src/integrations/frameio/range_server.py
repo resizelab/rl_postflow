@@ -28,6 +28,16 @@ class RangeHTTPRequestHandler(BaseHTTPRequestHandler):
         logger.info(f"🌐 Requête GET: {requested_path} de {client_ip}")
         logger.info(f"🤖 User-Agent: {user_agent}")
         
+        # Gérer les requêtes de test de connectivité (racine)
+        if requested_path == "" or requested_path == "/":
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            response = b'{"status": "ok", "service": "PostFlow Range Server"}'
+            self.wfile.write(response)
+            logger.info("✅ Requête de test de connectivité répondue")
+            return
+        
         # Vérifier si le fichier est autorisé
         if requested_path not in self.allowed_files:
             logger.warning(f"❌ Fichier non autorisé: {requested_path}")
@@ -191,6 +201,14 @@ class RangeHTTPRequestHandler(BaseHTTPRequestHandler):
     def do_HEAD(self):
         """Gérer les requêtes HEAD"""
         requested_path = self.path.lstrip('/')
+        
+        # Gérer les requêtes de test de connectivité (racine)
+        if requested_path == "" or requested_path == "/":
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', '52')
+            self.end_headers()
+            return
         
         if requested_path not in self.allowed_files:
             self.send_error(404, "File not found or not authorized")

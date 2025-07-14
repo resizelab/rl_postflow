@@ -22,6 +22,10 @@ import argparse
 from pathlib import Path
 from typing import Dict, Any, Optional
 
+# Version du pipeline
+POSTFLOW_VERSION = "4.1.5"
+POSTFLOW_VERSION_NAME = "Emojis & Duplicate Detection Complete"
+
 # Ajouter le répertoire src au path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
@@ -62,6 +66,13 @@ except ImportError as e:
     logger.error(f"Error handler not available: {e}")
     ERROR_HANDLER_AVAILABLE = False
 
+try:
+    from src.services.webhook_service import WebhookService
+    WEBHOOK_SERVICE_AVAILABLE = True
+except ImportError as e:
+    logger.error(f"Webhook service not available: {e}")
+    WEBHOOK_SERVICE_AVAILABLE = False
+
 
 class RLPostFlowPipeline:
     """
@@ -85,6 +96,7 @@ class RLPostFlowPipeline:
         self.dashboard_initializer = None
         self.infrastructure_manager = None
         self.error_handler = None
+        self.webhook_service = None
         
         # Runner principal
         self.runner = None
@@ -149,28 +161,110 @@ class RLPostFlowPipeline:
         except Exception as e:
             logger.error(f"[ERROR] Erreur lors de l'initialisation du gestionnaire d'erreurs: {e}")
     
+    async def _initialize_webhook_service(self) -> bool:
+        """
+        Initialise le service webhook Frame.io
+        
+        Returns:
+            bool: True si initialisé avec succès
+        """
+        if not WEBHOOK_SERVICE_AVAILABLE:
+            logger.warning("⚠️ Service webhook non disponible")
+            return False
+        
+        try:
+            # Vérifier si le webhook est activé dans la config
+            webhook_config = self.config.get('webhook', {})
+            if not webhook_config.get('enabled', True):
+                logger.info("⚠️ Service webhook désactivé dans la configuration")
+                return False
+            
+            # Récupérer l'upload tracker du runner
+            upload_tracker = None
+            if hasattr(self.runner, 'upload_tracker'):
+                upload_tracker = self.runner.upload_tracker
+            else:
+                logger.warning("⚠️ Upload tracker non disponible pour le webhook")
+                return False
+            
+            # Créer le service webhook
+            self.webhook_service = WebhookService(
+                upload_tracker=upload_tracker,
+                config=self.config,
+                auto_start=webhook_config.get('auto_start', True)
+            )
+            
+            # Démarrer le service si auto_start
+            if webhook_config.get('auto_start', True):
+                webhook_started = self.webhook_service.start_service()
+                if webhook_started:
+                    webhook_url = self.webhook_service.get_webhook_url()
+                    logger.info(f"✅ Service webhook démarré: {webhook_url}")
+                    
+                    # Auto-configurer le webhook Frame.io si possible
+                    await self._auto_configure_frameio_webhook()
+                    
+                    return True
+                else:
+                    logger.warning("⚠️ Échec démarrage service webhook")
+                    return False
+            else:
+                logger.info("✅ Service webhook créé (démarrage manuel)")
+                return True
+                
+        except Exception as e:
+            logger.error(f"❌ Erreur initialisation service webhook: {e}")
+            return False
+    
+    async def _auto_configure_frameio_webhook(self):
+        """Configure automatiquement le webhook Frame.io si possible"""
+        try:
+            frameio_config = self.config.get('frameio', {})
+            account_id = frameio_config.get('account_id')
+            workspace_id = frameio_config.get('workspace_id')
+            
+            if account_id and workspace_id and self.frameio_auth:
+                logger.info("🔧 Configuration automatique du webhook Frame.io...")
+                
+                success = self.webhook_service.configure_frameio_webhook(
+                    account_id=account_id,
+                    workspace_id=workspace_id,
+                    frameio_auth=self.frameio_auth
+                )
+                
+                if success:
+                    logger.info("✅ Webhook Frame.io configuré automatiquement")
+                else:
+                    logger.warning("⚠️ Configuration automatique webhook Frame.io échouée")
+            else:
+                logger.info("ℹ️ Configuration automatique webhook Frame.io non possible (IDs manquants)")
+                
+        except Exception as e:
+            logger.warning(f"⚠️ Erreur configuration automatique webhook: {e}")
+
     def print_banner(self):
         """Affiche la bannière de démarrage"""
         print("\n" + "="*80)
-        print("🎬 RL POSTFLOW - PIPELINE D'INTÉGRATION v4.1.5 (Emojis & Duplicate Detection Complete)")
+        print(f"🎬 RL POSTFLOW - PIPELINE D'INTÉGRATION v{POSTFLOW_VERSION} ({POSTFLOW_VERSION_NAME})")
         print("="*80)
         print("Pipeline automatisé LucidLink  ->  Frame.io")
         print("• 🔑 Authentification OAuth Web App autonome")
         print("• 📁 Gestion automatique des structures Frame.io")
         print("• 📤 Upload intelligent avec retry")
         print("• 🎛️ Dashboard web intégré")
+        print("• 🎣 Webhooks Frame.io automatisés")
         print("• 🔔 Notifications Discord")
         print("• 🧩 Architecture modulaire")
         print("="*80)
     
     async def run_pipeline(self):
-        """Lance le pipeline principal PostFlow v2.0"""
+        f"""Lance le pipeline principal PostFlow v{POSTFLOW_VERSION}"""
         if not BOOTSTRAP_AVAILABLE:
             logger.error("[ERROR] Bootstrap modules not available")
             return False
         
         try:
-            logger.info("🚀 Démarrage du pipeline PostFlow v2.0...")
+            logger.info(f"🚀 Démarrage du pipeline PostFlow v{POSTFLOW_VERSION}...")
             
             # Initialiser l'infrastructure partagée
             infrastructure_ok, self.infrastructure_manager = await initialize_infrastructure(
@@ -202,6 +296,21 @@ class RLPostFlowPipeline:
                 self.dashboard_initializer, self.infrastructure_manager, self.error_handler
             )
             
+            # Initialiser les fichiers déjà traités dans le watcher pour éviter les doublons
+            if watcher_ok and hasattr(self.runner, 'upload_tracker') and self.runner.upload_tracker:
+                try:
+                    # Créer un watcher_initializer temporaire pour utiliser sa méthode
+                    from src.bootstrap.watcher_initializer import WatcherInitializer
+                    temp_initializer = WatcherInitializer(self.config, self.pipeline_config, self.config_manager)
+                    temp_initializer.watcher = self.watcher
+                    temp_initializer.initialize_processed_files(self.runner.upload_tracker)
+                    logger.info("✅ Fichiers déjà traités initialisés dans le watcher")
+                except Exception as e:
+                    logger.warning(f"⚠️ Erreur initialisation fichiers traités: {e}")
+            
+            # Initialiser le service webhook
+            webhook_ok = await self._initialize_webhook_service()
+            
             # Effectuer la vérification de synchronisation au démarrage
             logger.info("🔄 Vérification de synchronisation au démarrage...")
             try:
@@ -228,6 +337,7 @@ class RLPostFlowPipeline:
                 'frameio': frameio_ok,
                 'watcher': watcher_ok,
                 'dashboard': dashboard_ok,
+                'webhook': webhook_ok,
                 'error_handler': self.error_handler is not None
             }
             
@@ -265,7 +375,7 @@ class RLPostFlowPipeline:
     
     async def shutdown(self):
         """Arrêt propre du pipeline"""
-        logger.info("[STOP] Arrêt du pipeline PostFlow v2.0...")
+        logger.info(f"[STOP] Arrêt du pipeline PostFlow v{POSTFLOW_VERSION}...")
         
         if self.runner:
             await self.runner.shutdown()
@@ -273,7 +383,7 @@ class RLPostFlowPipeline:
         self.is_running = False
         self._shutdown_event.set()
         
-        logger.info("✅ Pipeline PostFlow v2.0 arrêté")
+        logger.info(f"✅ Pipeline PostFlow v{POSTFLOW_VERSION} arrêté")
     
     def force_shutdown(self):
         """Arrêt forcé pour debugging"""
