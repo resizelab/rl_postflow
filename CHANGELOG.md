@@ -5,6 +5,192 @@ Toutes les modifications notables de ce projet seront documentées dans ce fichi
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.8] - 2025-07-14 🎬 **AFTER EFFECTS PANEL v1.6.0**
+
+### ✨ Ajouté
+- **Panel After Effects complet** : Interface utilisateur complète pour PostFlow AE workflow
+  - Auto-versioning intelligent avec renommage compositions (v001 → v002 → v003)
+  - Détection serveur et incrémentation automatique versions
+  - Architecture modulaire avec 7 composants principaux
+  - Template system complet (.ars + .aom) pour render settings et output modules
+- **Système de templates** : Configuration prête à l'emploi pour export optimisé
+  - Template PNG 8-bits pour EB structure (séquences d'images)
+  - Template ProRes LT/HQ pour LucidLink (fichiers vidéo finaux)
+  - Application order intelligent : render settings d'abord, puis output modules
+- **Routage intelligent** : Détection automatique type export selon format
+  - PNG → Structure EB pour traitement EbSynth
+  - ProRes → LucidLink pour livraisons finales
+  - Détection séquence vs shot avec routage approprié
+- **Déploiement automatisé** : Script `deploy_rl_postflow.py` avec installation cross-platform
+  - Package production 702KB (7 fichiers)
+  - Installer complet `install_rl_postflow_complete.jsx`
+  - Compatibilité Windows/macOS avec détection automatique LucidLink
+  - Manifest de déploiement avec validation intégrité
+
+### 🔧 Amélioré
+- **Workflow composition** : Renommage automatique compositions pour cohérence versions
+- **Path management** : Détection automatique chemins LucidLink cross-platform
+- **Template application** : Ordre optimisé application templates (settings puis modules)
+- **Error handling** : Gestion robuste erreurs avec feedback utilisateur détaillé
+
+### 📊 Spécifications Techniques
+```
+Architecture Panel:
+├── RL_PostFlow_Panel.jsx (41.4KB) - Interface principale
+├── Templates système (PNG 8-bits + ProRes LT/HQ)
+├── Configuration JSON avec paths dynamiques
+└── Scripts déploiement automatisé
+
+Workflow:
+1. Composition detection & auto-versioning
+2. Template application (render → output)
+3. Path routing (PNG → EB, ProRes → LucidLink)
+4. Export execution avec feedback temps réel
+```
+
+### 🎯 Production Ready
+- **Package déploiement** : 702KB, 7 fichiers, installation 1-clic
+- **Cross-platform** : Compatible Windows 10/11 + macOS (Intel/Apple Silicon)
+- **Integration PostFlow** : Workflow complet animation → export → upload
+- **Documentation** : Guide complet utilisation et déploiement
+
+### 🔗 Ajouts Infrastructure
+- **Webhook Frame.io** : Système webhook intégration Frame.io temps réel
+  - `webhook_integration.py` : Gestionnaire principal webhooks Frame.io
+  - `webhook_manager.py` : Manager webhooks avec validation signatures
+  - `webhook_tunnel.py` : Tunnel ngrok pour développement local
+  - Template HTML interface webhook pour tests manuels
+- **Services architecture** : Nouvelle structure `src/services/` pour composants backend
+
+## [4.1.7] - 2025-07-14 ⚡ **CONNEXIONS PERSISTANTES GOOGLE + OPTIMISATIONS**
+
+### ✨ Ajouté
+- **GoogleConnectionManager** : Gestionnaire singleton connexions persistantes Google API
+  - Cache 4 connexions simultanées : sheets_v4, drive_v3, gspread, main_spreadsheet
+  - Auto-refresh credentials avec gestion expiration tokens
+  - Pattern singleton garantissant réutilisation connexions
+  - Statistiques temps réel avec `get_stats()` method
+- **OptimizedSheetsStatusAdapter** : Adaptateur optimisé Google Sheets avec batch operations
+  - Réutilisation connexions persistantes pour toutes opérations
+  - Batch updates pour mise à jour multiple statuts
+  - Cache recherche shots avec fallback intelligent
+  - Performance +57.2% vs méthode ancienne
+- **Système test complet** : Suite validation performance et intégration
+  - Test comparatif ancienne vs nouvelle méthode (6.13s → 2.63s)
+  - Test intégration complète pipeline avec Frame.io
+  - Script déploiement automatisé avec vérifications prérequis
+  - Sauvegarde automatique fichiers existants
+
+### 🔧 Amélioré
+- **PostFlow runner** : Integration gestionnaire connexions persistantes
+  - Remplacement création connexions multiples par singleton réutilisé
+  - Elimination avertissements `googleapiclient.discovery_cache`
+  - Bootstrap connexions une seule fois au démarrage pipeline
+  - Performance globale amélioration mesurable
+- **Sync checker fix** : Correction critique détection fichiers Frame.io
+  - Fix reconnaissance status `🎉 COMPLETED` avec emoji
+  - Évite re-uploads parasites fichiers déjà traités
+  - Path matching amélioré avec fallback nom fichier
+  - Logique comparaison statuts robuste
+
+### 🐛 Corrigé
+- **Frame.io re-uploads** : Fin des uploads redondants par fix sync_checker
+  - Status comparison incluant format emoji `🎉 COMPLETED`
+  - Plus de fichiers retraités incorrectement après completion
+  - Detection robuste fichiers déjà traités dans tracking JSON
+- **Google API overhead** : Réduction drastique temps connexions
+  - Élimination création multiples connexions par opération
+  - Cache connexions persistant entre opérations
+  - Refresh automatique credentials sans reconnexion complète
+
+### 📊 Métriques Performance
+```
+Benchmarks mesurés:
+├── Méthode ancienne: 6.13s (5 connexions séparées)
+├── Méthode persistante: 2.63s (réutilisation cache)
+├── Amélioration: +57.2% plus rapide
+└── Gain temps: 3.50s par cycle opérations
+
+Cache connexions:
+├── sheets_v4: Service Google Sheets API v4
+├── drive_v3: Service Google Drive API v3  
+├── gspread: Client gspread pour opérations avancées
+└── main_spreadsheet: Spreadsheet principal en cache
+```
+
+### 🚀 Déploiement
+- **Script automatisé** : `deploy_persistent_connections.py` avec validation complète
+- **Sauvegarde smart** : Backup automatique fichiers modifiés vers `backups/deployment_v4.1.7/`
+- **Tests intégration** : Validation Google API + Frame.io + pipeline complet
+- **Documentation** : Notes déploiement avec statistiques performance
+
+## [4.1.6] - 2025-07-14 📁 **SUPPORT DOSSIERS _ALL**
+
+### ✨ Ajouté
+- **Format séquence _ALL** : Support complet pour les fichiers dans les dossiers `_ALL`
+  - Pattern `SQ##_UNDLM_v###.ext` (ex: `SQ02_UNDLM_v001.mov`)
+  - Structure `...SQ02/_ALL/SQ02_UNDLM_v001.mov`
+- **Nomenclature étendue** : Configuration `sequence_all` dans `nomenclature.json`
+  - Regex : `^(?P<sequence>SQ\\d{2})_(?P<project>UNDLM)_v(?P<version>\\d{3})\\.(mov|mp4|avi|mkv)$`
+  - Format : `{sequence}_{project}_v{version:03d}.{ext}`
+  - Exemples : `SQ01_UNDLM_v001.mov`, `SQ02_UNDLM_v003.mp4`
+- **Frame.io mapping** : Configuration dossiers `_ALL` avec template `{sequence}_ALL`
+  - `all_folder_template`: `{sequence}_ALL`
+  - `all_folder_pattern`: `^(SQ\\d{2})_ALL$`
+
+### 🔧 Amélioré
+- **Watcher LucidLink** : Reconnaissance automatique des deux formats
+  - Format standard : `SQ##_UNDLM_#####_v###.ext`
+  - Format _ALL : `SQ##_UNDLM_v###.ext`
+- **Validation stricte** : Vérification spécifique structure dossiers `_ALL`
+  - Standard : `.../SQ##/UNDLM_#####/`
+  - _ALL : `.../SQ##/_ALL/`
+- **Parser de nomenclature** : Support dual avec détection automatique format
+  - Flag `is_sequence_all` pour différencier les types
+  - Métadonnées adaptées selon le format détecté
+
+### 📊 Patterns Supportés
+```
+Format Standard:
+├── SQ02/UNDLM_00001/SQ02_UNDLM_00001_v001.mov
+└── SQ03/UNDLM_00025/SQ03_UNDLM_00025_v002.mp4
+
+Format Séquence _ALL:
+├── SQ02/_ALL/SQ02_UNDLM_v001.mov
+└── SQ03/_ALL/SQ03_UNDLM_v003.mp4
+```
+
+### 🎯 Cas d'usage
+- **Export par séquence** : Fichiers consolidés par séquence dans dossiers `_ALL`
+- **Workflow simplifié** : Upload direct séquences complètes vers Frame.io
+- **Nomenclature cohérente** : Respect standard UNDLM avec adaptation format
+
+## [4.1.5] - 2025-07-13 🎬 **EMOJIS DISCORD + DÉTECTION DOUBLONS**
+
+### ✨ Ajouté
+- **Emojis Discord complets** : Restauration de tous les emojis dans les notifications Discord
+- **Détection doublons robuste** : Système à 3 niveaux pour éviter les retraitements
+- **Script fix Frame.io codes** : Utilitaire pour corriger les codes emoji
+- **Documentation emojis** : Guide complet `DISCORD_EMOJIS_RESTORED.md`
+
+### 🔧 Amélioré
+- **Template Factory** : Emojis vrais au lieu des placeholders `[TEXTE]`
+  - `🎬 Fichier traité` (vs `[MOVIE]`)
+  - `📁 Fichier` / `🔗 Frame.io` (vs `[FOLDER]`/`[LINK]`)
+  - `📊 Total` / `✅ Terminés` / `❌ Échoués` (vs `[CHART]`/`[OK]`/`[ERROR]`)
+- **Status emojis** : Correction complète des statuts de plans
+  - `⏳ Pending` / `✅ Sources Verified` / `🎨 AE Ready`
+  - `🔄 AE In Progress` / `✨ AE Completed` / `🎭 EbSynth Ready`
+  - `🎆 EbSynth Completed` / `📤 Review Uploaded` / `🎉 Final Delivery`
+- **Sync checker** : Path matching amélioré avec absolu + fallback filename
+- **Pipeline principal** : Workflow avec vérification doublons intégrée
+
+### 🐛 Corrigé
+- **Fichiers COMPLETED** : Plus de retraitement incorrect des fichiers terminés
+- **Path matching** : Correspondance absolue avec fallback sur nom de fichier
+- **Notification visuelle** : Pipeline visuellement parfait avec vrais emojis
+- **Workflow doublons** : Évite les uploads redondants avec détection 3 niveaux
+
 ## [4.1.4] - 2025-07-12 🪟 **COMPATIBILITÉ WINDOWS COMPLÈTE**
 
 ### ✨ Ajouté
