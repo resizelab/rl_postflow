@@ -5,6 +5,49 @@ Toutes les modifications notables de ce projet seront documentées dans ce fichi
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.10] - 2025-07-28 🎬 **GÉNÉRATEUR AFTER EFFECTS V2 COMPLET**
+
+### ✨ Ajouté - Générateur After Effects v2
+- **Continuité temporelle plans bis** : Logique avancée pour séquence des plans bis
+  - Import automatique plan principal + plan bis en continuité temporelle
+  - Extension durée composition pour accommoder les deux rushes
+  - Placement séquentiel : principal (0s → durée_principal) + bis (durée_principal → fin)
+- **Détection dynamique de version** : Burn-ins intelligents séquence et plan
+  - Expressions ExtendScript avec détection automatique v001, v002, etc.
+  - Utilisation de `layer.source.name` pour version plan fiable
+  - Burn-ins mis à jour automatiquement lors des renommages
+- **Support variantes de fichiers** : Test intelligent toutes variantes
+  - Séquence de test : standard → _AVEC_POIGNEES → bis pour Edit et Graded
+  - Import automatique de la première variante disponible
+  - Gestion fallback gracieuse sans erreurs critiques
+- **Génération massive** : Déploiement de 26 séquences complètes
+  - Scripts ExtendScript pour SQ01, SQ03-SQ10, SQ12-SQ28 (excluant SQ02, SQ11)
+  - Structure EB automatique conforme au template SQXX
+  - Rapports de déploiement avec statistiques détaillées
+
+### 🔧 Amélioré - After Effects Integration
+- **Expressions protégées** : Try/catch complet pour toutes les expressions ExtendScript
+  - Protection contre erreurs layers sans source
+  - Expressions robustes pour détection version et nom plan
+- **Centrage scope complet** : Positionnement [1280, 720] horizontal + vertical
+  - Import PNG scope automatique avec mise à l'échelle 66.67% (UHD → 1440p)
+  - Fallback texte si fichier PNG non disponible
+- **Structure optimisée** : Dossiers conformes template AE avec réutilisation assets
+  - Solid noir réutilisable pour toutes compositions
+  - Organisation MASTER_COMP_SEQ et MASTER_COMPS_SHOTS
+  - Mise à l'échelle intelligente UHD (3840x2160) → 1440p (2560x1440)
+
+### 📚 Documentation & Outils
+- **Guides installation panel AE** : Documentation complète Mac/PC
+- **Scripts déploiement** : Outils automatisés pour validation et déploiement
+- **Détection LucidLink** : Helper intégré pour panel After Effects
+- **Rapports validation** : Système de validation pré-déploiement avec métriques
+
+### 🗂️ Organisation Code
+- **Migration legacy** : Code deprecated déplacé vers `src/deprecated/`
+- **Frame.io manager** : Architecture optimisée pour intégrations
+- **Sheets tracker** : Utility avancée pour suivi Google Sheets
+
 ## [4.1.9] - 2025-07-14 🔧 **CORRECTIONS CRITIQUES & OPTIMISATIONS PIPELINE**
 
 ### 🐛 Corrigé - Corrections Majeures
