@@ -1,0 +1,16 @@
+{
+  "sequences": [
+    "SQ01",
+    "SQ03",
+    "SQ04"
+  ],
+  "results": {
+    "SQ01": true,
+    "SQ03": true,
+    "SQ04": true
+  },
+  "success_count": 3,
+  "total_count": 3,
+  "dry_run": true,
+  "timestamp": "2025-07-28 13:56:41"
+}

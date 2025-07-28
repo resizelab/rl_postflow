@@ -1,0 +1,13 @@
+{
+  "lucidlink_detected": true,
+  "mount_point": "E:\\Volumes\\resizelab",
+  "detection_method": "lucid_command",
+  "timestamp": "1752597018.3792999",
+  "os_type": "windows",
+  "jsx_paths": {
+    "base_path": "E:\\Volumes\\resizelab",
+    "project_path": "E:\\Volumes\\resizelab\\o2b-undllm",
+    "tools_path": "E:\\Volumes\\resizelab\\o2b-undllm\\2_IN\\_ELEMENTS\\TOOLS",
+    "ae_panel_path": "E:\\Volumes\\resizelab\\o2b-undllm\\2_IN\\_ELEMENTS\\TOOLS\\ae_panel_script"
+  }
+}

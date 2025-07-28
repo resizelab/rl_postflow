@@ -1,0 +1,32 @@
+{
+  "timestamp": "2025-07-28 13:55:13",
+  "environment": true,
+  "data_integrity": true,
+  "source_files": false,
+  "dry_run_test": true,
+  "global_score": 75.0,
+  "ready_for_deployment": true,
+  "source_files_details": {
+    "SQ01": {
+      "total_plans": 34,
+      "edit_available": 25,
+      "graded_available": 29,
+      "edit_rate": 73.52941176470588,
+      "graded_rate": 85.29411764705883
+    },
+    "SQ02": {
+      "total_plans": 39,
+      "edit_available": 38,
+      "graded_available": 38,
+      "edit_rate": 97.43589743589743,
+      "graded_rate": 97.43589743589743
+    },
+    "SQ03": {
+      "total_plans": 20,
+      "edit_available": 20,
+      "graded_available": 20,
+      "edit_rate": 100.0,
+      "graded_rate": 100.0
+    }
+  }
+}
