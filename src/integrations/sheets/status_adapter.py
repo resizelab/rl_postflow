@@ -42,7 +42,7 @@ class SheetsStatusTrackerAdapter:
             bool: True si mis à jour avec succès
         """
         try:
-            service = self.user_manager.get_service()
+            service = self.user_manager.get_sheets_service()
             
             # Préparer les mises à jour
             updates = []
@@ -132,7 +132,7 @@ class SheetsStatusTrackerAdapter:
             bool: True si mis à jour avec succès
         """
         try:
-            service = self.user_manager.get_service()
+            service = self.user_manager.get_sheets_service()
             
             # Mettre à jour la colonne FRAME_IO_LINK (colonne K)
             frameio_link = links.get('review_link') or links.get('share_link') or links.get('frameio_link')
@@ -230,7 +230,7 @@ class SheetsStatusTrackerAdapter:
             bool: True si succès
         """
         try:
-            service = self.user_manager.get_service()
+            service = self.user_manager.get_sheets_service()
             
             # Collecter toutes les mises à jour
             all_updates = []

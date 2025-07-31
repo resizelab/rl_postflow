@@ -15,8 +15,9 @@ logger = logging.getLogger(__name__)
 class RangeHTTPRequestHandler(BaseHTTPRequestHandler):
     """Handler HTTP avec support des Range requests"""
     
-    def __init__(self, *args, allowed_files: Dict[str, str], **kwargs):
+    def __init__(self, *args, allowed_files: Dict[str, str], webhook_handler=None, **kwargs):
         self.allowed_files = allowed_files
+        self.webhook_handler = webhook_handler
         super().__init__(*args, **kwargs)
     
     def do_GET(self):
@@ -251,6 +252,34 @@ class RangeHTTPRequestHandler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Headers', 'Content-Type, Range')
         self.end_headers()
     
+    def do_POST(self):
+        """Gérer les requêtes POST (webhooks Frame.io)"""
+        requested_path = self.path.lstrip('/')
+        client_ip = self.client_address[0]
+        
+        logger.info(f"📨 Requête POST: /{requested_path} de {client_ip}")
+        
+        # Vérifier si c'est un webhook Frame.io
+        if requested_path == "frameio-webhook":
+            if self.webhook_handler:
+                try:
+                    # Déléguer au gestionnaire de webhook
+                    logger.info("🎣 Délégation vers le gestionnaire de webhook...")
+                    self.webhook_handler(self)
+                    return
+                except Exception as e:
+                    logger.error(f"❌ Erreur gestionnaire webhook: {e}")
+                    self.send_error(500, "Webhook handler error")
+                    return
+            else:
+                logger.warning("⚠️ Pas de gestionnaire webhook configuré")
+                self.send_error(503, "Webhook handler not available")
+                return
+        
+        # Autres requêtes POST non supportées
+        logger.warning(f"❌ Requête POST non supportée: /{requested_path}")
+        self.send_error(501, "Unsupported method")
+    
     def log_message(self, format, *args):
         """Rediriger les logs vers notre logger"""
         logger.info(f"HTTP Server: {format % args}")
@@ -267,6 +296,7 @@ class RangeFileServer:
         self.allowed_files: Dict[str, str] = {}
         self.is_running = False
         self.actual_port = None
+        self.webhook_handler = None  # Gestionnaire de webhook
         
     def _find_free_port(self) -> int:
         """Trouver un port libre"""
@@ -284,9 +314,9 @@ class RangeFileServer:
         try:
             self.actual_port = self._find_free_port()
             
-            # Créer le handler avec les fichiers autorisés
+            # Créer le handler avec les fichiers autorisés et le gestionnaire webhook
             def handler(*args, **kwargs):
-                return RangeHTTPRequestHandler(*args, allowed_files=self.allowed_files, **kwargs)
+                return RangeHTTPRequestHandler(*args, allowed_files=self.allowed_files, webhook_handler=self.webhook_handler, **kwargs)
             
             self.server = HTTPServer((self.host, self.actual_port), handler)
             
@@ -310,6 +340,11 @@ class RangeFileServer:
             self.server.server_close()
             self.is_running = False
             logger.info("🛑 Serveur HTTP arrêté")
+    
+    def set_webhook_handler(self, handler):
+        """Configurer le gestionnaire de webhook"""
+        self.webhook_handler = handler
+        logger.info("🎣 Gestionnaire de webhook configuré")
     
     def add_file(self, file_path: str) -> Optional[str]:
         """Ajouter un fichier à servir"""

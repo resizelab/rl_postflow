@@ -60,6 +60,7 @@ class PostFlowRunner:
         self.dashboard_initializer = None
         self.infrastructure_manager = None
         self.error_handler = None
+        self.webhook_service = None  # Ajout pour le tracking intelligent
         
         # Intégrations
         self.upload_tracker = None
@@ -89,7 +90,7 @@ class PostFlowRunner:
         self.token_check_interval = pipeline_config.get('metrics', {}).get('token_check_interval', 300)
     
     def initialize_components(self, frameio_auth, frameio_manager, watcher, dashboard_initializer, 
-                            infrastructure_manager, error_handler):
+                            infrastructure_manager, error_handler, webhook_service=None):
         """Initialise les composants du pipeline"""
         self.frameio_auth = frameio_auth
         self.frameio_manager = frameio_manager
@@ -97,6 +98,7 @@ class PostFlowRunner:
         self.dashboard_initializer = dashboard_initializer
         self.infrastructure_manager = infrastructure_manager
         self.error_handler = error_handler
+        self.webhook_service = webhook_service  # Pour le tracking intelligent
         
         # Initialiser les intégrations
         self._initialize_integrations()
@@ -110,10 +112,7 @@ class PostFlowRunner:
             
             logger.info("🔧 Initialisation des intégrations...")
             
-            # Initialiser le tracker d'uploads
-            self.upload_tracker = UploadTracker()
-            
-            # Initialiser le tracker Google Sheets avec connexions persistantes
+            # D'abord initialiser Google Sheets tracker
             sheets_config = self.config.get('google_sheets', {})
             if sheets_config.get('enabled', True):
                 try:
@@ -155,6 +154,11 @@ class PostFlowRunner:
                     logger.warning("⚠️ Fallback vers mode simulation")
                     self.sheets_tracker = SheetsTracker(sheets_config.get('spreadsheet_id'))
                     self.sheets_adapter = None
+            else:
+                self.sheets_tracker = None
+            
+            # Initialiser le tracker d'uploads (sans callback, utilisation d'événements)
+            self.upload_tracker = UploadTracker()
             
             # Initialiser le générateur de thumbnails
             thumbnail_config = self.config.get('thumbnails', {})
@@ -226,6 +230,14 @@ class PostFlowRunner:
             
             logger.info(f"📋 Queue d'upload initialisée (max_concurrent={max_concurrent}, max_queue_size={max_queue_size})")
             
+            # Initialiser le système d'événements et hooks automatiques
+            from src.utils.auto_hooks import auto_hooks
+            auto_hooks.initialize(
+                sheets_tracker=self.sheets_tracker,
+                discord_notifier=self.discord_notifier,
+                user_notifier=self.user_notifier
+            )
+            
             logger.info("✅ Intégrations initialisées avec succès")
             
         except Exception as e:
@@ -277,6 +289,13 @@ class PostFlowRunner:
                     f"🚀 PostFlow v{POSTFLOW_VERSION} démarré",
                     f"Le pipeline de traitement {POSTFLOW_VERSION_NAME} est maintenant actif"
                 )
+            
+            # Émettre l'événement de démarrage du pipeline
+            from src.utils.event_manager import event_manager, EventType
+            event_manager.emit_sync(EventType.PIPELINE_STARTED, {
+                'version': POSTFLOW_VERSION,
+                'version_name': POSTFLOW_VERSION_NAME
+            }, source='postflow_runner')
             
             # Boucle principale avec arrêt propre
             while self.is_running:
@@ -449,31 +468,64 @@ class PostFlowRunner:
             
             # 3. Upload vers Frame.io avec la nouvelle méthode
             frameio_link = None
+            frameio_file_id = None
             if self.config.get('workflow', {}).get('enable_frameio_upload', True):
                 try:
-                    frameio_link = await self._upload_to_frameio(file_path)
+                    frameio_result = await self._upload_to_frameio(file_path)
+                    
+                    # Le résultat peut être un dict avec des infos détaillées
+                    if isinstance(frameio_result, dict):
+                        frameio_link = frameio_result.get('share_link') or frameio_result.get('link')
+                        frameio_file_id = frameio_result.get('file_id') or frameio_result.get('id')
+                    elif frameio_result:
+                        frameio_link = frameio_result
+                    
+                    # === INTÉGRATION TRACKING INTELLIGENT ===
+                    # Enregistrer l'upload pour le tracking intelligent si disponible
+                    if frameio_link and upload_id:
+                        try:
+                            if self.webhook_service and hasattr(self.webhook_service, 'register_upload_for_intelligent_tracking'):
+                                # Extraire les métadonnées Frame.io
+                                metadata = self._extract_metadata_from_path(file_path)
+                                project_id = self.config.get('frameio', {}).get('project_id')
+                                workspace_id = self.config.get('frameio', {}).get('workspace_id')
+                                
+                                success = self.webhook_service.register_upload_for_intelligent_tracking(
+                                    upload_id=upload_id,
+                                    filename=file_path.name,
+                                    file_id=frameio_file_id,
+                                    project_id=project_id,
+                                    workspace_id=workspace_id
+                                )
+                                
+                                if success:
+                                    logger.info(f"🧠 Upload enregistré pour tracking intelligent: {file_path.name}")
+                                    
+                                    # Ajouter les infos de tracking dans les données d'upload
+                                    if self.upload_tracker:
+                                        self.upload_tracker.update_upload(upload_id, {
+                                            'intelligent_tracking': True,
+                                            'frameio_file_id': frameio_file_id,
+                                            'tracking_registered_at': datetime.now().isoformat()
+                                        })
+                                else:
+                                    logger.warning(f"⚠️ Échec enregistrement tracking intelligent pour: {file_path.name}")
+                            else:
+                                logger.debug("ℹ️ Service de tracking intelligent non disponible")
+                                
+                        except Exception as e:
+                            logger.warning(f"⚠️ Erreur intégration tracking intelligent: {e}")
+                    
                 except Exception as e:
                     logger.error(f"[ERROR] Erreur upload Frame.io: {e}")
             
             # 4. Upload thumbnail vers Google Drive et mise à jour Google Sheets
             thumbnail_drive_url = thumbnail_url  # Déjà uploadé à l'étape 1
             
-            # 5. Mise à jour Google Sheets avec les infos du traitement
-            if self.config.get('workflow', {}).get('enable_sheets_updates', True):
-                try:
-                    metadata = self._extract_metadata_from_path(file_path)
-                    await self._update_sheets_with_processing_info(
-                        metadata, frameio_link, thumbnail_drive_url, file_path
-                    )
-                except Exception as e:
-                    logger.error(f"[ERROR] Erreur mise à jour Google Sheets: {e}")
+            # 5. Mise à jour Google Sheets automatique via événements (plus besoin d'appel direct)
             
-            # 6. Notification Discord avec thumbnail
-            if self.config.get('workflow', {}).get('enable_discord_notifications', True):
-                try:
-                    await self._send_file_notification(file_path, frameio_link, thumbnail_url)
-                except Exception as e:
-                    logger.error(f"[ERROR] Erreur notification Discord: {e}")
+            # 6. Les notifications Discord et mise à jour Google Sheets sont maintenant 
+            # gérées automatiquement par le système d'événements via les hooks
             
             # Marquer comme approuvé automatiquement pour l'instant (peut être modifié pour workflow d'approbation)
             if upload_id and self.upload_tracker:
@@ -486,12 +538,17 @@ class PostFlowRunner:
             # === RÉSUMÉ DU TRACKING ===
             if upload_id and self.upload_tracker:
                 try:
-                    self.upload_tracker.update_upload(upload_id, {
-                        'frameio_link': frameio_link,
-                        'thumbnail_url': thumbnail_drive_url,
-                        'processing_time': datetime.now().isoformat(),
-                        'status': '🎉 COMPLETED'
-                    })
+                    # Utiliser update_status qui émet des événements automatiquement
+                    metadata = self._extract_metadata_from_path(file_path)
+                    self.upload_tracker.update_status(
+                        upload_id, 
+                        '🎉 COMPLETED',
+                        frameio_link=frameio_link,
+                        thumbnail_url=thumbnail_drive_url,
+                        processing_time=datetime.now().isoformat(),
+                        shot_name=metadata.get('shot_id', ''),
+                        file_name=file_path.name
+                    )
                 except Exception as e:
                     logger.error(f"[ERROR] Erreur finalisation tracking: {e}")
             
@@ -504,11 +561,15 @@ class PostFlowRunner:
             # Mettre à jour le tracker avec l'erreur
             if upload_id and self.upload_tracker:
                 try:
-                    self.upload_tracker.update_upload(upload_id, {
-                        'status': '❌ FAILED',
-                        'error': str(e),
-                        'processing_time': datetime.now().isoformat()
-                    })
+                    metadata = self._extract_metadata_from_path(file_path)
+                    self.upload_tracker.update_status(
+                        upload_id,
+                        '❌ FAILED',
+                        error_message=str(e),
+                        processing_time=datetime.now().isoformat(),
+                        shot_name=metadata.get('shot_id', ''),
+                        file_name=file_path.name
+                    )
                 except Exception as track_error:
                     logger.error(f"[ERROR] Erreur tracking échec: {track_error}")
     
@@ -906,6 +967,12 @@ class PostFlowRunner:
                 logger.warning("⚠️ Timeout notification Discord")
             except Exception as e:
                 logger.warning(f"⚠️ Erreur notification Discord: {e}")
+        
+        # Émettre l'événement d'arrêt du pipeline
+        from src.utils.event_manager import event_manager, EventType
+        event_manager.emit_sync(EventType.PIPELINE_STOPPED, {
+            'version': POSTFLOW_VERSION
+        }, source='postflow_runner')
         
         # Arrêter le watcher
         if self.watcher:

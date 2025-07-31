@@ -2,11 +2,16 @@
 """
 Frame.io Webhook Manager
 Gère les webhooks Frame.io pour le suivi automatique des statuts
+Compatible avec Frame.io API V4
 """
 
 import json
 import logging
+import os
 import threading
+import time
+import hmac
+import hashlib
 from typing import Dict, Any, Optional, List
 from datetime import datetime
 from pathlib import Path
@@ -39,7 +44,8 @@ class FrameIOWebhookManager:
                  upload_tracker: UploadTracker,
                  webhook_port: int = 5000,
                  webhook_path: str = "/frameio-webhook",
-                 use_cloudflare_tunnel: bool = True):
+                 use_cloudflare_tunnel: bool = True,
+                 frameio_auth=None):
         """
         Initialise le gestionnaire de webhooks
         
@@ -48,11 +54,13 @@ class FrameIOWebhookManager:
             webhook_port: Port d'écoute du webhook
             webhook_path: Chemin du webhook
             use_cloudflare_tunnel: Utiliser Cloudflare Tunnel pour exposition publique
+            frameio_auth: Instance d'authentification Frame.io
         """
         self.upload_tracker = upload_tracker
         self.webhook_port = webhook_port
         self.webhook_path = webhook_path
         self.use_cloudflare_tunnel = use_cloudflare_tunnel
+        self.frameio_auth = frameio_auth  # Stocker la référence frameio_auth
         
         # Gestionnaire de tunnel Cloudflare
         self.tunnel_manager = WebhookTunnelManager(webhook_port) if use_cloudflare_tunnel else None
@@ -71,8 +79,50 @@ class FrameIOWebhookManager:
             "webhook_id": None,
             "events": [],
             "status": "inactive",
-            "tunnel_info": None
+            "tunnel_info": None,
+            "signing_secret": None  # Stockera le secret de signature Frame.io
         }
+    
+    def verify_frameio_signature(self, signature: str, timestamp: str, body: str, secret: str) -> bool:
+        """
+        Vérifie la signature HMAC du webhook Frame.io selon spécifications V4
+        
+        Args:
+            signature: Signature fournie dans l'header X-FrameIO-Signature
+            timestamp: Timestamp fourni dans l'header X-FrameIO-Timestamp
+            body: Corps brut de la requête
+            secret: Secret de signature du webhook
+            
+        Returns:
+            bool: True si signature valide
+        """
+        try:
+            # Vérifier que le timestamp n'est pas trop ancien (max 5 minutes)
+            curr_time = time.time()
+            req_time = float(timestamp)
+            if curr_time - req_time > 300:  # 5 minutes
+                logger.warning("⚠️ Webhook timestamp trop ancien")
+                return False
+            
+            # Créer le message à signer selon format Frame.io: "v0:timestamp:body"
+            message = f"v0:{timestamp}:{body}"
+            
+            # Calculer la signature HMAC SHA256
+            calculated_signature = hmac.new(
+                bytes(secret, 'latin-1'),
+                msg=bytes(message, 'latin-1'),
+                digestmod=hashlib.sha256
+            ).hexdigest()
+            
+            # La signature doit être préfixée par "v0="
+            expected_signature = f"v0={calculated_signature}"
+            
+            # Comparaison sécurisée
+            return hmac.compare_digest(expected_signature, signature)
+            
+        except Exception as e:
+            logger.error(f"❌ Erreur vérification signature: {e}")
+            return False
         
     def setup_routes(self):
         """Configure les routes Flask pour les webhooks"""
@@ -91,9 +141,31 @@ class FrameIOWebhookManager:
         
         @self.app.route(self.webhook_path, methods=['POST'])
         def receive_webhook():
-            """Endpoint pour recevoir les webhooks Frame.io"""
+            """Endpoint pour recevoir les webhooks Frame.io V4 avec vérification signature"""
             try:
-                # Récupérer les données du webhook
+                # Récupérer les headers Frame.io V4
+                headers = dict(request.headers)
+                content_type = headers.get('Content-Type', 'unknown')
+                signature = headers.get('X-FrameIO-Signature')
+                timestamp = headers.get('X-FrameIO-Timestamp')
+                
+                # Récupérer le corps brut pour vérification signature
+                raw_body = request.get_data(as_text=True)
+                
+                # Vérifier la signature si nous avons un secret configuré
+                if self.webhook_data.get("signing_secret") and signature and timestamp:
+                    if not self.verify_frameio_signature(signature, timestamp, raw_body, 
+                                                       self.webhook_data["signing_secret"]):
+                        logger.warning("⚠️ Signature webhook Frame.io invalide")
+                        return jsonify({
+                            "status": "error",
+                            "message": "Invalid signature"
+                        }), 401
+                    logger.debug("✅ Signature webhook vérifiée")
+                elif signature or timestamp:
+                    logger.warning("⚠️ Headers signature détectés mais pas de secret configuré")
+                
+                # Parser les données JSON
                 webhook_data = request.get_json()
                 
                 # Vérifier si les données sont valides
@@ -101,12 +173,30 @@ class FrameIOWebhookManager:
                     logger.warning("⚠️ Webhook reçu sans données JSON valides")
                     # Essayer de récupérer les données brutes
                     raw_data = request.get_data(as_text=True)
+                    logger.debug(f"📋 Content-Type: {content_type}")
+                    logger.debug(f"📋 Headers: {headers}")
                     logger.debug(f"📋 Données brutes reçues: {raw_data}")
                     
-                    return jsonify({
-                        "status": "warning", 
-                        "message": "No valid JSON data received"
-                    }), 200
+                    # Essayer de parser manuellement si possible
+                    if raw_data:
+                        try:
+                            webhook_data = json.loads(raw_data)
+                            logger.info("✅ Parsing JSON manuel réussi")
+                        except json.JSONDecodeError as e:
+                            logger.error(f"❌ Échec parsing JSON manuel: {e}")
+                            return jsonify({
+                                "status": "error", 
+                                "message": "Invalid JSON data"
+                            }), 400
+                    else:
+                        return jsonify({
+                            "status": "warning", 
+                            "message": "No data received"
+                        }), 200
+                
+                # Log pour debug
+                logger.debug(f"📨 Webhook Headers: {headers}")
+                logger.debug(f"📨 Content-Type: {content_type}")
                 
                 # Traiter le webhook (version synchrone)
                 self.process_webhook_sync(webhook_data)
@@ -118,6 +208,12 @@ class FrameIOWebhookManager:
                 
             except Exception as e:
                 logger.error(f"❌ Erreur traitement webhook: {e}")
+                # Log des détails pour debug
+                try:
+                    raw_data = request.get_data(as_text=True)
+                    logger.error(f"📋 Données qui ont causé l'erreur: {raw_data}")
+                except:
+                    pass
                 return jsonify({"error": str(e)}), 500
         
         @self.app.route("/health", methods=['GET'])
@@ -136,46 +232,75 @@ class FrameIOWebhookManager:
     def process_webhook_sync(self, webhook_data: Dict[str, Any]):
         """
         Traite un webhook reçu de Frame.io (version synchrone)
+        Compatible avec Frame.io API V4
         
         Args:
-            webhook_data: Données du webhook
+            webhook_data: Données du webhook selon format V4
         """
         try:
-            event_type = webhook_data.get("event_type")
-            file_data = webhook_data.get("resource", {})
+            # Frame.io V4 utilise "type" au lieu de "event_type"
+            event_type = webhook_data.get("type")
+            resource_data = webhook_data.get("resource", {})
             
-            logger.info(f"🔔 Webhook reçu: {event_type}")
+            # Extraire les informations contextuelles V4
+            account_data = webhook_data.get("account", {})
+            project_data = webhook_data.get("project", {})
+            workspace_data = webhook_data.get("workspace", {})
+            user_data = webhook_data.get("user", {})
             
-            # Traiter selon le type d'événement
+            # Debug complet des données webhook
+            logger.info(f"🔔 Webhook Frame.io V4 reçu: {event_type}")
+            logger.debug(f"📋 Données webhook complètes: {json.dumps(webhook_data, indent=2, default=str)}")
+            
+            # Vérifier que nous avons un type d'événement valide
+            if not event_type:
+                logger.warning(f"⚠️ Aucun type d'événement trouvé dans le webhook V4")
+                logger.debug(f"📝 Clés disponibles: {list(webhook_data.keys())}")
+                return
+            
+            # Traiter selon le type d'événement Frame.io V4
             if event_type == "file.upload.completed":
-                self._handle_upload_completed_sync(file_data)
+                self._handle_upload_completed_sync(resource_data)
             elif event_type == "file.ready":
-                self._handle_file_ready_sync(file_data)
+                self._handle_file_ready_sync(resource_data)
             elif event_type == "file.created":
-                self._handle_file_created_sync(file_data)
+                self._handle_file_created_sync(resource_data)
             elif event_type == "file.updated":
-                self._handle_file_updated_sync(file_data)
+                self._handle_file_updated_sync(resource_data)
             elif event_type == "file.status.changed":
-                self._handle_status_changed_sync(file_data)
+                self._handle_status_changed_sync(resource_data)
             elif event_type == "review.status.changed":
-                self._handle_review_status_changed_sync(file_data)
+                self._handle_review_status_changed_sync(resource_data)
             elif event_type in ["comment.created", "comment.completed"]:
-                self._handle_comment_event_sync(file_data, event_type)
+                # Debug: log de la structure complète pour les événements de commentaire
+                logger.info(f"🔍 Webhook comment complet: {json.dumps(webhook_data, indent=2)}")
+                logger.info(f"🔍 Resource data pour comment: {json.dumps(resource_data, indent=2)}")
+                self._handle_comment_event_sync(resource_data, event_type)
             else:
                 logger.info(f"📝 Événement non traité: {event_type}")
+                # Log des données utiles même pour événements non traités
+                if resource_data:
+                    logger.debug(f"📁 Ressource associée: {resource_data.get('name', 'N/A')} (ID: {resource_data.get('id', 'N/A')})")
             
-            # Enregistrer l'événement
+            # Enregistrer l'événement (même si non traité) avec contexte V4
             self.webhook_data["events"].append({
-                "event_type": event_type,
+                "event_type": event_type or "unknown",
                 "timestamp": datetime.now().isoformat(),
-                "file_id": file_data.get("id"),
-                "file_name": file_data.get("name"),
-                "status": file_data.get("status"),
-                "review_status": file_data.get("review_status")
+                "resource_id": resource_data.get("id"),
+                "resource_type": resource_data.get("type"),
+                "resource_name": resource_data.get("name"),
+                "account_id": account_data.get("id"),
+                "project_id": project_data.get("id"),
+                "workspace_id": workspace_data.get("id"),
+                "user_id": user_data.get("id"),
+                "status": resource_data.get("status"),
+                "review_status": resource_data.get("review_status"),
+                "raw_keys": list(webhook_data.keys()) if not event_type else None
             })
             
         except Exception as e:
             logger.error(f"❌ Erreur traitement webhook {event_type}: {e}")
+            logger.error(f"📋 Données problématiques: {webhook_data}")
     
     def _handle_upload_completed_sync(self, file_data: Dict[str, Any]):
         """Gère l'événement file.upload.completed (version synchrone)"""
@@ -311,19 +436,77 @@ class FrameIOWebhookManager:
             
             logger.info(f"👁️ Statut review Frame.io changé: {file_name} -> {review_status} ({internal_status})")
     
-    def _handle_comment_event_sync(self, file_data: Dict[str, Any], event_type: str):
-        """Gère les événements de commentaires avec détection intelligente du statut (version synchrone)"""
-        file_id = file_data.get("id")
-        file_name = file_data.get("name")
-        comment_text = file_data.get("text", "")
-        
-        logger.info(f"💬 Commentaire {event_type.split('.')[-1]}: {file_name}")
-        
-        # Trouver l'upload correspondant
-        upload_id = self._find_upload_by_filename_sync(file_name)
-        if upload_id:
-            # Analyser le commentaire et mettre à jour le statut de review
-            self._analyze_comment_and_update_status_sync(upload_id, file_id, comment_text, event_type)
+    def _handle_comment_event_sync(self, webhook_data: Dict[str, Any], event_type: str):
+        """Gère les événements de commentaires avec récupération du contenu via API (version synchrone)"""
+        try:
+            # Debug: log de la structure complète pour diagnostic
+            logger.info(f"🔍 DEBUG - Structure complète du webhook {event_type}:")
+            logger.info(f"📋 JSON complet: {json.dumps(webhook_data, indent=2)}")
+            
+            # Extraction de l'ID du commentaire depuis le webhook
+            comment_id = webhook_data.get("id")
+            logger.info(f"🆔 Comment ID: {comment_id}")
+            
+            if not comment_id:
+                logger.error("❌ Pas d'ID de commentaire trouvé dans le webhook")
+                return
+            
+            # Récupération des détails du commentaire via l'API Frame.io
+            comment_details = self._fetch_comment_details(comment_id)
+            if not comment_details:
+                logger.error(f"❌ Impossible de récupérer les détails du commentaire {comment_id}")
+                return
+            
+            # Extraction des informations du commentaire
+            comment_text = comment_details.get('text', '')
+            file_id = comment_details.get('file_id')
+            owner = comment_details.get('owner', {})
+            owner_name = owner.get('name', 'Inconnu')
+            
+            logger.info(f"💬 Texte du commentaire: '{comment_text}'")
+            logger.info(f"📁 File ID associé: {file_id}")
+            logger.info(f"� Auteur: {owner_name}")
+            
+            if not file_id:
+                logger.error("❌ Pas de file_id trouvé dans les détails du commentaire")
+                return
+                
+            # Récupérer le nom du fichier depuis le file_id si nécessaire
+            # Pour l'instant, on utilise le file_id pour trouver l'upload correspondant
+            upload_id = self._find_upload_by_file_id_sync(file_id)
+            if not upload_id:
+                logger.warning(f"⚠️ Aucun upload trouvé pour file_id: {file_id}")
+                return
+                
+            logger.info(f"✅ Upload trouvé: {upload_id}")
+            
+            if event_type == "comment.created":
+                logger.info(f"💬 Nouveau commentaire créé par {owner_name}: '{comment_text}'")
+                
+                # Analyser le commentaire et mettre à jour le statut de review
+                self._analyze_comment_and_update_status_sync(upload_id, file_id, comment_text, event_type)
+                
+                # Appel vers le tracking intelligent si disponible
+                if hasattr(self, 'intelligent_tracker') and self.intelligent_tracker:
+                    # Passer les détails complets du webhook incluant le commentaire
+                    try:
+                        webhook_data = {
+                            'type': event_type,
+                            'resource': {
+                                'id': comment_details.get('id'),
+                                'type': 'comment'
+                            },
+                            'comment_details': comment_details,
+                            'comment_text': comment_text
+                        }
+                        self.intelligent_tracker.process_webhook_intelligently(webhook_data)
+                    except Exception as e:
+                        logger.error(f"❌ Erreur tracking intelligent: {e}")
+                else:
+                    logger.warning("⚠️ Tracking intelligent non disponible")
+            
+        except Exception as e:
+            logger.error(f"❌ Erreur traitement commentaire {event_type}: {e}", exc_info=True)
     
     def _find_upload_by_filename_sync(self, filename: str) -> Optional[str]:
         """
@@ -343,6 +526,37 @@ class FrameIOWebhookManager:
         except Exception as e:
             logger.error(f"❌ Erreur recherche upload: {e}")
             return None
+    
+    def _find_upload_by_file_id_sync(self, file_id: str) -> Optional[str]:
+        """
+        Trouve un upload par file_id Frame.io (version synchrone)
+        
+        Args:
+            file_id: ID du fichier Frame.io
+            
+        Returns:
+            str: ID de l'upload ou None
+        """
+        try:
+            for upload_id, upload_data in self.upload_tracker.tracking_data.get("uploads", {}).items():
+                # Vérifier dans frameio_link si le file_id correspond
+                frameio_link = upload_data.get("frameio_link", "")
+                if file_id in frameio_link:
+                    logger.info(f"✅ Upload trouvé par frameio_link: {upload_id}")
+                    return upload_id
+                
+                # Vérifier aussi dans frameio_data.file_id si disponible
+                frameio_data = upload_data.get("frameio_data", {})
+                stored_file_id = frameio_data.get("file_id")
+                if stored_file_id == file_id:
+                    logger.info(f"✅ Upload trouvé par frameio_data.file_id: {upload_id}")
+                    return upload_id
+                    
+            logger.warning(f"⚠️ Aucun upload trouvé pour file_id: {file_id}")
+            return None
+        except Exception as e:
+            logger.error(f"❌ Erreur recherche upload par file_id: {e}")
+            return None
 
     def _analyze_comment_and_update_status_sync(self, upload_id: str, file_id: str, comment_text: str, event_type: str):
         """
@@ -351,15 +565,55 @@ class FrameIOWebhookManager:
         try:
             # Récupérer tous les commentaires du fichier
             comments = self._fetch_all_comments_for_file_sync(file_id)
+            logger.info(f"🔍 DEBUG: Commentaires récupérés pour file_id {file_id}: {len(comments) if comments else 0} commentaires")
+            if comments:
+                for i, comment in enumerate(comments[-3:]):  # Afficher les 3 derniers
+                    logger.info(f"🔍 DEBUG: Commentaire {i}: {comment.get('text', 'N/A')}")
+            
             # Déterminer le statut de review
             review_status = self._determine_review_status_from_comments(comments)
+            logger.info(f"🔍 DEBUG: Statut déterminé par _determine_review_status_from_comments: {review_status}")
+            
+            # Récupérer les données de l'upload pour l'événement
+            upload_data = self.upload_tracker.get_upload(upload_id)
+            shot_name = upload_data.get('shot_id', '') if upload_data else ''
+            old_review_status = upload_data.get('frameio_data', {}).get('review_status') if upload_data else None
+            
             # Mettre à jour le statut dans le tracker
             self.upload_tracker.update_upload(upload_id, {
                 "frameio_data.review_status": review_status,
                 "frameio_data.last_comment": comment_text,
                 "frameio_data.last_comment_event": event_type
             })
+            
+            # Émettre des événements pour les commentaires et changements de statut
+            from src.utils.event_manager import event_manager, EventType
+            
+            # Événement commentaire Frame.io
+            comment_event_data = {
+                'upload_id': upload_id,
+                'shot_name': shot_name,
+                'comment_text': comment_text,
+                'review_status': review_status,
+                'file_id': file_id,
+                'commenter': 'Frame.io User'  # Pourrait être amélioré avec l'API
+            }
+            event_manager.emit_sync(EventType.FRAMEIO_COMMENT_RECEIVED, comment_event_data, source='webhook_manager')
+            
+            # Événement changement de statut de review si différent
+            if review_status != old_review_status:
+                status_event_data = {
+                    'upload_id': upload_id,
+                    'shot_name': shot_name,
+                    'review_status': review_status,
+                    'old_status': old_review_status,
+                    'comment': comment_text
+                }
+                event_manager.emit_sync(EventType.REVIEW_STATUS_CHANGED, status_event_data, source='webhook_manager')
+            
             logger.info(f"🔎 Statut review détecté via commentaires: {review_status} (upload_id: {upload_id})")
+            logger.info(f"📤 Événements émis pour commentaire Frame.io: {shot_name}")
+            
         except Exception as e:
             logger.error(f"❌ Erreur analyse commentaire: {e}")
 
@@ -368,53 +622,179 @@ class FrameIOWebhookManager:
         Récupère tous les commentaires d'un fichier via API Frame.io
         """
         try:
-            # Charger les endpoints depuis le fichier de config
-            endpoints_path = Path("data/frameio_endpoints.json")
-            if not endpoints_path.exists():
-                logger.error("❌ Fichier endpoints Frame.io manquant")
+            # Construction de l'URL selon l'endpoint Frame.io V4
+            account_id = os.getenv('FRAMEIO_ACCOUNT_ID')
+            if not account_id:
+                logger.error("❌ FRAMEIO_ACCOUNT_ID non défini")
                 return []
-            with open(endpoints_path, "r", encoding="utf-8") as f:
-                endpoints = json.load(f)
-            comments_endpoint = endpoints.get("comments", "https://api.frame.io/v4/files/{file_id}/comments")
-            url = comments_endpoint.replace("{file_id}", file_id)
+                
+            url = f"https://api.frame.io/v4/accounts/{account_id}/files/{file_id}/comments"
 
-            # Authentification (à adapter selon votre système)
-            # Ici on suppose que self.upload_tracker possède frameio_auth
-            frameio_auth = getattr(self.upload_tracker, "frameio_auth", None)
+            # Authentification - utiliser la même logique que _fetch_comment_details
+            frameio_auth = None
+            
+            if hasattr(self.upload_tracker, 'frameio_auth'):
+                frameio_auth = self.upload_tracker.frameio_auth
+            elif hasattr(self.upload_tracker, 'upload_manager') and hasattr(self.upload_tracker.upload_manager, 'frameio_auth'):
+                frameio_auth = self.upload_tracker.upload_manager.frameio_auth
+            elif hasattr(self, 'frameio_auth'):
+                frameio_auth = self.frameio_auth
+            
             if not frameio_auth:
-                logger.error("❌ Authentification Frame.io non disponible")
+                logger.error("❌ Authentification Frame.io non disponible pour récupération commentaires")
                 return []
+                
             token_config = frameio_auth._load_current_tokens()
             access_token = token_config.get('access_token')
             if not access_token:
                 logger.error("❌ Aucun token d'accès disponible pour Frame.io")
                 return []
+                
             headers = {
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
             }
+            
             response = requests.get(url, headers=headers)
             if response.status_code == 200:
-                return response.json().get("data", [])
+                comments_response = response.json()
+                # Gérer le wrapper "data" comme pour _fetch_comment_details
+                comments_data = comments_response.get("data", comments_response)
+                if isinstance(comments_data, list):
+                    return comments_data
+                else:
+                    logger.warning(f"⚠️ Format inattendu des commentaires: {type(comments_data)}")
+                    return []
             else:
                 logger.error(f"❌ Erreur récupération commentaires: {response.status_code} - {response.text}")
                 return []
         except Exception as e:
             logger.error(f"❌ Exception récupération commentaires: {e}")
             return []
+    
+    def _fetch_comment_details(self, comment_id: str) -> Optional[Dict]:
+        """
+        Récupère les détails d'un commentaire spécifique via l'API Frame.io V4
+        
+        Args:
+            comment_id: ID du commentaire à récupérer
+            
+        Returns:
+            Dict: Détails du commentaire ou None si erreur
+        """
+        try:
+            # Récupération de l'account_id depuis l'environnement
+            import os
+            account_id = os.getenv('FRAMEIO_ACCOUNT_ID')
+            if not account_id:
+                logger.error("❌ FRAMEIO_ACCOUNT_ID non défini")
+                return None
+                
+            # Construction de l'URL selon l'endpoint Frame.io V4
+            url = f"https://api.frame.io/v4/accounts/{account_id}/comments/{comment_id}?include=owner"
+
+            # Authentification - essayer plusieurs sources
+            frameio_auth = None
+            
+            # 1. Essayer depuis upload_tracker
+            if hasattr(self.upload_tracker, 'frameio_auth'):
+                frameio_auth = self.upload_tracker.frameio_auth
+                logger.info("🔑 Auth trouvée via upload_tracker.frameio_auth")
+            
+            # 2. Essayer depuis upload_tracker.upload_manager
+            elif hasattr(self.upload_tracker, 'upload_manager') and hasattr(self.upload_tracker.upload_manager, 'frameio_auth'):
+                frameio_auth = self.upload_tracker.upload_manager.frameio_auth
+                logger.info("🔑 Auth trouvée via upload_tracker.upload_manager.frameio_auth")
+            
+            # 3. Essayer depuis self directement si on a une référence
+            elif hasattr(self, 'frameio_auth'):
+                frameio_auth = self.frameio_auth
+                logger.info("🔑 Auth trouvée via self.frameio_auth")
+            
+            if not frameio_auth:
+                logger.error("❌ Authentification Frame.io non disponible dans toutes les sources")
+                return None
+                
+            token_config = frameio_auth._load_current_tokens()
+            access_token = token_config.get('access_token')
+            if not access_token:
+                logger.error("❌ Aucun token d'accès disponible pour Frame.io")
+                return None
+                
+            headers = {
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+            
+            logger.info(f"🔍 Récupération détails commentaire: {comment_id}")
+            response = requests.get(url, headers=headers)
+            
+            if response.status_code == 200:
+                comment_response = response.json()
+                comment_data = comment_response.get('data', comment_response)  # Gérer le wrapper "data"
+                logger.debug(f"✅ Détails commentaire récupérés pour {comment_id}")
+                return comment_data
+            else:
+                logger.error(f"❌ Erreur API récupération commentaire {comment_id}: {response.status_code} - {response.text}")
+                return None
+                
+        except Exception as e:
+            logger.error(f"❌ Exception récupération détails commentaire {comment_id}: {e}")
+            return None
 
     def _determine_review_status_from_comments(self, comments: List[Dict]) -> str:
         """
         Détermine le statut de review basé sur l'analyse des commentaires
+        Utilise la même logique que auto_hooks pour la cohérence
         """
         try:
             if not comments:
                 return "NEED_REVIEW"
-            has_ok = any("ok" in (c.get("text", "").lower()) for c in comments)
-            if has_ok:
-                return "APPROVED"
-            else:
-                return "NEED_REWORK"
+            
+            # S'assurer qu'on a une liste de dictionnaires
+            if not isinstance(comments, list):
+                logger.warning(f"⚠️ Commentaires pas en format liste: {type(comments)}")
+                return "NEED_REVIEW"
+            
+            # Utiliser la même logique que auto_hooks.py
+            positive_keywords = [
+                'ok', 'validé', 'parfait', 'excellent', 'bien', 'good', 'approved', 'approve',
+                'valide', 'nickel', 'super', 'bravo', 'top', 'ça marche', 'c\'est bon',
+                'validated', 'accepted', 'great', 'perfect'
+            ]
+            
+            negative_keywords = [
+                'modif', 'modification', 'change', 'corriger', 'correction', 'problème', 
+                'problem', 'issue', 'fix', 'revoir', 'refaire', 'à retravailler',
+                'pas bon', 'incorrect', 'erreur', 'error', 'wrong', 'redo', 'revise'
+            ]
+            
+            # Analyser le dernier commentaire (le plus récent)
+            if comments:
+                latest_comment = comments[-1] if isinstance(comments, list) else comments
+                comment_text = latest_comment.get("text", "").lower() if isinstance(latest_comment, dict) else ""
+                
+                # Vérifier les mots clés négatifs en premier (priorité) - recherche par mots entiers
+                has_negative = any(f' {keyword} ' in f' {comment_text} ' or 
+                                  comment_text.startswith(f'{keyword} ') or 
+                                  comment_text.endswith(f' {keyword}') or 
+                                  comment_text == keyword 
+                                  for keyword in negative_keywords)
+                if has_negative:
+                    return "NEED_REWORK"
+                
+                # Vérifier les mots clés positifs - recherche par mots entiers
+                has_positive = any(f' {keyword} ' in f' {comment_text} ' or 
+                                  comment_text.startswith(f'{keyword} ') or 
+                                  comment_text.endswith(f' {keyword}') or 
+                                  comment_text == keyword 
+                                  for keyword in positive_keywords)
+                if has_positive:
+                    return "APPROVED"
+            
+            # Commentaire neutre/long = besoin de review supplémentaire
+            return "NEED_REVIEW"
+                
         except Exception as e:
             logger.error(f"❌ Exception analyse statut review: {e}")
             return "NEED_REVIEW"
@@ -533,15 +913,23 @@ class FrameIOWebhookManager:
             
             if response.status_code == 201:
                 webhook_response = response.json()
-                webhook_id = webhook_response.get("data", {}).get("id")
+                webhook_data_response = webhook_response.get("data", {})
+                webhook_id = webhook_data_response.get("id")
+                # Frame.io V4 retourne le signing_secret dans la réponse
+                signing_secret = webhook_data_response.get("signing_secret")
                 
                 self.webhook_data.update({
                     "webhook_id": webhook_id,
                     "status": "active",
-                    "created_at": datetime.now().isoformat()
+                    "created_at": datetime.now().isoformat(),
+                    "signing_secret": signing_secret  # Stocker le secret pour vérifications
                 })
                 
                 logger.info(f"✅ Webhook Frame.io créé: {webhook_id}")
+                if signing_secret:
+                    logger.info("🔐 Secret de signature configuré pour sécuriser le webhook")
+                else:
+                    logger.warning("⚠️ Pas de secret de signature reçu")
                 return True
             else:
                 logger.error(f"❌ Erreur création webhook: {response.status_code} - {response.text}")

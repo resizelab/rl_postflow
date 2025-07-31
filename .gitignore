@@ -54,6 +54,11 @@ test_*.mov
 test_*.mp4
 test_*.avi
 *_test.*
+test_events.py
+*_old.csv
+missing_*.txt
+full_*.csv
+*_test_*.json
 
 # Output files (keep structure, ignore content)
 output/*.json

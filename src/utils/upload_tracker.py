@@ -13,6 +13,8 @@ from pathlib import Path
 from enum import Enum
 import os
 
+from src.utils.event_manager import event_manager, EventType
+
 logger = logging.getLogger(__name__)
 
 
@@ -35,7 +37,7 @@ class UploadTracker:
     
     def __init__(self, tracking_file: str = "data/uploads_tracking.json"):
         """
-        Initialise le tracker d'uploads
+        Initialise le tracker d'uploads avec système d'événements
         
         Args:
             tracking_file: Chemin vers le fichier de tracking JSON
@@ -43,6 +45,9 @@ class UploadTracker:
         self.tracking_file = Path(tracking_file)
         self.tracking_file.parent.mkdir(parents=True, exist_ok=True)
         self.tracking_data = self._load_tracking_data()
+        
+        logger.info(f"📋 Upload Tracker initialisé: {tracking_file}")
+        logger.info(f"📊 {len(self.tracking_data.get('uploads', {}))} uploads chargés")
         
     def _load_tracking_data(self) -> Dict[str, Any]:
         """
@@ -278,6 +283,9 @@ class UploadTracker:
             
             # Sauvegarder
             self._save_tracking_data()
+            
+            # Note: Les notifications Google Sheets sont maintenant gérées 
+            # automatiquement par le système d'événements via auto_hooks
             
             logger.info(f"✅ Upload mis à jour: {upload_id}")
             return True
@@ -523,6 +531,58 @@ class UploadTracker:
             'error_message': error_message
         }
         return self.update_upload(upload_id, updates)
+    
+    def update_status(self, upload_id: str, status: str, **kwargs) -> bool:
+        """
+        Met à jour le statut d'un upload et émet un événement.
+        
+        Args:
+            upload_id: ID de l'upload
+            status: Nouveau statut
+            **kwargs: Données supplémentaires (frameio_link, comment, etc.)
+            
+        Returns:
+            bool: True si mis à jour avec succès
+        """
+        # Récupérer l'ancien statut pour comparaison
+        upload_data = self.get_upload(upload_id)
+        old_status = upload_data.get('status') if upload_data else None
+        
+        updates = {
+            'status': status,
+            'status_updated_at': datetime.now().isoformat()
+        }
+        
+        # Ajouter les données supplémentaires
+        updates.update(kwargs)
+        
+        success = self.update_upload(upload_id, updates)
+        
+        if success and upload_data:
+            # Émettre un événement de changement de statut
+            event_data = {
+                'upload_id': upload_id,
+                'shot_name': upload_data.get('shot_id', ''),
+                'status': status,
+                'old_status': old_status,
+                'file_name': upload_data.get('file_name', ''),
+                'frameio_link': kwargs.get('frameio_link'),
+                'comment': kwargs.get('comment'),
+                'thumbnail_url': kwargs.get('thumbnail_url')
+            }
+            
+            # Émettre différents types d'événements selon le statut
+            if status in ['🎉 COMPLETED', 'COMPLETED']:
+                event_manager.emit_sync(EventType.UPLOAD_COMPLETED, event_data, source='upload_tracker')
+            elif status in ['❌ FAILED', 'FAILED']:
+                event_data['error'] = kwargs.get('error_message', 'Erreur inconnue')
+                event_manager.emit_sync(EventType.UPLOAD_FAILED, event_data, source='upload_tracker')
+            else:
+                event_manager.emit_sync(EventType.STATUS_CHANGED, event_data, source='upload_tracker')
+            
+            logger.info(f"📤 Événement émis: {upload_id} {old_status} -> {status}")
+        
+        return success
     
     def get_pending_approvals(self) -> List[Dict[str, Any]]:
         """

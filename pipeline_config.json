@@ -40,6 +40,7 @@
     "port": 8080,
     "auto_start": true,
     "auto_configure_frameio": true,
+    "intelligent_tracking": true,
     "tunnel_timeout": 60,
     "health_check_interval": 30
   },

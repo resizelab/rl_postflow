@@ -187,19 +187,43 @@ class RLPostFlowPipeline:
                 logger.warning("⚠️ Upload tracker non disponible pour le webhook")
                 return False
             
-            # Créer le service webhook
+            # Créer le service webhook avec tracking intelligent
             self.webhook_service = WebhookService(
                 upload_tracker=upload_tracker,
                 config=self.config,
-                auto_start=webhook_config.get('auto_start', True)
+                auto_start=webhook_config.get('auto_start', True),
+                frameio_auth=self.frameio_auth
             )
+            
+            # Vérifier si le tracking intelligent est activé
+            intelligent_tracking = self.config.get('webhook', {}).get('intelligent_tracking', True)
+            if intelligent_tracking:
+                logger.info("🧠 Tracking intelligent activé dans la configuration")
             
             # Démarrer le service si auto_start
             if webhook_config.get('auto_start', True):
-                webhook_started = self.webhook_service.start_service()
+                # Utiliser le serveur HTTP partagé si disponible
+                if self.infrastructure_manager and self.infrastructure_manager.shared_http_server:
+                    logger.info("🔗 Intégration du service webhook avec le serveur HTTP partagé...")
+                    webhook_started = self.webhook_service.start_service_with_shared_server(
+                        self.infrastructure_manager.shared_http_server
+                    )
+                else:
+                    logger.warning("⚠️ Serveur HTTP partagé non disponible, utilisation de Flask standalone...")
+                    webhook_started = self.webhook_service.start_service()
+                
                 if webhook_started:
                     webhook_url = self.webhook_service.get_webhook_url()
                     logger.info(f"✅ Service webhook démarré: {webhook_url}")
+                    
+                    # Afficher le statut du tracking intelligent
+                    if self.webhook_service.intelligent_tracker:
+                        logger.info("🧠 Tracking intelligent opérationnel")
+                        logger.info("   • Analyse automatique des commentaires Frame.io")
+                        logger.info("   • Détection intelligente des approbations/rejets")
+                        logger.info("   • Mapping par filename et file_id")
+                    else:
+                        logger.warning("⚠️ Tracking intelligent non disponible")
                     
                     # Auto-configurer le webhook Frame.io si possible
                     await self._auto_configure_frameio_webhook()
@@ -293,7 +317,8 @@ class RLPostFlowPipeline:
             # Initialiser les composants dans le runner
             self.runner.initialize_components(
                 self.frameio_auth, self.frameio_manager, self.watcher, 
-                self.dashboard_initializer, self.infrastructure_manager, self.error_handler
+                self.dashboard_initializer, self.infrastructure_manager, self.error_handler,
+                self.webhook_service  # Ajouter le webhook service pour le tracking intelligent
             )
             
             # Initialiser les fichiers déjà traités dans le watcher pour éviter les doublons
