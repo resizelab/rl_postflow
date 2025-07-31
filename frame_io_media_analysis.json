@@ -1,0 +1,52 @@
+{
+  "id": "1d335dcb-1d0a-4c41-bbcd-abd2815ed341",
+  "name": "SQ04_UNDLM_00094_v001.mov",
+  "status": "transcoded",
+  "type": "file",
+  "file_size": 45692436,
+  "updated_at": "2025-07-30T23:15:15.224624Z",
+  "project": {
+    "id": "c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f",
+    "name": "UNDLM_DOCU",
+    "description": null,
+    "updated_at": "2025-07-30T23:14:51.130624Z",
+    "storage": 45692436,
+    "workspace_id": "a4374a0f-1a78-4d37-aa83-ccb07189796d",
+    "created_at": "2025-07-06T13:22:20.602535Z",
+    "root_folder_id": "d1788dd0-6bcb-4aaf-8d0b-2cda65359438",
+    "view_url": "https://next.frame.io/project/c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f"
+  },
+  "media_type": "video/quicktime",
+  "parent_id": "bf73c878-bbf3-4487-9493-3f3e8fe01dd8",
+  "project_id": "c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f",
+  "creator": {
+    "active": true,
+    "id": "f5e08c5e-7c00-4e35-adb1-e8b70bd789c1",
+    "name": "boutin xavier",
+    "email": "xavier@resize-lab.com",
+    "adobe_user_id": null,
+    "avatar_url": null
+  },
+  "created_at": "2025-07-30T23:14:05.168797Z",
+  "media_links": {
+    "original": {
+      "download_url": "https://assets.frame.io/uploads/1d335dcb-1d0a-4c41-bbcd-abd2815ed341/original.mov?response-content-disposition=attachment%3B+filename%3D%22SQ04_UNDLM_00094_v001.mov%22%3B+filename%2A%3D%22SQ04_UNDLM_00094_v001.mov%22&response-content-type=video%2Fquicktime&x-amz-meta-project_id=c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f&x-amz-meta-resource_type=asset&x-amz-meta-resource_id=1d335dcb-1d0a-4c41-bbcd-abd2815ed341&Expires=1754049600&Signature=n7obmXAKd8qgc8j-jPmGCYfNv-qcBJqzXHo8YtidwPQVU-25Ir4xq26xy0PF8oSXfcESSYLsrJgdjmTTHpgeO2rJF05zfxljwyGbhvGKWF79YleNW060ftCjXicBOMQB~7UrbyJCYGUQDAF7YYDRL7aNzcp2LN0Q6aj9SujssEW3S6PQkJ1JWX82LGsV7gNMeysNyO9E3e7hVzN-Id7W8sN5V972xDFV7j~axmfb4bjUYy9n3ecSYeTNzdO52S9Y-tDbfxGfACmXvqxDMVsIp7P2P~bV~CFYL9sVQ8jFAD4XehqtvOD79zi1ZBHsNJQBkNfcGMhWg2NRk7rMvh5Xpw__&Key-Pair-Id=K1XW5DOJMY1ET9",
+      "inline_url": null
+    },
+    "video_h264_180": {
+      "url": "https://assets.frame.io/encode/1d335dcb-1d0a-4c41-bbcd-abd2815ed341/video_h264_180.mp4?x-amz-meta-project_id=c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f&x-amz-meta-resource_type=asset&x-amz-meta-resource_id=1d335dcb-1d0a-4c41-bbcd-abd2815ed341&Expires=1754049600&Signature=Ly-vxmBijTJaLTw07DC-mW7EoXuWJtMl4K3bLChThcxX3mpeuYhKZsbO5OYPuTsKiPjXDoUX5qD214cm4LozwB1wkRxaNcPFLOQ7j8aI~gDL-FCXmKEaW6Gj81VVxyX39~8QAF4xKfBMhpyYm8tLyYIOK4QXQtv4K9ZFDaCKsPJ~JuiR-GayvvDeb7cwORthos3ARt5XayfzJCweWRXDzTpViqr6NElkyJ8a5wo6MeNC8vv9seAsqDZIhxp-AqbY-iVF1tAOjg06QiFN6c8Ov2oXNMNGaIt9QN1I~WDcs3R3CjkKwkcMJVktghANu0NR0KIWsmmRO2dbZTGsC2LKjQ__&Key-Pair-Id=K1XW5DOJMY1ET9",
+      "download_url": "https://assets.frame.io/encode/1d335dcb-1d0a-4c41-bbcd-abd2815ed341/video_h264_180.mp4?response-content-disposition=attachment%3B+filename%3D%22SQ04_UNDLM_00094_v001.mp4%22%3B+filename%2A%3D%22SQ04_UNDLM_00094_v001.mp4%22&response-content-type=video%2Fquicktime&x-amz-meta-project_id=c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f&x-amz-meta-resource_type=asset&x-amz-meta-resource_id=1d335dcb-1d0a-4c41-bbcd-abd2815ed341&Expires=1754049600&Signature=T7U1XkkR4Nej0sNZOgNnGftrm8UXg8fM7h0aObg3X~rHc-yxtvh5jNwMOI4WJAbSeE2p9riStyo3RNFuP6J541ZAFa71wY~llrfY7GmI7ZcXgUM0VhdwL7Y4lFod~CMAhx8tkCkHIJURxGPL2smczUrEP2F1oAt6ISTauedzYXzKLQUAnB8Sn3QbmyY9fVgNnqi-h8bwoD4m0VMgrAP~8X-RUUQ75N1Fj~-0mWdjCjXKVgDJS7BlwAs~3otLRkYXO2QCz9jRiJVYT~gFew-IaeugabXEjcuMnUW49ahAlh1jehtUpb0kMP-jhFr5x98iwaQitgXG3R2uyXNEI~0XXA__&Key-Pair-Id=K1XW5DOJMY1ET9"
+    },
+    "thumbnail": {
+      "url": "https://picture2.frame.io/image/s3://frameio-assets-production/image/1d335dcb-1d0a-4c41-bbcd-abd2815ed341/image_small_47.jpg?alg=HS256&sig=YfIcDPv0eS6dMV7GpClms4Xof9tRvoUCLnfAorSyrRw&exp=1754049600&signed=format&exp=1754049600&max_height=540&format=png",
+      "download_url": "https://picture2.frame.io/image/s3://frameio-assets-production/image/1d335dcb-1d0a-4c41-bbcd-abd2815ed341/image_small_47.jpg?alg=HS256&sig=98sFL62Ud3N_wbOZy48i4MivW016m0IoObHw9fLu-aA&exp=1754049600&signed=download%2Cformat&exp=1754049600&max_height=540&download=SQ04_UNDLM_00094_v001.png&format=png"
+    },
+    "high_quality": {
+      "download_url": "https://assets.frame.io/encode/1d335dcb-1d0a-4c41-bbcd-abd2815ed341/h264_1080_best.mp4?response-content-disposition=attachment%3B+filename%3D%22SQ04_UNDLM_00094_v001.mp4%22%3B+filename%2A%3D%22SQ04_UNDLM_00094_v001.mp4%22&response-content-type=video%2Fquicktime&x-amz-meta-project_id=c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f&x-amz-meta-resource_type=asset&x-amz-meta-resource_id=1d335dcb-1d0a-4c41-bbcd-abd2815ed341&Expires=1754049600&Signature=afkbxgakMybR1wpnDe3y3PNrpwprd3j2PtXIWor4dPoouYWI1ZgSQbIx2fa1dynJedzEZvt-Ifuy2R4jdCVYimMZwxoUw8fuQ7CRMMFwEGbanbAfZQ1UOJb~SzbuuXJkohE-cNUjFcnkEU4MulxzNRL7Q9PDmSPamoaE9CvzxFkYkgtivm~TUiRhlIJRpOS5pJRU1Ao0YzrRpjdpb0jOcuuBDVn2VbCXMuWkHzxOK1rE2sRkv0pPwYcerNq5I~PXaOoxqNWp4biOPbxPNwUtkb9PEGA9u7q5a71zVezLBzqoQpKyc5FcSUr5Asgq9qfnBzyx-QIXsdKfavUl3MiMng__&Key-Pair-Id=K1XW5DOJMY1ET9"
+    },
+    "efficient": {
+      "download_url": "https://assets.frame.io/encode/1d335dcb-1d0a-4c41-bbcd-abd2815ed341/h264_360.mp4?response-content-disposition=attachment%3B+filename%3D%22SQ04_UNDLM_00094_v001.mp4%22%3B+filename%2A%3D%22SQ04_UNDLM_00094_v001.mp4%22&response-content-type=video%2Fquicktime&x-amz-meta-project_id=c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f&x-amz-meta-resource_type=asset&x-amz-meta-resource_id=1d335dcb-1d0a-4c41-bbcd-abd2815ed341&Expires=1754049600&Signature=nzbzaiOMyX95GOOUdqhb3Y-7SHJeLjsGwaWNqxO~NMePX4U~naBAgNUV9nuaiRmwoj~P2S8Nv7GPJ0FQlMIJuUAV1bKZ2vbDrJqx~pM3J-bkn3RlM9YrcLcAP2EKzozxAbhG615sJamlBQgHI3NR~r~3vlFnOm3EPav8v5Lj8Q-MxNOWf-GHrst8vpQRFeExk8-MMWTH8xkLwK0b~faD9kMJ-YATHP6bygu4g85kNghwbPmJGLzCrHW8RbA3c5v1C9wBCoKPFf3m-6RTjpJ~GG2T5D0XGkOxabK19Wk6jp4ihDvfvNd0VTL95i7wshEQMCu0psqqMUQtlgtFN7~S6w__&Key-Pair-Id=K1XW5DOJMY1ET9"
+    }
+  },
+  "view_url": "https://next.frame.io/project/c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f/view/1d335dcb-1d0a-4c41-bbcd-abd2815ed341"
+}

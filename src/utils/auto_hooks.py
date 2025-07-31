@@ -11,9 +11,12 @@ Date: 31 juillet 2025
 """
 
 import asyncio
+import json
 import logging
+import os
 from typing import Dict, Any, Optional
 from datetime import datetime
+from pathlib import Path
 
 from src.utils.event_manager import event_manager, EventType, Event
 
@@ -480,6 +483,137 @@ class DiscordHook:
             logger.error(f"❌ [Discord Hook] Erreur notification erreur: {e}")
 
 
+class FrameioVideoHook:
+    """Hook automatique pour les vidéos Frame.io → Discord MP4"""
+    
+    def __init__(self, frameio_api=None, discord_config=None):
+        self.frameio_api = frameio_api
+        self.discord_config = discord_config
+        self.enabled = frameio_api is not None and discord_config is not None
+        
+        if self.enabled:
+            # S'abonner au file.ready Frame.io
+            event_manager.subscribe(EventType.FRAMEIO_FILE_READY, self.on_file_ready, priority=3)
+            logger.info("✅ Frame.io Video Hook activé")
+        else:
+            logger.warning("⚠️ Frame.io Video Hook désactivé (API ou config manquante)")
+    
+    async def on_file_ready(self, event: Event):
+        """Quand Frame.io termine l'encoding d'une vidéo, poster MP4 sur Discord"""
+        if not self.enabled:
+            return
+        
+        try:
+            data = event.data
+            file_id = data.get('file_id')
+            filename = data.get('filename', 'video.mp4')
+            frameio_link = data.get('frameio_link', '')
+            
+            logger.info(f"🎬 [Video Hook] Frame.io file.ready: {filename}")
+            
+            # Récupérer les media_links
+            media_links = await self._fetch_media_links(file_id)
+            if not media_links:
+                logger.warning(f"⚠️ Aucun media_links pour {file_id}")
+                return
+            
+            # Sélectionner la meilleure vidéo Discord (50MB webhook bot)
+            from src.utils.discord_media_selector import select_for_discord_tier
+            video_url, strategy = await select_for_discord_tier(media_links, tier='webhook_bot')
+            
+            if not video_url:
+                logger.warning(f"⚠️ Aucune vidéo compatible Discord pour {filename}")
+                return
+            
+            # Poster la vidéo sur Discord
+            await self._post_video_to_discord(video_url, filename, frameio_link, strategy)
+            
+        except Exception as e:
+            logger.error(f"❌ [Video Hook] Erreur: {e}")
+    
+    async def _fetch_media_links(self, file_id: str) -> Optional[Dict[str, Any]]:
+        """Récupère media_links Frame.io"""
+        try:
+            url = f"{self.frameio_api.base_url}/files/{file_id}"
+            params = {
+                'include': 'media_links.original,media_links.thumbnail,media_links.high_quality,media_links.video_h264_180,media_links.efficient'
+            }
+            
+            headers = {"Authorization": f"Bearer {self.frameio_api.token}"}
+            
+            import httpx
+            async with httpx.AsyncClient() as client:
+                response = await client.get(url, params=params, headers=headers)
+                response.raise_for_status()
+                
+                file_data = response.json()
+                return file_data.get('media_links', {})
+                
+        except Exception as e:
+            logger.error(f"❌ Erreur récupération media_links: {e}")
+            return None
+    
+    async def _post_video_to_discord(self, video_url: str, filename: str, frameio_link: str, strategy: str):
+        """Poste la vidéo sur Discord"""
+        import tempfile
+        import httpx
+        
+        temp_file = None
+        try:
+            # Télécharger la vidéo
+            async with httpx.AsyncClient(timeout=180.0) as client:
+                response = await client.get(video_url, follow_redirects=True)
+                response.raise_for_status()
+                
+                # Sauver temporairement
+                base_name = Path(filename).stem
+                temp_file = tempfile.NamedTemporaryFile(
+                    suffix='.mp4', 
+                    prefix=f'postflow_{base_name}_',
+                    delete=False
+                )
+                temp_file.write(response.content)
+                temp_file.close()
+                
+                file_size_mb = len(response.content) / (1024 * 1024)
+                logger.info(f"📥 Vidéo téléchargée: {file_size_mb:.2f} MB")
+                
+                # Message Discord format original
+                message = f"""🎬 Fichier traité avec succès !
+📁 Fichier: {filename}
+🔗 Frame.io
+[Voir sur Frame.io]({frameio_link})
+
+✨ Vidéo MP4 ({strategy}, {file_size_mb:.2f} MB) - PostFlow"""
+
+                # Envoyer sur Discord
+                webhook_url = self.discord_config.get('webhook_url')
+                with open(temp_file.name, 'rb') as f:
+                    files = {'file': (f"PostFlow_{filename}", f.read(), 'video/mp4')}
+                    data = {
+                        'content': message,
+                        'username': self.discord_config.get('username', 'PostFlow Bot')
+                    }
+                    
+                    async with httpx.AsyncClient(timeout=120.0) as client:
+                        response = await client.post(webhook_url, files=files, data=data)
+                        
+                        if response.status_code == 200:
+                            logger.info(f"✅ Vidéo postée sur Discord: {strategy}")
+                        else:
+                            logger.error(f"❌ Erreur Discord: {response.status_code}")
+                
+        except Exception as e:
+            logger.error(f"❌ Erreur post Discord: {e}")
+        finally:
+            # Nettoyer
+            if temp_file and os.path.exists(temp_file.name):
+                try:
+                    os.unlink(temp_file.name)
+                except Exception:
+                    pass
+
+
 class AutoHooksManager:
     """Gestionnaire des hooks automatiques"""
     
@@ -487,7 +621,7 @@ class AutoHooksManager:
         self.hooks = []
         self.initialized = False
     
-    def initialize(self, sheets_tracker=None, discord_notifier=None, user_notifier=None):
+    def initialize(self, sheets_tracker=None, discord_notifier=None, user_notifier=None, frameio_api=None):
         """Initialise tous les hooks automatiques"""
         if self.initialized:
             logger.warning("⚠️ Hooks déjà initialisés")
@@ -503,8 +637,31 @@ class AutoHooksManager:
             discord_hook = DiscordHook(discord_notifier, user_notifier)
             self.hooks.append(discord_hook)
         
+        # Hook Frame.io Video → Discord MP4
+        if frameio_api:
+            # Récupérer config Discord
+            discord_config = self._get_discord_config()
+            if discord_config and discord_config.get('webhook_url'):
+                video_hook = FrameioVideoHook(frameio_api, discord_config)
+                self.hooks.append(video_hook)
+                logger.info("✅ Frame.io Video Hook ajouté")
+            else:
+                logger.warning("⚠️ Config Discord manquante pour Video Hook")
+        
         self.initialized = True
         logger.info(f"🔗 Auto Hooks initialisés: {len(self.hooks)} hooks actifs")
+    
+    def _get_discord_config(self) -> Optional[Dict]:
+        """Récupère la configuration Discord"""
+        try:
+            config_path = Path("config/integrations.json")
+            if config_path.exists():
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    config = json.load(f)
+                return config.get('discord', {})
+        except Exception as e:
+            logger.error(f"❌ Erreur lecture config Discord: {e}")
+        return None
     
     def get_stats(self) -> Dict[str, Any]:
         """Retourne les statistiques des hooks"""

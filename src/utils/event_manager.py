@@ -40,8 +40,9 @@ class EventType(Enum):
     
     # Événements Frame.io
     FRAMEIO_COMMENT_RECEIVED = "frameio_comment_received"
-    FRAMEIO_REVIEW_COMPLETED = "frameio_review_completed"
+    FRAMEIO_REVIEW_COMPLETED = "frameio_review_completed" 
     FRAMEIO_FEEDBACK_RECEIVED = "frameio_feedback_received"
+    FRAMEIO_FILE_READY = "frameio_file_ready"
     
     # Événements système
     PIPELINE_STARTED = "pipeline_started"

@@ -344,6 +344,23 @@ class FrameIOWebhookManager:
             self.upload_tracker.mark_completed(upload_id, frameio_data)
             
             logger.info(f"🎉 Fichier Frame.io prêt: {file_name} (ID: {file_id})")
+            
+            # Émettre événement FRAMEIO_FILE_READY pour auto_hooks
+            try:
+                upload_data = self.upload_tracker.get_upload_data(upload_id)
+                frameio_link = upload_data.get('frameio_link', '') if upload_data else ''
+                
+                from src.utils.event_manager import event_manager, EventType
+                event_data = {
+                    'upload_id': upload_id,
+                    'file_id': file_id,
+                    'filename': file_name,
+                    'frameio_link': frameio_link
+                }
+                event_manager.emit_sync(EventType.FRAMEIO_FILE_READY, event_data, source='webhook_manager')
+                logger.info(f"📡 Événement FRAMEIO_FILE_READY émis pour {file_name}")
+            except Exception as e:
+                logger.error(f"❌ Erreur émission événement: {e}")
     
     def _handle_file_created_sync(self, file_data: Dict[str, Any]):
         """Gère l'événement file.created (version synchrone)"""
