@@ -18,8 +18,8 @@ from typing import Dict, Any, Optional
 from src.utils.config import ConfigManager
 
 # Version du pipeline (synchronisée avec main.py)
-POSTFLOW_VERSION = "4.1.5"
-POSTFLOW_VERSION_NAME = "Emojis & Duplicate Detection Complete"
+POSTFLOW_VERSION = "4.2.0"
+POSTFLOW_VERSION_NAME = "MP4 Discord Integration"
 
 logger = logging.getLogger(__name__)
 
@@ -235,7 +235,8 @@ class PostFlowRunner:
             auto_hooks.initialize(
                 sheets_tracker=self.sheets_tracker,
                 discord_notifier=self.discord_notifier,
-                user_notifier=self.user_notifier
+                user_notifier=self.user_notifier,
+                frameio_api=self.frameio_manager  # Passer l'API Frame.io pour FrameioVideoHook
             )
             
             logger.info("✅ Intégrations initialisées avec succès")

@@ -9,7 +9,7 @@ Point d'entrée principal du pipeline d'intégration LucidLink  ->  Frame.io
 - Surveillance en temps réel
 - Gestion des erreurs centralisée
 
-Version: 4.1.5 (Emojis & Duplicate Detection Complete)
+Version: 4.2.0 (MP4 Discord Integration)
 Date: 12 juillet 2025
 """
 
@@ -23,8 +23,8 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 
 # Version du pipeline
-POSTFLOW_VERSION = "4.1.5"
-POSTFLOW_VERSION_NAME = "Emojis & Duplicate Detection Complete"
+POSTFLOW_VERSION = "4.2.0"
+POSTFLOW_VERSION_NAME = "MP4 Discord Integration"
 
 # Ajouter le répertoire src au path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
@@ -134,11 +134,35 @@ class RLPostFlowPipeline:
             # Utiliser le module bootstrap pour charger les configs
             self.config, self.pipeline_config, self.config_manager = load_config(self.config_path)
             
+            # Récupérer la version depuis la config
+            self._update_version_from_config()
+            
             logger.info("✅ Configurations chargées via bootstrap")
             
         except Exception as e:
             logger.error(f"[ERROR] Erreur lors du chargement des configurations: {e}")
             raise
+    
+    def _update_version_from_config(self):
+        """Met à jour la version depuis la configuration"""
+        global POSTFLOW_VERSION, POSTFLOW_VERSION_NAME
+        
+        try:
+            if self.pipeline_config and 'project_info' in self.pipeline_config:
+                config_version = self.pipeline_config['project_info'].get('version')
+                config_version_name = self.pipeline_config['project_info'].get('version_name')
+                
+                if config_version:
+                    POSTFLOW_VERSION = config_version
+                    logger.info(f"📋 Version mise à jour depuis config: {POSTFLOW_VERSION}")
+                
+                if config_version_name:
+                    POSTFLOW_VERSION_NAME = config_version_name
+                    logger.info(f"📋 Version name mise à jour: {POSTFLOW_VERSION_NAME}")
+                    
+        except Exception as e:
+            logger.warning(f"⚠️ Erreur lecture version config: {e}, utilisation version par défaut")
+    
     
     def _initialize_error_handler(self):
         """Initialise le gestionnaire d'erreurs"""

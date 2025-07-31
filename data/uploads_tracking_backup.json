@@ -1,0 +1,60 @@
+{
+  "version": "1.0",
+  "created_at": "2025-07-31T17:24:07.225429",
+  "last_updated": "2025-07-31T17:24:56.189510",
+  "uploads": {
+    "b85d54bb3de4a74a": {
+      "upload_id": "b85d54bb3de4a74a",
+      "file_path": "E:\\Volumes\\resizelab\\o2b-undllm\\4_OUT\\2_FROM_ANIM\\SQ04\\UNDLM_00094\\SQ04_UNDLM_00094_v001.mov",
+      "filename": "SQ04_UNDLM_00094_v001.mov",
+      "shot_id": "UNDLM_00094",
+      "version": "v001",
+      "file_size": 45692436,
+      "file_mtime": 1753917218.4783602,
+      "file_hash": "8a689c0e48c94d8b294f1b6184ef59f44b46debe8fc665a260ac6aaabd3b8f5e",
+      "created_at": "2025-07-31T17:24:22.324114",
+      "last_updated": "2025-07-31T17:24:56.189510",
+      "status": "🎉 COMPLETED",
+      "frameio_data": {
+        "file_id": "5a293554-65c1-4d7f-bc79-d9f588d23839",
+        "upload_status": "COMPLETED",
+        "review_link": "https://next.frame.io/project/c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f/view/5a293554-65c1-4d7f-bc79-d9f588d23839",
+        "share_link": null,
+        "processing_status": "READY"
+      },
+      "google_sheets_data": {
+        "updated": false,
+        "row_number": null,
+        "update_timestamp": null
+      },
+      "discord_data": {
+        "message_sent": true,
+        "message_id": "12345",
+        "send_timestamp": "2025-07-31T17:25:22.000000"
+      },
+      "thumbnail_data": {
+        "generated": false,
+        "local_path": null,
+        "drive_url": null,
+        "drive_file_id": null
+      },
+      "sequence_number": 4,
+      "plan_number": 94,
+      "version_number": 1,
+      "extension": "mov",
+      "sequence_name": "SQ04",
+      "scene_name": "SQ04",
+      "valid": true,
+      "shot_name": "UNDLM_00094",
+      "nomenclature": "UNDLM_00094",
+      "approved_by": "auto-approved",
+      "approved_at": "2025-07-31T17:24:56.184498",
+      "upload_started_at": "2025-07-31T17:24:56.185499",
+      "status_updated_at": "2025-07-31T17:24:56.189510",
+      "frameio_link": "https://next.frame.io/project/c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f/view/5a293554-65c1-4d7f-bc79-d9f588d23839",
+      "thumbnail_url": "https://resize-lab.com/thumbnails/2025/07/UNDLM_00094_v001_20250731_172423.jpg",
+      "processing_time": "2025-07-31T17:24:56.189510",
+      "file_name": "SQ04_UNDLM_00094_v001.mov"
+    }
+  }
+}

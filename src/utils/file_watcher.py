@@ -849,8 +849,23 @@ class WorkflowTrigger:
                 file_size=event_data['file_size']
             )
             
-            # Notification Discord
-            self._send_discord_notification(event, frameio_asset_id)
+            # Émettre événement pour auto_hooks au lieu d'appel Discord direct
+            try:
+                from src.utils.event_manager import event_manager, EventType
+                event_data = {
+                    'shot_nomenclature': event.shot_nomenclature,
+                    'version': event.version,
+                    'file_size': event.file_size,
+                    'frameio_asset_id': frameio_asset_id,
+                    'frameio_url': f"https://app.frame.io/reviews/{frameio_asset_id}",
+                    'file_path': event.file_path,
+                    'timestamp': event.timestamp.isoformat()
+                }
+                event_manager.emit_sync(EventType.FILE_PROCESSING_COMPLETED, event_data, source='file_watcher')
+                logger.info(f"📡 Événement FILE_PROCESSING_COMPLETED émis pour {event.shot_nomenclature}")
+            except Exception as e:
+                logger.error(f"❌ Erreur émission événement: {e}")
+                # Les auto_hooks gèrent maintenant les notifications Discord
             
             logger.info(f"Successfully sent Discord notification for {cache_key}")
             return True
@@ -903,8 +918,23 @@ class WorkflowTrigger:
                 # 2. Mise à jour Google Sheets
                 self._update_google_sheets(event, frameio_asset_id)
                 
-                # 3. Notification Discord
-                self._send_discord_notification(event, frameio_asset_id)
+                # 3. Émettre événement pour auto_hooks au lieu d'appel Discord direct
+                try:
+                    from src.utils.event_manager import event_manager, EventType
+                    event_data = {
+                        'shot_nomenclature': event.shot_nomenclature,
+                        'version': event.version,
+                        'file_size': event.file_size,
+                        'frameio_asset_id': frameio_asset_id,
+                        'frameio_url': f"https://app.frame.io/reviews/{frameio_asset_id}",
+                        'file_path': event.file_path,
+                        'timestamp': event.timestamp.isoformat()
+                    }
+                    event_manager.emit_sync(EventType.FILE_PROCESSING_COMPLETED, event_data, source='file_watcher')
+                    logger.info(f"📡 Événement FILE_PROCESSING_COMPLETED émis pour {event.shot_nomenclature}")
+                except Exception as e:
+                    logger.error(f"❌ Erreur émission événement: {e}")
+                    # Les auto_hooks gèrent maintenant les notifications Discord
                 
                 # Marquer comme traité
                 self.processed_files[cache_key] = datetime.now()
@@ -982,53 +1012,6 @@ class WorkflowTrigger:
             
         except Exception as e:
             logger.error(f"Google Sheets update failed: {e}")
-    
-    def _send_discord_notification(self, event: FileEvent, frameio_asset_id: str):
-        """Envoie une notification Discord."""
-        try:
-            frameio_url = f"https://app.frame.io/reviews/{frameio_asset_id}"
-            
-            message = f"🎬 **Nouveau rendu disponible pour review**"
-            
-            embed = {
-                "title": f"Shot {event.shot_nomenclature} - Version {event.version}",
-                "description": "Un nouveau rendu est prêt pour validation",
-                "color": 0x00ff00,
-                "fields": [
-                    {
-                        "name": "Plan",
-                        "value": event.shot_nomenclature,
-                        "inline": True
-                    },
-                    {
-                        "name": "Version",
-                        "value": f"v{event.version:03d}",
-                        "inline": True
-                    },
-                    {
-                        "name": "Taille",
-                        "value": f"{event.file_size / (1024*1024):.1f} MB",
-                        "inline": True
-                    },
-                    {
-                        "name": "Frame.io",
-                        "value": f"[📺 Voir sur Frame.io]({frameio_url})",
-                        "inline": False
-                    }
-                ],
-                "timestamp": event.timestamp.isoformat(),
-                "footer": {
-                    "text": "UNDLM PostFlow"
-                }
-            }
-            
-            success = self.discord.send_message(message, embed)
-            
-            if success:
-                logger.info(f"Sent Discord notification for {event.shot_nomenclature}")
-            
-        except Exception as e:
-            logger.error(f"Discord notification failed: {e}")
     
     def cleanup_cache(self):
         """Nettoie le cache des fichiers traités."""

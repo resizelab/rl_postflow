@@ -6,7 +6,7 @@
 Hooks automatiques pour Google Sheets, Discord et autres intégrations.
 S'abonne aux événements et gère les mises à jour automatiquement.
 
-Version: 4.1.5
+Version: 4.2.0
 Date: 31 juillet 2025
 """
 
@@ -511,11 +511,14 @@ class FrameioVideoHook:
             
             logger.info(f"🎬 [Video Hook] Frame.io file.ready: {filename}")
             
-            # Récupérer les media_links
-            media_links = await self._fetch_media_links(file_id)
-            if not media_links:
-                logger.warning(f"⚠️ Aucun media_links pour {file_id}")
+            # Récupérer les media_links directement depuis le webhook (plus rapide!)
+            media_links = data.get('media_links', {})
+            
+            if not media_links or len(media_links) == 0:
+                logger.warning(f"⚠️ Aucun media_links dans le webhook pour {filename}")
                 return
+            
+            logger.info(f"✅ [Video Hook] Media links trouvés dans le webhook pour {filename}")
             
             # Sélectionner la meilleure vidéo Discord (50MB webhook bot)
             from src.utils.discord_media_selector import select_for_discord_tier
@@ -531,32 +534,14 @@ class FrameioVideoHook:
         except Exception as e:
             logger.error(f"❌ [Video Hook] Erreur: {e}")
     
-    async def _fetch_media_links(self, file_id: str) -> Optional[Dict[str, Any]]:
-        """Récupère media_links Frame.io"""
-        try:
-            url = f"{self.frameio_api.base_url}/files/{file_id}"
-            params = {
-                'include': 'media_links.original,media_links.thumbnail,media_links.high_quality,media_links.video_h264_180,media_links.efficient'
-            }
-            
-            headers = {"Authorization": f"Bearer {self.frameio_api.token}"}
-            
-            import httpx
-            async with httpx.AsyncClient() as client:
-                response = await client.get(url, params=params, headers=headers)
-                response.raise_for_status()
-                
-                file_data = response.json()
-                return file_data.get('media_links', {})
-                
-        except Exception as e:
-            logger.error(f"❌ Erreur récupération media_links: {e}")
-            return None
-    
     async def _post_video_to_discord(self, video_url: str, filename: str, frameio_link: str, strategy: str):
-        """Poste la vidéo sur Discord"""
+        """Poste la vidéo sur Discord avec embed élégant"""
         import tempfile
         import httpx
+        import os
+        import json
+        from pathlib import Path
+        from datetime import datetime
         
         temp_file = None
         try:
@@ -578,30 +563,53 @@ class FrameioVideoHook:
                 file_size_mb = len(response.content) / (1024 * 1024)
                 logger.info(f"📥 Vidéo téléchargée: {file_size_mb:.2f} MB")
                 
-                # Message Discord format original
-                message = f"""🎬 Fichier traité avec succès !
-📁 Fichier: {filename}
-🔗 Frame.io
-[Voir sur Frame.io]({frameio_link})
+                # Embed Discord élégant et compact
+                embed = {
+                    "title": f"🎬 {filename}",
+                    "color": 0x00ff00,  # Vert pour succès
+                    "fields": [
+                        {
+                            "name": "🔗 Frame.io", 
+                            "value": f"[Voir le fichier]({frameio_link})",
+                            "inline": True
+                        },
+                        {
+                            "name": f"✨ {strategy.upper()}", 
+                            "value": f"{file_size_mb:.1f}MB",
+                            "inline": True
+                        }
+                    ],
+                    "footer": {
+                        "text": "PostFlow Bot",
+                        "icon_url": "https://resize-lab.com/postflow-icon.png"
+                    },
+                    "timestamp": datetime.now().isoformat()
+                }
 
-✨ Vidéo MP4 ({strategy}, {file_size_mb:.2f} MB) - PostFlow"""
-
-                # Envoyer sur Discord
+                # Envoyer sur Discord avec embed
                 webhook_url = self.discord_config.get('webhook_url')
                 with open(temp_file.name, 'rb') as f:
-                    files = {'file': (f"PostFlow_{filename}", f.read(), 'video/mp4')}
-                    data = {
-                        'content': message,
-                        'username': self.discord_config.get('username', 'PostFlow Bot')
+                    video_data = f.read()
+                    
+                    # Créer le payload multipart correct pour Discord
+                    payload = {
+                        'username': self.discord_config.get('username', 'PostFlow Bot'),
+                        'avatar_url': self.discord_config.get('avatar_url', 'https://resize-lab.com/postflow-icon.png'),
+                        'embeds': [embed]
                     }
+                    
+                    # Utiliser files et data séparément (format Discord multipart)
+                    files = {'file': (f"PostFlow_{filename}", video_data, 'video/mp4')}
+                    data = {'payload_json': json.dumps(payload)}
                     
                     async with httpx.AsyncClient(timeout=120.0) as client:
                         response = await client.post(webhook_url, files=files, data=data)
                         
                         if response.status_code == 200:
-                            logger.info(f"✅ Vidéo postée sur Discord: {strategy}")
+                            logger.info(f"✅ Vidéo postée sur Discord: ✅ {strategy.upper()} ({file_size_mb:.1f}MB)")
                         else:
                             logger.error(f"❌ Erreur Discord: {response.status_code}")
+                            logger.error(f"📋 Réponse Discord: {response.text}")
                 
         except Exception as e:
             logger.error(f"❌ Erreur post Discord: {e}")
@@ -612,6 +620,111 @@ class FrameioVideoHook:
                     os.unlink(temp_file.name)
                 except Exception:
                     pass
+
+
+class FileWatcherHook:
+    """Hook automatique pour FileWatcher → Discord notifications"""
+    
+    def __init__(self, discord_notifier=None):
+        self.discord_notifier = discord_notifier
+        self.enabled = discord_notifier is not None
+        
+        if self.enabled:
+            # S'abonner aux événements de file processing
+            event_manager.subscribe(EventType.FILE_PROCESSING_COMPLETED, self.on_file_processed, priority=2)
+            event_manager.subscribe(EventType.UPLOAD_COMPLETED, self.on_upload_completed, priority=2)
+            logger.info("✅ FileWatcher Hook activé")
+        else:
+            logger.warning("⚠️ FileWatcher Hook désactivé (pas de discord_notifier)")
+    
+    async def on_file_processed(self, event: Event):
+        """Réagit quand un fichier est traité par FileWatcher"""
+        if not self.enabled:
+            return
+        
+        try:
+            data = event.data
+            shot_nomenclature = data.get('shot_nomenclature')
+            version = data.get('version')
+            file_size = data.get('file_size', 0)
+            frameio_asset_id = data.get('frameio_asset_id')
+            frameio_url = data.get('frameio_url')
+            
+            if not frameio_asset_id:
+                logger.warning(f"⚠️ [FileWatcher Hook] Pas de frameio_asset_id pour {shot_nomenclature}")
+                return
+            
+            logger.info(f"🎬 [FileWatcher Hook] Fichier traité: {shot_nomenclature} v{version:03d}")
+            
+            # Créer notification Discord avec format FileWatcher
+            await self._send_filewatcher_notification(
+                shot_nomenclature=shot_nomenclature,
+                version=version,
+                file_size=file_size,
+                frameio_asset_id=frameio_asset_id,
+                frameio_url=frameio_url
+            )
+            
+        except Exception as e:
+            logger.error(f"❌ [FileWatcher Hook] Erreur: {e}")
+    
+    async def on_upload_completed(self, event: Event):
+        """Réagit aux uploads terminés (si différent de file_processed)"""
+        # Pour l'instant, traité par on_file_processed
+        pass
+    
+    async def _send_filewatcher_notification(self, shot_nomenclature: str, version: int, 
+                                           file_size: int, frameio_asset_id: str, frameio_url: str = None):
+        """Envoie notification Discord format FileWatcher"""
+        try:
+            if not frameio_url:
+                frameio_url = f"https://app.frame.io/reviews/{frameio_asset_id}"
+            
+            message = f"🎬 **Nouveau rendu disponible pour review**"
+            
+            embed = {
+                "title": f"Shot {shot_nomenclature} - Version v{version:03d}",
+                "description": "Un nouveau rendu est prêt pour validation",
+                "color": 0x00ff00,
+                "fields": [
+                    {
+                        "name": "Plan",
+                        "value": shot_nomenclature,
+                        "inline": True
+                    },
+                    {
+                        "name": "Version", 
+                        "value": f"v{version:03d}",
+                        "inline": True
+                    },
+                    {
+                        "name": "Taille",
+                        "value": f"{file_size / (1024*1024):.1f} MB",
+                        "inline": True
+                    },
+                    {
+                        "name": "Frame.io",
+                        "value": f"[📺 Voir sur Frame.io]({frameio_url})",
+                        "inline": False
+                    }
+                ],
+                "footer": {
+                    "text": "UNDLM PostFlow"
+                }
+            }
+            
+            # Utiliser discord_notifier existant
+            if hasattr(self.discord_notifier, 'send_message'):
+                success = self.discord_notifier.send_message(message, embed)
+                if success:
+                    logger.info(f"✅ Discord notification envoyée: {shot_nomenclature}")
+                else:
+                    logger.warning(f"⚠️ Échec notification Discord: {shot_nomenclature}")
+            else:
+                logger.warning(f"⚠️ Discord notifier sans méthode send_message")
+                
+        except Exception as e:
+            logger.error(f"❌ Erreur notification FileWatcher: {e}")
 
 
 class AutoHooksManager:
@@ -641,12 +754,20 @@ class AutoHooksManager:
         if frameio_api:
             # Récupérer config Discord
             discord_config = self._get_discord_config()
+            logger.info(f"🔍 Debug: discord_config = {discord_config}")
             if discord_config and discord_config.get('webhook_url'):
+                logger.info(f"✅ Config Discord trouvée: webhook_url présent")
                 video_hook = FrameioVideoHook(frameio_api, discord_config)
                 self.hooks.append(video_hook)
                 logger.info("✅ Frame.io Video Hook ajouté")
             else:
-                logger.warning("⚠️ Config Discord manquante pour Video Hook")
+                logger.warning(f"⚠️ Config Discord manquante pour Video Hook: {discord_config}")
+        
+        # Hook FileWatcher → Discord notifications
+        if discord_notifier:
+            filewatcher_hook = FileWatcherHook(discord_notifier)
+            self.hooks.append(filewatcher_hook)
+            logger.info("✅ FileWatcher Hook ajouté")
         
         self.initialized = True
         logger.info(f"🔗 Auto Hooks initialisés: {len(self.hooks)} hooks actifs")

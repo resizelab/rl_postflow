@@ -250,7 +250,7 @@ class FrameIOWebhookManager:
             
             # Debug complet des données webhook
             logger.info(f"🔔 Webhook Frame.io V4 reçu: {event_type}")
-            logger.debug(f"📋 Données webhook complètes: {json.dumps(webhook_data, indent=2, default=str)}")
+            logger.info(f"📋 Données webhook complètes: {json.dumps(webhook_data, indent=2, default=str)}")
             
             # Vérifier que nous avons un type d'événement valide
             if not event_type:
@@ -325,13 +325,119 @@ class FrameIOWebhookManager:
             
             logger.info(f"📤 Upload Frame.io terminé: {file_name} (ID: {file_id})")
     
+    def _fetch_file_with_media_links_sync(self, file_id: str) -> Optional[Dict[str, Any]]:
+        """Récupère les données complètes d'un fichier avec media_links (version synchrone)"""
+        import os
+        import requests
+        
+        try:
+            # Récupérer l'account_id depuis l'environnement
+            account_id = os.getenv('FRAMEIO_ACCOUNT_ID')
+            if not account_id:
+                logger.error("❌ FRAMEIO_ACCOUNT_ID non défini")
+                return None
+            
+            # Récupérer le token Frame.io depuis frameio_auth
+            if not self.frameio_auth:
+                logger.error("❌ [ShowFile] frameio_auth non disponible")
+                return None
+                
+            # Récupérer le token depuis la configuration stockée
+            token_config = self.frameio_auth._load_current_tokens()
+            if not token_config or not token_config.get('access_token'):
+                logger.error("❌ [ShowFile] Aucun token d'accès disponible")
+                return None
+                
+            access_token = token_config['access_token']
+            
+            # URL showfile avec media_links
+            url = f"https://api.frame.io/v4/accounts/{account_id}/files/{file_id}"
+            params = {
+                'include': 'media_links.original,media_links.thumbnail,media_links.high_quality,media_links.video_h264_180,media_links.efficient'
+            }
+            
+            headers = {"Authorization": f"Bearer {access_token}"}
+            
+            logger.info(f"🔍 [ShowFile] GET {url}")
+            logger.info(f"🔍 [ShowFile] Params: {params}")
+            
+            response = requests.get(url, params=params, headers=headers, timeout=10)
+            response.raise_for_status()
+            
+            file_data = response.json()
+            logger.info(f"✅ [ShowFile] Données récupérées pour {file_id}")
+            
+            return file_data
+            
+        except Exception as e:
+            logger.error(f"❌ [ShowFile] Erreur pour {file_id}: {e}")
+            return None
+
     def _handle_file_ready_sync(self, file_data: Dict[str, Any]):
         """Gère l'événement file.ready (traitement terminé) (version synchrone)"""
         file_id = file_data.get("id")
         file_name = file_data.get("name")
         
+        # Protection anti-doublons Discord
+        if hasattr(self, '_discord_posted_files'):
+            if file_id in self._discord_posted_files:
+                logger.info(f"🔄 Discord déjà posté pour {file_name} (ID: {file_id}), skip")
+                return
+        else:
+            self._discord_posted_files = set()
+        
+        # Initialiser media_links pour éviter les erreurs de portée
+        media_links = {}
+        
+        logger.info(f"🎯 Webhook Frame.io V4 reçu: file.ready")
+        logger.info(f"💾 File ID: {file_id}")
+        logger.info(f"📋 File Name: {file_name}")
+        
+        # Faire un showfile pour récupérer les media_links complets
+        logger.info(f"🔍 Récupération showfile avec media_links...")
+        complete_file_data = self._fetch_file_with_media_links_sync(file_id)
+        
+        if complete_file_data:
+            logger.info(f"✅ Showfile réussi avec media_links")
+            # Les données sont dans complete_file_data['data']
+            if 'data' in complete_file_data:
+                file_data = complete_file_data['data']  # Utiliser les données complètes
+                file_name = file_data.get('name')  # Récupérer le filename depuis showfile
+                media_links = file_data.get('media_links', {})
+                logger.info(f"📹 Media links trouvés: {len(media_links)} types disponibles")
+                if media_links:
+                    for link_type, link_data in media_links.items():
+                        url = link_data.get('url') or link_data.get('download_url', 'N/A')
+                        logger.info(f"  - {link_type}: {url[:80]}...")
+                else:
+                    logger.warning(f"⚠️ Aucun media_links dans les données API")
+            else:
+                logger.warning(f"⚠️ Pas de clé 'data' dans la réponse API")
+                file_data = complete_file_data  # Utiliser les données telles quelles
+                if file_data:
+                    file_name = file_data.get('name')  # Récupérer le filename depuis showfile
+                    media_links = file_data.get('media_links', {})
+                else:
+                    logger.error(f"❌ complete_file_data est None ou vide")
+                    file_data = {}
+                    media_links = {}
+        else:
+            logger.warning(f"⚠️ Échec showfile, utilisation données webhook")
+            file_data = {}
+            media_links = {}
+        
+        logger.info(f"�🔍 Recherche upload pour fichier: {file_name} (ID: {file_id})")
+        
+        # Afficher tous les uploads disponibles pour debug
+        all_uploads = self.upload_tracker.tracking_data.get("uploads", {})
+        logger.info(f"📊 Uploads disponibles: {len(all_uploads)}")
+        for uid, data in all_uploads.items():
+            logger.info(f"  - {uid}: {data.get('filename', 'N/A')}")
+        
         # Trouver l'upload correspondant
         upload_id = self._find_upload_by_filename_sync(file_name)
+        logger.info(f"🔍 Upload trouvé: {upload_id}")
+        
         if upload_id:
             frameio_data = {
                 "file_id": file_id,
@@ -347,7 +453,7 @@ class FrameIOWebhookManager:
             
             # Émettre événement FRAMEIO_FILE_READY pour auto_hooks
             try:
-                upload_data = self.upload_tracker.get_upload_data(upload_id)
+                upload_data = self.upload_tracker.get_upload(upload_id)
                 frameio_link = upload_data.get('frameio_link', '') if upload_data else ''
                 
                 from src.utils.event_manager import event_manager, EventType
@@ -355,12 +461,38 @@ class FrameIOWebhookManager:
                     'upload_id': upload_id,
                     'file_id': file_id,
                     'filename': file_name,
-                    'frameio_link': frameio_link
+                    'frameio_link': frameio_link,
+                    'media_links': media_links,  # Utiliser la variable media_links extraite
+                    'file_data': file_data  # Passer toutes les données du fichier
                 }
                 event_manager.emit_sync(EventType.FRAMEIO_FILE_READY, event_data, source='webhook_manager')
                 logger.info(f"📡 Événement FRAMEIO_FILE_READY émis pour {file_name}")
+                
+                # Marquer comme posté sur Discord
+                self._discord_posted_files.add(file_id)
+                
             except Exception as e:
                 logger.error(f"❌ Erreur émission événement: {e}")
+        else:
+            logger.warning(f"⚠️ Upload non trouvé pour {file_name}, mais émission de l'événement FRAMEIO_FILE_READY")
+            # Émettre l'événement même sans upload tracker - FrameioVideoHook peut utiliser file_id directement
+            try:
+                from src.utils.event_manager import event_manager, EventType
+                event_data = {
+                    'upload_id': None,
+                    'file_id': file_id,
+                    'filename': file_name,
+                    'frameio_link': f"https://next.frame.io/view/{file_id}" if file_id else '',
+                    'media_links': media_links,  # Utiliser la variable media_links extraite
+                    'file_data': file_data  # Passer toutes les données du fichier
+                }
+                event_manager.emit_sync(EventType.FRAMEIO_FILE_READY, event_data, source='webhook_manager')
+                logger.info(f"📡 Événement FRAMEIO_FILE_READY émis sans upload tracker pour {file_name}")
+                
+                # Marquer comme posté sur Discord
+                self._discord_posted_files.add(file_id)
+            except Exception as e:
+                logger.error(f"❌ Erreur émission événement sans tracker: {e}")
     
     def _handle_file_created_sync(self, file_data: Dict[str, Any]):
         """Gère l'événement file.created (version synchrone)"""

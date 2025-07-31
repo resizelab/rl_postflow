@@ -1,4 +1,9 @@
 {
+  "project_info": {
+    "name": "UNDLM Documentary",
+    "version": "4.2.0",
+    "version_name": "MP4 Discord Integration"
+  },
   "project_name": "UNDLM Documentary",
   "discord": {
     "webhook_url": "",
