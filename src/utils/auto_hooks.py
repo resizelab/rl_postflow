@@ -49,12 +49,14 @@ class GoogleSheetsHook:
         try:
             data = event.data
             shot_name = data.get('shot_name')
+            version = data.get('version', '')
             status = data.get('status')
             frameio_link = data.get('frameio_link')
             comment = data.get('comment')
             
             if shot_name and status:
-                logger.info(f"📊 [Sheets Hook] Mise à jour statut: {shot_name} -> {status}")
+                shot_info = f"{shot_name} {version}" if version else shot_name
+                logger.info(f"📊 [Sheets Hook] Mise à jour statut: {shot_info} -> {status}")
                 
                 if hasattr(self.sheets_tracker, 'update_shot_status'):
                     await self.sheets_tracker.update_shot_status(
@@ -79,11 +81,13 @@ class GoogleSheetsHook:
         try:
             data = event.data
             shot_name = data.get('shot_name')
+            version = data.get('version', '')
             frameio_link = data.get('frameio_link')
             thumbnail_url = data.get('thumbnail_url')
             
             if shot_name:
-                logger.info(f"📊 [Sheets Hook] Upload terminé: {shot_name}")
+                shot_info = f"{shot_name} {version}" if version else shot_name
+                logger.info(f"📊 [Sheets Hook] Upload terminé: {shot_info}")
                 
                 # Mettre à jour avec les liens
                 if hasattr(self.sheets_tracker, 'update_shot_status'):
@@ -107,11 +111,13 @@ class GoogleSheetsHook:
         try:
             data = event.data
             shot_name = data.get('shot_name')
+            version = data.get('version', '')
             comment_text = data.get('comment_text')
             review_status = data.get('review_status')
             
             if shot_name and comment_text:
-                logger.info(f"📊 [Sheets Hook] Commentaire Frame.io: {shot_name}")
+                shot_info = f"{shot_name} {version}" if version else shot_name
+                logger.info(f"📊 [Sheets Hook] Commentaire Frame.io: {shot_info}")
                 
                 # Logique intelligente pour déterminer le statut selon les commentaires
                 intelligent_status = self._analyze_comment_status(comment_text, review_status)
@@ -212,9 +218,10 @@ class GoogleSheetsHook:
 class DiscordHook:
     """Hook automatique pour Discord"""
     
-    def __init__(self, discord_notifier=None, user_notifier=None):
+    def __init__(self, discord_notifier=None, user_notifier=None, config_manager=None):
         self.discord_notifier = discord_notifier
         self.user_notifier = user_notifier
+        self.config_manager = config_manager  # Nouveau: pour accéder à la config Frame.io
         self.enabled = discord_notifier is not None or user_notifier is not None
         
         if self.enabled:
@@ -297,51 +304,122 @@ class DiscordHook:
             logger.error(f"❌ [Discord Hook] Erreur notification échec: {e}")
     
     async def on_frameio_comment(self, event: Event):
-        """Notifie les commentaires Frame.io avec analyse intelligente"""
+        """Notifie les commentaires Frame.io avec format moderne et liens de partage"""
         if not self.enabled:
             return
         
         try:
+            from src.integrations.discord.comment_notifier_v2 import ModernCommentNotifier
+            from src.integrations.frameio.share_manager import create_share_manager_from_config
+            
             data = event.data
+            upload_id = data.get('upload_id')
             shot_name = data.get('shot_name')
             comment_text = data.get('comment_text')
             review_status = data.get('review_status')
             commenter = data.get('commenter', 'Utilisateur')
+            timecode = data.get('timecode')
+            file_id = data.get('file_id')  # ID du fichier commenté (utiliser celui-ci directement)
             
-            logger.info(f"💬 [Discord Hook] Commentaire Frame.io: {shot_name}")
-            
-            # Analyse intelligente du statut
+            # Analyse intelligente du statut (conserver logique existante)
             intelligent_status = self._analyze_comment_for_discord(comment_text, review_status)
             
-            notifier = self.user_notifier or self.discord_notifier
+            # Vérifier si nous avons déjà notifié récemment pour ce même statut
+            # Cache basé sur upload_id + status pour éviter les doublons
+            cache_key = f"{upload_id}_{intelligent_status}"
+            if not hasattr(self, '_comment_notification_cache'):
+                self._comment_notification_cache = {}
             
-            # Émoji selon le statut intelligent
-            status_emoji = {
-                'APPROVED': '✅',
-                'NEED_REWORK': '🔄', 
-                'NEED_REVIEW': '⏳',
-                'REJECTED': '❌'
-            }.get(intelligent_status, '💬')
+            from datetime import datetime, timedelta
+            now = datetime.now()
             
-            status_text = {
-                'APPROVED': 'Validé',
-                'NEED_REWORK': 'Modifications requises',
-                'NEED_REVIEW': 'En attente de review',
-                'REJECTED': 'Rejeté'
-            }.get(intelligent_status, 'Review')
+            # Si une notification avec le même statut a été envoyée dans les 5 dernières minutes, ignorer
+            if cache_key in self._comment_notification_cache:
+                last_notification = self._comment_notification_cache[cache_key]
+                if now - last_notification < timedelta(minutes=5):
+                    logger.info(f"⏭️ [Discord Hook] Notification dupliquée ignorée pour {shot_name} ({intelligent_status})")
+                    return
             
-            message = f"{status_emoji} **{shot_name}** - {status_text}\n"
-            message += f"👤 **{commenter}**\n"
-            message += f"💬 {comment_text[:200]}{'...' if len(comment_text) > 200 else ''}\n"
-            message += f"🤖 Statut auto-détecté: **{intelligent_status}**"
+            logger.info(f"🎯 Utilisation du file_id du fichier commenté: {file_id[:12] if file_id else 'None'}... pour {shot_name}")
+            logger.info(f"💬 [Discord Hook] Commentaire Frame.io moderne: {shot_name}")
             
-            if self.user_notifier and hasattr(self.user_notifier, 'send_system_notification'):
-                await self.user_notifier.send_system_notification("Commentaire Frame.io", message)
-            elif self.discord_notifier:
-                self.discord_notifier.notify_system_status("Commentaire Frame.io", message)
+            # Initialiser le gestionnaire de partage Frame.io
+            share_manager = None
+            try:
+                if hasattr(self, 'config_manager'):
+                    config = self.config_manager.get_config()
+                    share_manager = create_share_manager_from_config(config)
+                    if share_manager:
+                        logger.info("🔗 Gestionnaire de partage Frame.io initialisé")
+            except Exception as e:
+                logger.warning(f"⚠️ Impossible d'initialiser le gestionnaire de partage: {e}")
+            
+            # Initialiser le notificateur moderne avec support shares
+            if hasattr(self, 'discord_notifier') and self.discord_notifier:
+                webhook_url = getattr(self.discord_notifier, 'webhook_url', None)
+                if webhook_url:
+                    modern_notifier = ModernCommentNotifier(
+                        webhook_url=webhook_url, 
+                        bot_name="PostFlow",
+                        share_manager=share_manager
+                    )
+                    
+                    # Envoyer notification moderne avec liens de partage
+                    success = modern_notifier.send_comment_notification(
+                        shot_name=shot_name,
+                        commenter=commenter,
+                        comment_text=comment_text,
+                        review_status=intelligent_status,
+                        frameio_link=data.get('frameio_link'),  # Lien de fallback
+                        timecode=timecode,
+                        file_id=file_id  # Utiliser le file_id du fichier commenté
+                    )
+                    
+                    if success:
+                        logger.info(f"✅ [Discord Hook] Notification moderne envoyée: {shot_name}")
+                        if share_manager:
+                            logger.info(f"� [Discord Hook] Lien de partage utilisé pour {shot_name}")
+                    else:
+                        logger.error(f"❌ [Discord Hook] Échec notification moderne: {shot_name}")
+                        # Fallback vers ancien format si échec
+                        await self._fallback_old_notification(data, intelligent_status)
+                else:
+                    logger.warning("⚠️ [Discord Hook] Webhook URL manquante, fallback ancien format")
+                    await self._fallback_old_notification(data, intelligent_status)
+            else:
+                logger.warning("⚠️ [Discord Hook] Discord notifier manquant, fallback ancien format")
+                await self._fallback_old_notification(data, intelligent_status)
                 
         except Exception as e:
-            logger.error(f"❌ [Discord Hook] Erreur notification commentaire: {e}")
+            logger.error(f"❌ [Discord Hook] Erreur notification moderne avec shares: {e}")
+            # En cas d'erreur, fallback vers l'ancien format
+            try:
+                await self._fallback_old_notification(event.data, 'NEED_REVIEW')
+            except:
+                pass
+
+    async def _fallback_old_notification(self, data: dict, intelligent_status: str):
+        """Fallback vers l'ancien format en cas de problème (version améliorée)"""
+        shot_name = data.get('shot_name')
+        comment_text = data.get('comment_text', '')
+        commenter = data.get('commenter', 'Utilisateur')
+        
+        # Format simplifié mais moderne
+        status_emoji = {
+            'APPROVED': '✅',
+            'NEED_REWORK': '🔄', 
+            'NEED_REVIEW': '⏳',
+            'REJECTED': '❌'
+        }.get(intelligent_status, '💬')
+        
+        # Message compact style nouveau format
+        message = f"{status_emoji} **{shot_name}** · {commenter}"
+        message += f"\n💬 {comment_text[:100]}{'...' if len(comment_text) > 100 else ''}"
+        
+        if self.user_notifier and hasattr(self.user_notifier, 'send_system_notification'):
+            await self.user_notifier.send_system_notification("Commentaire Frame.io", message)
+        elif self.discord_notifier:
+            self.discord_notifier.notify_system_status("Commentaire Frame.io", message)
     
     def _analyze_comment_for_discord(self, comment_text: str, review_status: str = None) -> str:
         """Analyse rapide pour Discord (même logique que Google Sheets)"""
@@ -734,11 +812,14 @@ class AutoHooksManager:
         self.hooks = []
         self.initialized = False
     
-    def initialize(self, sheets_tracker=None, discord_notifier=None, user_notifier=None, frameio_api=None):
+    def initialize(self, sheets_tracker=None, discord_notifier=None, user_notifier=None, frameio_api=None, config_manager=None, upload_tracker=None):
         """Initialise tous les hooks automatiques"""
         if self.initialized:
             logger.warning("⚠️ Hooks déjà initialisés")
             return
+        
+        # Stocker l'upload_tracker pour la recherche de versions
+        self.upload_tracker = upload_tracker
         
         # Hook Google Sheets
         if sheets_tracker:
@@ -747,7 +828,7 @@ class AutoHooksManager:
         
         # Hook Discord
         if discord_notifier or user_notifier:
-            discord_hook = DiscordHook(discord_notifier, user_notifier)
+            discord_hook = DiscordHook(discord_notifier, user_notifier, config_manager)
             self.hooks.append(discord_hook)
         
         # Hook Frame.io Video → Discord MP4
@@ -771,6 +852,57 @@ class AutoHooksManager:
         
         self.initialized = True
         logger.info(f"🔗 Auto Hooks initialisés: {len(self.hooks)} hooks actifs")
+    
+    def _get_latest_version_file_id(self, shot_name: str) -> Optional[str]:
+        """
+        Récupère le file_id de la dernière version d'un shot donné
+        
+        Args:
+            shot_name: Nom du shot (ex: "UNDLM_00152")
+            
+        Returns:
+            str: file_id de la dernière version ou None
+        """
+        try:
+            if not hasattr(self, 'upload_tracker') or not self.upload_tracker:
+                return None
+            
+            # Parcourir tous les uploads pour trouver les versions de ce shot
+            uploads = self.upload_tracker.tracking_data.get("uploads", {})
+            shot_versions = {}
+            
+            for upload_id, upload_data in uploads.items():
+                upload_shot_name = upload_data.get('shot_id') or upload_data.get('shot_name')
+                if upload_shot_name == shot_name:
+                    version = upload_data.get('version', 'v001')
+                    # Extraire le numéro de version (v001 → 1)
+                    try:
+                        version_num = int(version.replace('v', '').lstrip('0') or '0')
+                        shot_versions[version_num] = upload_data
+                    except:
+                        shot_versions[0] = upload_data  # Version par défaut
+            
+            if shot_versions:
+                # Récupérer la version la plus récente
+                latest_version_num = max(shot_versions.keys())
+                latest_upload = shot_versions[latest_version_num]
+                
+                # Récupérer le file_id de Frame.io
+                frameio_data = latest_upload.get('frameio_data', {})
+                file_id = frameio_data.get('file_id')
+                
+                if file_id:
+                    logger.info(f"🎯 Dernière version trouvée pour {shot_name}: v{latest_version_num:03d} (file_id: {file_id[:12]}...)")
+                    return file_id
+                else:
+                    logger.warning(f"⚠️ Pas de file_id pour la dernière version de {shot_name}")
+            else:
+                logger.warning(f"⚠️ Aucune version trouvée pour {shot_name}")
+                
+        except Exception as e:
+            logger.error(f"❌ Erreur récupération dernière version de {shot_name}: {e}")
+            
+        return None
     
     def _get_discord_config(self) -> Optional[Dict]:
         """Récupère la configuration Discord"""

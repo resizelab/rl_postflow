@@ -1,6 +1,6 @@
 // ==========================================
 // RL PostFlow v4.1.1 - Générateur After Effects v2
-// Séquence P02_ALL avec 54 plans
+// Séquence P02_ALL avec 71 plans
 // Compatible avec template AE SQXX_01.aep
 // Sources UHD (3840x2160) -> Comps 1440p (2560x1440)
 // ==========================================
@@ -119,6 +119,1547 @@ if (!editFolder.exists) {
           "Chemin: /Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS");
 }
 
+
+// Import plan EDIT 00175
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile175 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00175.mov");
+var editFilePoignees175 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00175_AVEC_POIGNEES.mov");
+var editFileBis175 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00175bis.mov");
+
+var importSuccess175 = false;
+var fileName175 = "";
+
+// Tenter import standard
+if (editFile175.exists) {
+    try {
+        var editFootage175 = project.importFile(new ImportOptions(editFile175));
+        editFootage175.parentFolder = fromEditFolder;
+        editFootage175.name = "UNDLM_00175";
+        editSources[175] = editFootage175;
+        fileName175 = "UNDLM_00175.mov";
+        importSuccess175 = true;
+        editImportCount++;
+        logImportSuccess(175, "EDIT", editFile175.fsName, fileName175);
+    } catch (e) {
+        logImportError(175, "EDIT", editFile175.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess175 && editFilePoignees175.exists) {
+    try {
+        var editFootage175 = project.importFile(new ImportOptions(editFilePoignees175));
+        editFootage175.parentFolder = fromEditFolder;
+        editFootage175.name = "UNDLM_00175";
+        editSources[175] = editFootage175;
+        fileName175 = "UNDLM_00175_AVEC_POIGNEES.mov";
+        importSuccess175 = true;
+        editImportCount++;
+        logImportSuccess(175, "EDIT", editFilePoignees175.fsName, fileName175);
+    } catch (e) {
+        logImportError(175, "EDIT", editFilePoignees175.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess175 && editFileBis175.exists) {
+    try {
+        var editFootage175 = project.importFile(new ImportOptions(editFileBis175));
+        editFootage175.parentFolder = fromEditFolder;
+        editFootage175.name = "UNDLM_00175";
+        editSources[175] = editFootage175;
+        fileName175 = "UNDLM_00175bis.mov";
+        importSuccess175 = true;
+        editImportCount++;
+        logImportSuccess(175, "EDIT", editFileBis175.fsName, fileName175);
+    } catch (e) {
+        logImportError(175, "EDIT", editFileBis175.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess175) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00175.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00175.mov: " + editFile175.exists + "\n" +
+          "• UNDLM_00175_AVEC_POIGNEES.mov: " + editFilePoignees175.exists + "\n" +
+          "• UNDLM_00175bis.mov: " + editFileBis175.exists);
+}
+
+// Import plan EDIT 00176
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile176 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00176.mov");
+var editFilePoignees176 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00176_AVEC_POIGNEES.mov");
+var editFileBis176 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00176bis.mov");
+
+var importSuccess176 = false;
+var fileName176 = "";
+
+// Tenter import standard
+if (editFile176.exists) {
+    try {
+        var editFootage176 = project.importFile(new ImportOptions(editFile176));
+        editFootage176.parentFolder = fromEditFolder;
+        editFootage176.name = "UNDLM_00176";
+        editSources[176] = editFootage176;
+        fileName176 = "UNDLM_00176.mov";
+        importSuccess176 = true;
+        editImportCount++;
+        logImportSuccess(176, "EDIT", editFile176.fsName, fileName176);
+    } catch (e) {
+        logImportError(176, "EDIT", editFile176.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess176 && editFilePoignees176.exists) {
+    try {
+        var editFootage176 = project.importFile(new ImportOptions(editFilePoignees176));
+        editFootage176.parentFolder = fromEditFolder;
+        editFootage176.name = "UNDLM_00176";
+        editSources[176] = editFootage176;
+        fileName176 = "UNDLM_00176_AVEC_POIGNEES.mov";
+        importSuccess176 = true;
+        editImportCount++;
+        logImportSuccess(176, "EDIT", editFilePoignees176.fsName, fileName176);
+    } catch (e) {
+        logImportError(176, "EDIT", editFilePoignees176.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess176 && editFileBis176.exists) {
+    try {
+        var editFootage176 = project.importFile(new ImportOptions(editFileBis176));
+        editFootage176.parentFolder = fromEditFolder;
+        editFootage176.name = "UNDLM_00176";
+        editSources[176] = editFootage176;
+        fileName176 = "UNDLM_00176bis.mov";
+        importSuccess176 = true;
+        editImportCount++;
+        logImportSuccess(176, "EDIT", editFileBis176.fsName, fileName176);
+    } catch (e) {
+        logImportError(176, "EDIT", editFileBis176.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess176) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00176.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00176.mov: " + editFile176.exists + "\n" +
+          "• UNDLM_00176_AVEC_POIGNEES.mov: " + editFilePoignees176.exists + "\n" +
+          "• UNDLM_00176bis.mov: " + editFileBis176.exists);
+}
+
+// Import plan EDIT 00177
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile177 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00177.mov");
+var editFilePoignees177 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00177_AVEC_POIGNEES.mov");
+var editFileBis177 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00177bis.mov");
+
+var importSuccess177 = false;
+var fileName177 = "";
+
+// Tenter import standard
+if (editFile177.exists) {
+    try {
+        var editFootage177 = project.importFile(new ImportOptions(editFile177));
+        editFootage177.parentFolder = fromEditFolder;
+        editFootage177.name = "UNDLM_00177";
+        editSources[177] = editFootage177;
+        fileName177 = "UNDLM_00177.mov";
+        importSuccess177 = true;
+        editImportCount++;
+        logImportSuccess(177, "EDIT", editFile177.fsName, fileName177);
+    } catch (e) {
+        logImportError(177, "EDIT", editFile177.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess177 && editFilePoignees177.exists) {
+    try {
+        var editFootage177 = project.importFile(new ImportOptions(editFilePoignees177));
+        editFootage177.parentFolder = fromEditFolder;
+        editFootage177.name = "UNDLM_00177";
+        editSources[177] = editFootage177;
+        fileName177 = "UNDLM_00177_AVEC_POIGNEES.mov";
+        importSuccess177 = true;
+        editImportCount++;
+        logImportSuccess(177, "EDIT", editFilePoignees177.fsName, fileName177);
+    } catch (e) {
+        logImportError(177, "EDIT", editFilePoignees177.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess177 && editFileBis177.exists) {
+    try {
+        var editFootage177 = project.importFile(new ImportOptions(editFileBis177));
+        editFootage177.parentFolder = fromEditFolder;
+        editFootage177.name = "UNDLM_00177";
+        editSources[177] = editFootage177;
+        fileName177 = "UNDLM_00177bis.mov";
+        importSuccess177 = true;
+        editImportCount++;
+        logImportSuccess(177, "EDIT", editFileBis177.fsName, fileName177);
+    } catch (e) {
+        logImportError(177, "EDIT", editFileBis177.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess177) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00177.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00177.mov: " + editFile177.exists + "\n" +
+          "• UNDLM_00177_AVEC_POIGNEES.mov: " + editFilePoignees177.exists + "\n" +
+          "• UNDLM_00177bis.mov: " + editFileBis177.exists);
+}
+
+// Import plan EDIT 00193
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile193 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00193.mov");
+var editFilePoignees193 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00193_AVEC_POIGNEES.mov");
+var editFileBis193 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00193bis.mov");
+
+var importSuccess193 = false;
+var fileName193 = "";
+
+// Tenter import standard
+if (editFile193.exists) {
+    try {
+        var editFootage193 = project.importFile(new ImportOptions(editFile193));
+        editFootage193.parentFolder = fromEditFolder;
+        editFootage193.name = "UNDLM_00193";
+        editSources[193] = editFootage193;
+        fileName193 = "UNDLM_00193.mov";
+        importSuccess193 = true;
+        editImportCount++;
+        logImportSuccess(193, "EDIT", editFile193.fsName, fileName193);
+    } catch (e) {
+        logImportError(193, "EDIT", editFile193.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess193 && editFilePoignees193.exists) {
+    try {
+        var editFootage193 = project.importFile(new ImportOptions(editFilePoignees193));
+        editFootage193.parentFolder = fromEditFolder;
+        editFootage193.name = "UNDLM_00193";
+        editSources[193] = editFootage193;
+        fileName193 = "UNDLM_00193_AVEC_POIGNEES.mov";
+        importSuccess193 = true;
+        editImportCount++;
+        logImportSuccess(193, "EDIT", editFilePoignees193.fsName, fileName193);
+    } catch (e) {
+        logImportError(193, "EDIT", editFilePoignees193.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess193 && editFileBis193.exists) {
+    try {
+        var editFootage193 = project.importFile(new ImportOptions(editFileBis193));
+        editFootage193.parentFolder = fromEditFolder;
+        editFootage193.name = "UNDLM_00193";
+        editSources[193] = editFootage193;
+        fileName193 = "UNDLM_00193bis.mov";
+        importSuccess193 = true;
+        editImportCount++;
+        logImportSuccess(193, "EDIT", editFileBis193.fsName, fileName193);
+    } catch (e) {
+        logImportError(193, "EDIT", editFileBis193.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess193) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00193.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00193.mov: " + editFile193.exists + "\n" +
+          "• UNDLM_00193_AVEC_POIGNEES.mov: " + editFilePoignees193.exists + "\n" +
+          "• UNDLM_00193bis.mov: " + editFileBis193.exists);
+}
+
+// Import plan EDIT 00194
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile194 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00194.mov");
+var editFilePoignees194 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00194_AVEC_POIGNEES.mov");
+var editFileBis194 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00194bis.mov");
+
+var importSuccess194 = false;
+var fileName194 = "";
+
+// Tenter import standard
+if (editFile194.exists) {
+    try {
+        var editFootage194 = project.importFile(new ImportOptions(editFile194));
+        editFootage194.parentFolder = fromEditFolder;
+        editFootage194.name = "UNDLM_00194";
+        editSources[194] = editFootage194;
+        fileName194 = "UNDLM_00194.mov";
+        importSuccess194 = true;
+        editImportCount++;
+        logImportSuccess(194, "EDIT", editFile194.fsName, fileName194);
+    } catch (e) {
+        logImportError(194, "EDIT", editFile194.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess194 && editFilePoignees194.exists) {
+    try {
+        var editFootage194 = project.importFile(new ImportOptions(editFilePoignees194));
+        editFootage194.parentFolder = fromEditFolder;
+        editFootage194.name = "UNDLM_00194";
+        editSources[194] = editFootage194;
+        fileName194 = "UNDLM_00194_AVEC_POIGNEES.mov";
+        importSuccess194 = true;
+        editImportCount++;
+        logImportSuccess(194, "EDIT", editFilePoignees194.fsName, fileName194);
+    } catch (e) {
+        logImportError(194, "EDIT", editFilePoignees194.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess194 && editFileBis194.exists) {
+    try {
+        var editFootage194 = project.importFile(new ImportOptions(editFileBis194));
+        editFootage194.parentFolder = fromEditFolder;
+        editFootage194.name = "UNDLM_00194";
+        editSources[194] = editFootage194;
+        fileName194 = "UNDLM_00194bis.mov";
+        importSuccess194 = true;
+        editImportCount++;
+        logImportSuccess(194, "EDIT", editFileBis194.fsName, fileName194);
+    } catch (e) {
+        logImportError(194, "EDIT", editFileBis194.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess194) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00194.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00194.mov: " + editFile194.exists + "\n" +
+          "• UNDLM_00194_AVEC_POIGNEES.mov: " + editFilePoignees194.exists + "\n" +
+          "• UNDLM_00194bis.mov: " + editFileBis194.exists);
+}
+
+// Import plan EDIT 00195
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile195 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00195.mov");
+var editFilePoignees195 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00195_AVEC_POIGNEES.mov");
+var editFileBis195 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00195bis.mov");
+
+var importSuccess195 = false;
+var fileName195 = "";
+
+// Tenter import standard
+if (editFile195.exists) {
+    try {
+        var editFootage195 = project.importFile(new ImportOptions(editFile195));
+        editFootage195.parentFolder = fromEditFolder;
+        editFootage195.name = "UNDLM_00195";
+        editSources[195] = editFootage195;
+        fileName195 = "UNDLM_00195.mov";
+        importSuccess195 = true;
+        editImportCount++;
+        logImportSuccess(195, "EDIT", editFile195.fsName, fileName195);
+    } catch (e) {
+        logImportError(195, "EDIT", editFile195.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess195 && editFilePoignees195.exists) {
+    try {
+        var editFootage195 = project.importFile(new ImportOptions(editFilePoignees195));
+        editFootage195.parentFolder = fromEditFolder;
+        editFootage195.name = "UNDLM_00195";
+        editSources[195] = editFootage195;
+        fileName195 = "UNDLM_00195_AVEC_POIGNEES.mov";
+        importSuccess195 = true;
+        editImportCount++;
+        logImportSuccess(195, "EDIT", editFilePoignees195.fsName, fileName195);
+    } catch (e) {
+        logImportError(195, "EDIT", editFilePoignees195.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess195 && editFileBis195.exists) {
+    try {
+        var editFootage195 = project.importFile(new ImportOptions(editFileBis195));
+        editFootage195.parentFolder = fromEditFolder;
+        editFootage195.name = "UNDLM_00195";
+        editSources[195] = editFootage195;
+        fileName195 = "UNDLM_00195bis.mov";
+        importSuccess195 = true;
+        editImportCount++;
+        logImportSuccess(195, "EDIT", editFileBis195.fsName, fileName195);
+    } catch (e) {
+        logImportError(195, "EDIT", editFileBis195.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess195) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00195.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00195.mov: " + editFile195.exists + "\n" +
+          "• UNDLM_00195_AVEC_POIGNEES.mov: " + editFilePoignees195.exists + "\n" +
+          "• UNDLM_00195bis.mov: " + editFileBis195.exists);
+}
+
+// Import plan EDIT 00196
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile196 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00196.mov");
+var editFilePoignees196 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00196_AVEC_POIGNEES.mov");
+var editFileBis196 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00196bis.mov");
+
+var importSuccess196 = false;
+var fileName196 = "";
+
+// Tenter import standard
+if (editFile196.exists) {
+    try {
+        var editFootage196 = project.importFile(new ImportOptions(editFile196));
+        editFootage196.parentFolder = fromEditFolder;
+        editFootage196.name = "UNDLM_00196";
+        editSources[196] = editFootage196;
+        fileName196 = "UNDLM_00196.mov";
+        importSuccess196 = true;
+        editImportCount++;
+        logImportSuccess(196, "EDIT", editFile196.fsName, fileName196);
+    } catch (e) {
+        logImportError(196, "EDIT", editFile196.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess196 && editFilePoignees196.exists) {
+    try {
+        var editFootage196 = project.importFile(new ImportOptions(editFilePoignees196));
+        editFootage196.parentFolder = fromEditFolder;
+        editFootage196.name = "UNDLM_00196";
+        editSources[196] = editFootage196;
+        fileName196 = "UNDLM_00196_AVEC_POIGNEES.mov";
+        importSuccess196 = true;
+        editImportCount++;
+        logImportSuccess(196, "EDIT", editFilePoignees196.fsName, fileName196);
+    } catch (e) {
+        logImportError(196, "EDIT", editFilePoignees196.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess196 && editFileBis196.exists) {
+    try {
+        var editFootage196 = project.importFile(new ImportOptions(editFileBis196));
+        editFootage196.parentFolder = fromEditFolder;
+        editFootage196.name = "UNDLM_00196";
+        editSources[196] = editFootage196;
+        fileName196 = "UNDLM_00196bis.mov";
+        importSuccess196 = true;
+        editImportCount++;
+        logImportSuccess(196, "EDIT", editFileBis196.fsName, fileName196);
+    } catch (e) {
+        logImportError(196, "EDIT", editFileBis196.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess196) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00196.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00196.mov: " + editFile196.exists + "\n" +
+          "• UNDLM_00196_AVEC_POIGNEES.mov: " + editFilePoignees196.exists + "\n" +
+          "• UNDLM_00196bis.mov: " + editFileBis196.exists);
+}
+
+// Import plan EDIT 00197
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile197 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00197.mov");
+var editFilePoignees197 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00197_AVEC_POIGNEES.mov");
+var editFileBis197 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00197bis.mov");
+
+var importSuccess197 = false;
+var fileName197 = "";
+
+// Tenter import standard
+if (editFile197.exists) {
+    try {
+        var editFootage197 = project.importFile(new ImportOptions(editFile197));
+        editFootage197.parentFolder = fromEditFolder;
+        editFootage197.name = "UNDLM_00197";
+        editSources[197] = editFootage197;
+        fileName197 = "UNDLM_00197.mov";
+        importSuccess197 = true;
+        editImportCount++;
+        logImportSuccess(197, "EDIT", editFile197.fsName, fileName197);
+    } catch (e) {
+        logImportError(197, "EDIT", editFile197.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess197 && editFilePoignees197.exists) {
+    try {
+        var editFootage197 = project.importFile(new ImportOptions(editFilePoignees197));
+        editFootage197.parentFolder = fromEditFolder;
+        editFootage197.name = "UNDLM_00197";
+        editSources[197] = editFootage197;
+        fileName197 = "UNDLM_00197_AVEC_POIGNEES.mov";
+        importSuccess197 = true;
+        editImportCount++;
+        logImportSuccess(197, "EDIT", editFilePoignees197.fsName, fileName197);
+    } catch (e) {
+        logImportError(197, "EDIT", editFilePoignees197.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess197 && editFileBis197.exists) {
+    try {
+        var editFootage197 = project.importFile(new ImportOptions(editFileBis197));
+        editFootage197.parentFolder = fromEditFolder;
+        editFootage197.name = "UNDLM_00197";
+        editSources[197] = editFootage197;
+        fileName197 = "UNDLM_00197bis.mov";
+        importSuccess197 = true;
+        editImportCount++;
+        logImportSuccess(197, "EDIT", editFileBis197.fsName, fileName197);
+    } catch (e) {
+        logImportError(197, "EDIT", editFileBis197.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess197) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00197.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00197.mov: " + editFile197.exists + "\n" +
+          "• UNDLM_00197_AVEC_POIGNEES.mov: " + editFilePoignees197.exists + "\n" +
+          "• UNDLM_00197bis.mov: " + editFileBis197.exists);
+}
+
+// Import plan EDIT 00198
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile198 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00198.mov");
+var editFilePoignees198 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00198_AVEC_POIGNEES.mov");
+var editFileBis198 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00198bis.mov");
+
+var importSuccess198 = false;
+var fileName198 = "";
+
+// Tenter import standard
+if (editFile198.exists) {
+    try {
+        var editFootage198 = project.importFile(new ImportOptions(editFile198));
+        editFootage198.parentFolder = fromEditFolder;
+        editFootage198.name = "UNDLM_00198";
+        editSources[198] = editFootage198;
+        fileName198 = "UNDLM_00198.mov";
+        importSuccess198 = true;
+        editImportCount++;
+        logImportSuccess(198, "EDIT", editFile198.fsName, fileName198);
+    } catch (e) {
+        logImportError(198, "EDIT", editFile198.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess198 && editFilePoignees198.exists) {
+    try {
+        var editFootage198 = project.importFile(new ImportOptions(editFilePoignees198));
+        editFootage198.parentFolder = fromEditFolder;
+        editFootage198.name = "UNDLM_00198";
+        editSources[198] = editFootage198;
+        fileName198 = "UNDLM_00198_AVEC_POIGNEES.mov";
+        importSuccess198 = true;
+        editImportCount++;
+        logImportSuccess(198, "EDIT", editFilePoignees198.fsName, fileName198);
+    } catch (e) {
+        logImportError(198, "EDIT", editFilePoignees198.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess198 && editFileBis198.exists) {
+    try {
+        var editFootage198 = project.importFile(new ImportOptions(editFileBis198));
+        editFootage198.parentFolder = fromEditFolder;
+        editFootage198.name = "UNDLM_00198";
+        editSources[198] = editFootage198;
+        fileName198 = "UNDLM_00198bis.mov";
+        importSuccess198 = true;
+        editImportCount++;
+        logImportSuccess(198, "EDIT", editFileBis198.fsName, fileName198);
+    } catch (e) {
+        logImportError(198, "EDIT", editFileBis198.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess198) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00198.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00198.mov: " + editFile198.exists + "\n" +
+          "• UNDLM_00198_AVEC_POIGNEES.mov: " + editFilePoignees198.exists + "\n" +
+          "• UNDLM_00198bis.mov: " + editFileBis198.exists);
+}
+
+// Import plan EDIT 00199
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile199 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00199.mov");
+var editFilePoignees199 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00199_AVEC_POIGNEES.mov");
+var editFileBis199 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00199bis.mov");
+
+var importSuccess199 = false;
+var fileName199 = "";
+
+// Tenter import standard
+if (editFile199.exists) {
+    try {
+        var editFootage199 = project.importFile(new ImportOptions(editFile199));
+        editFootage199.parentFolder = fromEditFolder;
+        editFootage199.name = "UNDLM_00199";
+        editSources[199] = editFootage199;
+        fileName199 = "UNDLM_00199.mov";
+        importSuccess199 = true;
+        editImportCount++;
+        logImportSuccess(199, "EDIT", editFile199.fsName, fileName199);
+    } catch (e) {
+        logImportError(199, "EDIT", editFile199.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess199 && editFilePoignees199.exists) {
+    try {
+        var editFootage199 = project.importFile(new ImportOptions(editFilePoignees199));
+        editFootage199.parentFolder = fromEditFolder;
+        editFootage199.name = "UNDLM_00199";
+        editSources[199] = editFootage199;
+        fileName199 = "UNDLM_00199_AVEC_POIGNEES.mov";
+        importSuccess199 = true;
+        editImportCount++;
+        logImportSuccess(199, "EDIT", editFilePoignees199.fsName, fileName199);
+    } catch (e) {
+        logImportError(199, "EDIT", editFilePoignees199.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess199 && editFileBis199.exists) {
+    try {
+        var editFootage199 = project.importFile(new ImportOptions(editFileBis199));
+        editFootage199.parentFolder = fromEditFolder;
+        editFootage199.name = "UNDLM_00199";
+        editSources[199] = editFootage199;
+        fileName199 = "UNDLM_00199bis.mov";
+        importSuccess199 = true;
+        editImportCount++;
+        logImportSuccess(199, "EDIT", editFileBis199.fsName, fileName199);
+    } catch (e) {
+        logImportError(199, "EDIT", editFileBis199.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess199) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00199.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00199.mov: " + editFile199.exists + "\n" +
+          "• UNDLM_00199_AVEC_POIGNEES.mov: " + editFilePoignees199.exists + "\n" +
+          "• UNDLM_00199bis.mov: " + editFileBis199.exists);
+}
+
+// Import plan EDIT 00200
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile200 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00200.mov");
+var editFilePoignees200 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00200_AVEC_POIGNEES.mov");
+var editFileBis200 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00200bis.mov");
+
+var importSuccess200 = false;
+var fileName200 = "";
+
+// Tenter import standard
+if (editFile200.exists) {
+    try {
+        var editFootage200 = project.importFile(new ImportOptions(editFile200));
+        editFootage200.parentFolder = fromEditFolder;
+        editFootage200.name = "UNDLM_00200";
+        editSources[200] = editFootage200;
+        fileName200 = "UNDLM_00200.mov";
+        importSuccess200 = true;
+        editImportCount++;
+        logImportSuccess(200, "EDIT", editFile200.fsName, fileName200);
+    } catch (e) {
+        logImportError(200, "EDIT", editFile200.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess200 && editFilePoignees200.exists) {
+    try {
+        var editFootage200 = project.importFile(new ImportOptions(editFilePoignees200));
+        editFootage200.parentFolder = fromEditFolder;
+        editFootage200.name = "UNDLM_00200";
+        editSources[200] = editFootage200;
+        fileName200 = "UNDLM_00200_AVEC_POIGNEES.mov";
+        importSuccess200 = true;
+        editImportCount++;
+        logImportSuccess(200, "EDIT", editFilePoignees200.fsName, fileName200);
+    } catch (e) {
+        logImportError(200, "EDIT", editFilePoignees200.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess200 && editFileBis200.exists) {
+    try {
+        var editFootage200 = project.importFile(new ImportOptions(editFileBis200));
+        editFootage200.parentFolder = fromEditFolder;
+        editFootage200.name = "UNDLM_00200";
+        editSources[200] = editFootage200;
+        fileName200 = "UNDLM_00200bis.mov";
+        importSuccess200 = true;
+        editImportCount++;
+        logImportSuccess(200, "EDIT", editFileBis200.fsName, fileName200);
+    } catch (e) {
+        logImportError(200, "EDIT", editFileBis200.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess200) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00200.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00200.mov: " + editFile200.exists + "\n" +
+          "• UNDLM_00200_AVEC_POIGNEES.mov: " + editFilePoignees200.exists + "\n" +
+          "• UNDLM_00200bis.mov: " + editFileBis200.exists);
+}
+
+// Import plan EDIT 00201
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile201 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00201.mov");
+var editFilePoignees201 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00201_AVEC_POIGNEES.mov");
+var editFileBis201 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00201bis.mov");
+
+var importSuccess201 = false;
+var fileName201 = "";
+
+// Tenter import standard
+if (editFile201.exists) {
+    try {
+        var editFootage201 = project.importFile(new ImportOptions(editFile201));
+        editFootage201.parentFolder = fromEditFolder;
+        editFootage201.name = "UNDLM_00201";
+        editSources[201] = editFootage201;
+        fileName201 = "UNDLM_00201.mov";
+        importSuccess201 = true;
+        editImportCount++;
+        logImportSuccess(201, "EDIT", editFile201.fsName, fileName201);
+    } catch (e) {
+        logImportError(201, "EDIT", editFile201.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess201 && editFilePoignees201.exists) {
+    try {
+        var editFootage201 = project.importFile(new ImportOptions(editFilePoignees201));
+        editFootage201.parentFolder = fromEditFolder;
+        editFootage201.name = "UNDLM_00201";
+        editSources[201] = editFootage201;
+        fileName201 = "UNDLM_00201_AVEC_POIGNEES.mov";
+        importSuccess201 = true;
+        editImportCount++;
+        logImportSuccess(201, "EDIT", editFilePoignees201.fsName, fileName201);
+    } catch (e) {
+        logImportError(201, "EDIT", editFilePoignees201.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess201 && editFileBis201.exists) {
+    try {
+        var editFootage201 = project.importFile(new ImportOptions(editFileBis201));
+        editFootage201.parentFolder = fromEditFolder;
+        editFootage201.name = "UNDLM_00201";
+        editSources[201] = editFootage201;
+        fileName201 = "UNDLM_00201bis.mov";
+        importSuccess201 = true;
+        editImportCount++;
+        logImportSuccess(201, "EDIT", editFileBis201.fsName, fileName201);
+    } catch (e) {
+        logImportError(201, "EDIT", editFileBis201.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess201) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00201.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00201.mov: " + editFile201.exists + "\n" +
+          "• UNDLM_00201_AVEC_POIGNEES.mov: " + editFilePoignees201.exists + "\n" +
+          "• UNDLM_00201bis.mov: " + editFileBis201.exists);
+}
+
+// Import plan EDIT 00212
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile212 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00212.mov");
+var editFilePoignees212 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00212_AVEC_POIGNEES.mov");
+var editFileBis212 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00212bis.mov");
+
+var importSuccess212 = false;
+var fileName212 = "";
+
+// Tenter import standard
+if (editFile212.exists) {
+    try {
+        var editFootage212 = project.importFile(new ImportOptions(editFile212));
+        editFootage212.parentFolder = fromEditFolder;
+        editFootage212.name = "UNDLM_00212";
+        editSources[212] = editFootage212;
+        fileName212 = "UNDLM_00212.mov";
+        importSuccess212 = true;
+        editImportCount++;
+        logImportSuccess(212, "EDIT", editFile212.fsName, fileName212);
+    } catch (e) {
+        logImportError(212, "EDIT", editFile212.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess212 && editFilePoignees212.exists) {
+    try {
+        var editFootage212 = project.importFile(new ImportOptions(editFilePoignees212));
+        editFootage212.parentFolder = fromEditFolder;
+        editFootage212.name = "UNDLM_00212";
+        editSources[212] = editFootage212;
+        fileName212 = "UNDLM_00212_AVEC_POIGNEES.mov";
+        importSuccess212 = true;
+        editImportCount++;
+        logImportSuccess(212, "EDIT", editFilePoignees212.fsName, fileName212);
+    } catch (e) {
+        logImportError(212, "EDIT", editFilePoignees212.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess212 && editFileBis212.exists) {
+    try {
+        var editFootage212 = project.importFile(new ImportOptions(editFileBis212));
+        editFootage212.parentFolder = fromEditFolder;
+        editFootage212.name = "UNDLM_00212";
+        editSources[212] = editFootage212;
+        fileName212 = "UNDLM_00212bis.mov";
+        importSuccess212 = true;
+        editImportCount++;
+        logImportSuccess(212, "EDIT", editFileBis212.fsName, fileName212);
+    } catch (e) {
+        logImportError(212, "EDIT", editFileBis212.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess212) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00212.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00212.mov: " + editFile212.exists + "\n" +
+          "• UNDLM_00212_AVEC_POIGNEES.mov: " + editFilePoignees212.exists + "\n" +
+          "• UNDLM_00212bis.mov: " + editFileBis212.exists);
+}
+
+// Import plan EDIT 00213
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile213 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00213.mov");
+var editFilePoignees213 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00213_AVEC_POIGNEES.mov");
+var editFileBis213 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00213bis.mov");
+
+var importSuccess213 = false;
+var fileName213 = "";
+
+// Tenter import standard
+if (editFile213.exists) {
+    try {
+        var editFootage213 = project.importFile(new ImportOptions(editFile213));
+        editFootage213.parentFolder = fromEditFolder;
+        editFootage213.name = "UNDLM_00213";
+        editSources[213] = editFootage213;
+        fileName213 = "UNDLM_00213.mov";
+        importSuccess213 = true;
+        editImportCount++;
+        logImportSuccess(213, "EDIT", editFile213.fsName, fileName213);
+    } catch (e) {
+        logImportError(213, "EDIT", editFile213.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess213 && editFilePoignees213.exists) {
+    try {
+        var editFootage213 = project.importFile(new ImportOptions(editFilePoignees213));
+        editFootage213.parentFolder = fromEditFolder;
+        editFootage213.name = "UNDLM_00213";
+        editSources[213] = editFootage213;
+        fileName213 = "UNDLM_00213_AVEC_POIGNEES.mov";
+        importSuccess213 = true;
+        editImportCount++;
+        logImportSuccess(213, "EDIT", editFilePoignees213.fsName, fileName213);
+    } catch (e) {
+        logImportError(213, "EDIT", editFilePoignees213.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess213 && editFileBis213.exists) {
+    try {
+        var editFootage213 = project.importFile(new ImportOptions(editFileBis213));
+        editFootage213.parentFolder = fromEditFolder;
+        editFootage213.name = "UNDLM_00213";
+        editSources[213] = editFootage213;
+        fileName213 = "UNDLM_00213bis.mov";
+        importSuccess213 = true;
+        editImportCount++;
+        logImportSuccess(213, "EDIT", editFileBis213.fsName, fileName213);
+    } catch (e) {
+        logImportError(213, "EDIT", editFileBis213.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess213) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00213.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00213.mov: " + editFile213.exists + "\n" +
+          "• UNDLM_00213_AVEC_POIGNEES.mov: " + editFilePoignees213.exists + "\n" +
+          "• UNDLM_00213bis.mov: " + editFileBis213.exists);
+}
+
+// Import plan EDIT 00215
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile215 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00215.mov");
+var editFilePoignees215 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00215_AVEC_POIGNEES.mov");
+var editFileBis215 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00215bis.mov");
+
+var importSuccess215 = false;
+var fileName215 = "";
+
+// Tenter import standard
+if (editFile215.exists) {
+    try {
+        var editFootage215 = project.importFile(new ImportOptions(editFile215));
+        editFootage215.parentFolder = fromEditFolder;
+        editFootage215.name = "UNDLM_00215";
+        editSources[215] = editFootage215;
+        fileName215 = "UNDLM_00215.mov";
+        importSuccess215 = true;
+        editImportCount++;
+        logImportSuccess(215, "EDIT", editFile215.fsName, fileName215);
+    } catch (e) {
+        logImportError(215, "EDIT", editFile215.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess215 && editFilePoignees215.exists) {
+    try {
+        var editFootage215 = project.importFile(new ImportOptions(editFilePoignees215));
+        editFootage215.parentFolder = fromEditFolder;
+        editFootage215.name = "UNDLM_00215";
+        editSources[215] = editFootage215;
+        fileName215 = "UNDLM_00215_AVEC_POIGNEES.mov";
+        importSuccess215 = true;
+        editImportCount++;
+        logImportSuccess(215, "EDIT", editFilePoignees215.fsName, fileName215);
+    } catch (e) {
+        logImportError(215, "EDIT", editFilePoignees215.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess215 && editFileBis215.exists) {
+    try {
+        var editFootage215 = project.importFile(new ImportOptions(editFileBis215));
+        editFootage215.parentFolder = fromEditFolder;
+        editFootage215.name = "UNDLM_00215";
+        editSources[215] = editFootage215;
+        fileName215 = "UNDLM_00215bis.mov";
+        importSuccess215 = true;
+        editImportCount++;
+        logImportSuccess(215, "EDIT", editFileBis215.fsName, fileName215);
+    } catch (e) {
+        logImportError(215, "EDIT", editFileBis215.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess215) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00215.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00215.mov: " + editFile215.exists + "\n" +
+          "• UNDLM_00215_AVEC_POIGNEES.mov: " + editFilePoignees215.exists + "\n" +
+          "• UNDLM_00215bis.mov: " + editFileBis215.exists);
+}
+
+// Import plan EDIT 00216
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile216 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00216.mov");
+var editFilePoignees216 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00216_AVEC_POIGNEES.mov");
+var editFileBis216 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00216bis.mov");
+
+var importSuccess216 = false;
+var fileName216 = "";
+
+// Tenter import standard
+if (editFile216.exists) {
+    try {
+        var editFootage216 = project.importFile(new ImportOptions(editFile216));
+        editFootage216.parentFolder = fromEditFolder;
+        editFootage216.name = "UNDLM_00216";
+        editSources[216] = editFootage216;
+        fileName216 = "UNDLM_00216.mov";
+        importSuccess216 = true;
+        editImportCount++;
+        logImportSuccess(216, "EDIT", editFile216.fsName, fileName216);
+    } catch (e) {
+        logImportError(216, "EDIT", editFile216.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess216 && editFilePoignees216.exists) {
+    try {
+        var editFootage216 = project.importFile(new ImportOptions(editFilePoignees216));
+        editFootage216.parentFolder = fromEditFolder;
+        editFootage216.name = "UNDLM_00216";
+        editSources[216] = editFootage216;
+        fileName216 = "UNDLM_00216_AVEC_POIGNEES.mov";
+        importSuccess216 = true;
+        editImportCount++;
+        logImportSuccess(216, "EDIT", editFilePoignees216.fsName, fileName216);
+    } catch (e) {
+        logImportError(216, "EDIT", editFilePoignees216.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess216 && editFileBis216.exists) {
+    try {
+        var editFootage216 = project.importFile(new ImportOptions(editFileBis216));
+        editFootage216.parentFolder = fromEditFolder;
+        editFootage216.name = "UNDLM_00216";
+        editSources[216] = editFootage216;
+        fileName216 = "UNDLM_00216bis.mov";
+        importSuccess216 = true;
+        editImportCount++;
+        logImportSuccess(216, "EDIT", editFileBis216.fsName, fileName216);
+    } catch (e) {
+        logImportError(216, "EDIT", editFileBis216.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess216) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00216.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00216.mov: " + editFile216.exists + "\n" +
+          "• UNDLM_00216_AVEC_POIGNEES.mov: " + editFilePoignees216.exists + "\n" +
+          "• UNDLM_00216bis.mov: " + editFileBis216.exists);
+}
+
+// Import plan EDIT 00251
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile251 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00251.mov");
+var editFilePoignees251 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00251_AVEC_POIGNEES.mov");
+var editFileBis251 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00251bis.mov");
+
+var importSuccess251 = false;
+var fileName251 = "";
+
+// Tenter import standard
+if (editFile251.exists) {
+    try {
+        var editFootage251 = project.importFile(new ImportOptions(editFile251));
+        editFootage251.parentFolder = fromEditFolder;
+        editFootage251.name = "UNDLM_00251";
+        editSources[251] = editFootage251;
+        fileName251 = "UNDLM_00251.mov";
+        importSuccess251 = true;
+        editImportCount++;
+        logImportSuccess(251, "EDIT", editFile251.fsName, fileName251);
+    } catch (e) {
+        logImportError(251, "EDIT", editFile251.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess251 && editFilePoignees251.exists) {
+    try {
+        var editFootage251 = project.importFile(new ImportOptions(editFilePoignees251));
+        editFootage251.parentFolder = fromEditFolder;
+        editFootage251.name = "UNDLM_00251";
+        editSources[251] = editFootage251;
+        fileName251 = "UNDLM_00251_AVEC_POIGNEES.mov";
+        importSuccess251 = true;
+        editImportCount++;
+        logImportSuccess(251, "EDIT", editFilePoignees251.fsName, fileName251);
+    } catch (e) {
+        logImportError(251, "EDIT", editFilePoignees251.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess251 && editFileBis251.exists) {
+    try {
+        var editFootage251 = project.importFile(new ImportOptions(editFileBis251));
+        editFootage251.parentFolder = fromEditFolder;
+        editFootage251.name = "UNDLM_00251";
+        editSources[251] = editFootage251;
+        fileName251 = "UNDLM_00251bis.mov";
+        importSuccess251 = true;
+        editImportCount++;
+        logImportSuccess(251, "EDIT", editFileBis251.fsName, fileName251);
+    } catch (e) {
+        logImportError(251, "EDIT", editFileBis251.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess251) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00251.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00251.mov: " + editFile251.exists + "\n" +
+          "• UNDLM_00251_AVEC_POIGNEES.mov: " + editFilePoignees251.exists + "\n" +
+          "• UNDLM_00251bis.mov: " + editFileBis251.exists);
+}
+
+// Import plan EDIT 00252
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile252 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00252.mov");
+var editFilePoignees252 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00252_AVEC_POIGNEES.mov");
+var editFileBis252 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00252bis.mov");
+
+var importSuccess252 = false;
+var fileName252 = "";
+
+// Tenter import standard
+if (editFile252.exists) {
+    try {
+        var editFootage252 = project.importFile(new ImportOptions(editFile252));
+        editFootage252.parentFolder = fromEditFolder;
+        editFootage252.name = "UNDLM_00252";
+        editSources[252] = editFootage252;
+        fileName252 = "UNDLM_00252.mov";
+        importSuccess252 = true;
+        editImportCount++;
+        logImportSuccess(252, "EDIT", editFile252.fsName, fileName252);
+    } catch (e) {
+        logImportError(252, "EDIT", editFile252.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess252 && editFilePoignees252.exists) {
+    try {
+        var editFootage252 = project.importFile(new ImportOptions(editFilePoignees252));
+        editFootage252.parentFolder = fromEditFolder;
+        editFootage252.name = "UNDLM_00252";
+        editSources[252] = editFootage252;
+        fileName252 = "UNDLM_00252_AVEC_POIGNEES.mov";
+        importSuccess252 = true;
+        editImportCount++;
+        logImportSuccess(252, "EDIT", editFilePoignees252.fsName, fileName252);
+    } catch (e) {
+        logImportError(252, "EDIT", editFilePoignees252.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess252 && editFileBis252.exists) {
+    try {
+        var editFootage252 = project.importFile(new ImportOptions(editFileBis252));
+        editFootage252.parentFolder = fromEditFolder;
+        editFootage252.name = "UNDLM_00252";
+        editSources[252] = editFootage252;
+        fileName252 = "UNDLM_00252bis.mov";
+        importSuccess252 = true;
+        editImportCount++;
+        logImportSuccess(252, "EDIT", editFileBis252.fsName, fileName252);
+    } catch (e) {
+        logImportError(252, "EDIT", editFileBis252.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess252) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00252.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00252.mov: " + editFile252.exists + "\n" +
+          "• UNDLM_00252_AVEC_POIGNEES.mov: " + editFilePoignees252.exists + "\n" +
+          "• UNDLM_00252bis.mov: " + editFileBis252.exists);
+}
+
+// Import plan EDIT 00254
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile254 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00254.mov");
+var editFilePoignees254 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00254_AVEC_POIGNEES.mov");
+var editFileBis254 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00254bis.mov");
+
+var importSuccess254 = false;
+var fileName254 = "";
+
+// Tenter import standard
+if (editFile254.exists) {
+    try {
+        var editFootage254 = project.importFile(new ImportOptions(editFile254));
+        editFootage254.parentFolder = fromEditFolder;
+        editFootage254.name = "UNDLM_00254";
+        editSources[254] = editFootage254;
+        fileName254 = "UNDLM_00254.mov";
+        importSuccess254 = true;
+        editImportCount++;
+        logImportSuccess(254, "EDIT", editFile254.fsName, fileName254);
+    } catch (e) {
+        logImportError(254, "EDIT", editFile254.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess254 && editFilePoignees254.exists) {
+    try {
+        var editFootage254 = project.importFile(new ImportOptions(editFilePoignees254));
+        editFootage254.parentFolder = fromEditFolder;
+        editFootage254.name = "UNDLM_00254";
+        editSources[254] = editFootage254;
+        fileName254 = "UNDLM_00254_AVEC_POIGNEES.mov";
+        importSuccess254 = true;
+        editImportCount++;
+        logImportSuccess(254, "EDIT", editFilePoignees254.fsName, fileName254);
+    } catch (e) {
+        logImportError(254, "EDIT", editFilePoignees254.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess254 && editFileBis254.exists) {
+    try {
+        var editFootage254 = project.importFile(new ImportOptions(editFileBis254));
+        editFootage254.parentFolder = fromEditFolder;
+        editFootage254.name = "UNDLM_00254";
+        editSources[254] = editFootage254;
+        fileName254 = "UNDLM_00254bis.mov";
+        importSuccess254 = true;
+        editImportCount++;
+        logImportSuccess(254, "EDIT", editFileBis254.fsName, fileName254);
+    } catch (e) {
+        logImportError(254, "EDIT", editFileBis254.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess254) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00254.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00254.mov: " + editFile254.exists + "\n" +
+          "• UNDLM_00254_AVEC_POIGNEES.mov: " + editFilePoignees254.exists + "\n" +
+          "• UNDLM_00254bis.mov: " + editFileBis254.exists);
+}
+
+// Import plan EDIT 00255
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile255 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00255.mov");
+var editFilePoignees255 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00255_AVEC_POIGNEES.mov");
+var editFileBis255 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00255bis.mov");
+
+var importSuccess255 = false;
+var fileName255 = "";
+
+// Tenter import standard
+if (editFile255.exists) {
+    try {
+        var editFootage255 = project.importFile(new ImportOptions(editFile255));
+        editFootage255.parentFolder = fromEditFolder;
+        editFootage255.name = "UNDLM_00255";
+        editSources[255] = editFootage255;
+        fileName255 = "UNDLM_00255.mov";
+        importSuccess255 = true;
+        editImportCount++;
+        logImportSuccess(255, "EDIT", editFile255.fsName, fileName255);
+    } catch (e) {
+        logImportError(255, "EDIT", editFile255.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess255 && editFilePoignees255.exists) {
+    try {
+        var editFootage255 = project.importFile(new ImportOptions(editFilePoignees255));
+        editFootage255.parentFolder = fromEditFolder;
+        editFootage255.name = "UNDLM_00255";
+        editSources[255] = editFootage255;
+        fileName255 = "UNDLM_00255_AVEC_POIGNEES.mov";
+        importSuccess255 = true;
+        editImportCount++;
+        logImportSuccess(255, "EDIT", editFilePoignees255.fsName, fileName255);
+    } catch (e) {
+        logImportError(255, "EDIT", editFilePoignees255.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess255 && editFileBis255.exists) {
+    try {
+        var editFootage255 = project.importFile(new ImportOptions(editFileBis255));
+        editFootage255.parentFolder = fromEditFolder;
+        editFootage255.name = "UNDLM_00255";
+        editSources[255] = editFootage255;
+        fileName255 = "UNDLM_00255bis.mov";
+        importSuccess255 = true;
+        editImportCount++;
+        logImportSuccess(255, "EDIT", editFileBis255.fsName, fileName255);
+    } catch (e) {
+        logImportError(255, "EDIT", editFileBis255.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess255) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00255.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00255.mov: " + editFile255.exists + "\n" +
+          "• UNDLM_00255_AVEC_POIGNEES.mov: " + editFilePoignees255.exists + "\n" +
+          "• UNDLM_00255bis.mov: " + editFileBis255.exists);
+}
+
+// Import plan EDIT 00256
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile256 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00256.mov");
+var editFilePoignees256 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00256_AVEC_POIGNEES.mov");
+var editFileBis256 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00256bis.mov");
+
+var importSuccess256 = false;
+var fileName256 = "";
+
+// Tenter import standard
+if (editFile256.exists) {
+    try {
+        var editFootage256 = project.importFile(new ImportOptions(editFile256));
+        editFootage256.parentFolder = fromEditFolder;
+        editFootage256.name = "UNDLM_00256";
+        editSources[256] = editFootage256;
+        fileName256 = "UNDLM_00256.mov";
+        importSuccess256 = true;
+        editImportCount++;
+        logImportSuccess(256, "EDIT", editFile256.fsName, fileName256);
+    } catch (e) {
+        logImportError(256, "EDIT", editFile256.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess256 && editFilePoignees256.exists) {
+    try {
+        var editFootage256 = project.importFile(new ImportOptions(editFilePoignees256));
+        editFootage256.parentFolder = fromEditFolder;
+        editFootage256.name = "UNDLM_00256";
+        editSources[256] = editFootage256;
+        fileName256 = "UNDLM_00256_AVEC_POIGNEES.mov";
+        importSuccess256 = true;
+        editImportCount++;
+        logImportSuccess(256, "EDIT", editFilePoignees256.fsName, fileName256);
+    } catch (e) {
+        logImportError(256, "EDIT", editFilePoignees256.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess256 && editFileBis256.exists) {
+    try {
+        var editFootage256 = project.importFile(new ImportOptions(editFileBis256));
+        editFootage256.parentFolder = fromEditFolder;
+        editFootage256.name = "UNDLM_00256";
+        editSources[256] = editFootage256;
+        fileName256 = "UNDLM_00256bis.mov";
+        importSuccess256 = true;
+        editImportCount++;
+        logImportSuccess(256, "EDIT", editFileBis256.fsName, fileName256);
+    } catch (e) {
+        logImportError(256, "EDIT", editFileBis256.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess256) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00256.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00256.mov: " + editFile256.exists + "\n" +
+          "• UNDLM_00256_AVEC_POIGNEES.mov: " + editFilePoignees256.exists + "\n" +
+          "• UNDLM_00256bis.mov: " + editFileBis256.exists);
+}
+
+// Import plan EDIT 00262
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile262 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00262.mov");
+var editFilePoignees262 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00262_AVEC_POIGNEES.mov");
+var editFileBis262 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00262bis.mov");
+
+var importSuccess262 = false;
+var fileName262 = "";
+
+// Tenter import standard
+if (editFile262.exists) {
+    try {
+        var editFootage262 = project.importFile(new ImportOptions(editFile262));
+        editFootage262.parentFolder = fromEditFolder;
+        editFootage262.name = "UNDLM_00262";
+        editSources[262] = editFootage262;
+        fileName262 = "UNDLM_00262.mov";
+        importSuccess262 = true;
+        editImportCount++;
+        logImportSuccess(262, "EDIT", editFile262.fsName, fileName262);
+    } catch (e) {
+        logImportError(262, "EDIT", editFile262.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess262 && editFilePoignees262.exists) {
+    try {
+        var editFootage262 = project.importFile(new ImportOptions(editFilePoignees262));
+        editFootage262.parentFolder = fromEditFolder;
+        editFootage262.name = "UNDLM_00262";
+        editSources[262] = editFootage262;
+        fileName262 = "UNDLM_00262_AVEC_POIGNEES.mov";
+        importSuccess262 = true;
+        editImportCount++;
+        logImportSuccess(262, "EDIT", editFilePoignees262.fsName, fileName262);
+    } catch (e) {
+        logImportError(262, "EDIT", editFilePoignees262.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess262 && editFileBis262.exists) {
+    try {
+        var editFootage262 = project.importFile(new ImportOptions(editFileBis262));
+        editFootage262.parentFolder = fromEditFolder;
+        editFootage262.name = "UNDLM_00262";
+        editSources[262] = editFootage262;
+        fileName262 = "UNDLM_00262bis.mov";
+        importSuccess262 = true;
+        editImportCount++;
+        logImportSuccess(262, "EDIT", editFileBis262.fsName, fileName262);
+    } catch (e) {
+        logImportError(262, "EDIT", editFileBis262.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess262) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00262.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00262.mov: " + editFile262.exists + "\n" +
+          "• UNDLM_00262_AVEC_POIGNEES.mov: " + editFilePoignees262.exists + "\n" +
+          "• UNDLM_00262bis.mov: " + editFileBis262.exists);
+}
+
+// Import plan EDIT 00263
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var editFile263 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00263.mov");
+var editFilePoignees263 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00263_AVEC_POIGNEES.mov");
+var editFileBis263 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00263bis.mov");
+
+var importSuccess263 = false;
+var fileName263 = "";
+
+// Tenter import standard
+if (editFile263.exists) {
+    try {
+        var editFootage263 = project.importFile(new ImportOptions(editFile263));
+        editFootage263.parentFolder = fromEditFolder;
+        editFootage263.name = "UNDLM_00263";
+        editSources[263] = editFootage263;
+        fileName263 = "UNDLM_00263.mov";
+        importSuccess263 = true;
+        editImportCount++;
+        logImportSuccess(263, "EDIT", editFile263.fsName, fileName263);
+    } catch (e) {
+        logImportError(263, "EDIT", editFile263.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!importSuccess263 && editFilePoignees263.exists) {
+    try {
+        var editFootage263 = project.importFile(new ImportOptions(editFilePoignees263));
+        editFootage263.parentFolder = fromEditFolder;
+        editFootage263.name = "UNDLM_00263";
+        editSources[263] = editFootage263;
+        fileName263 = "UNDLM_00263_AVEC_POIGNEES.mov";
+        importSuccess263 = true;
+        editImportCount++;
+        logImportSuccess(263, "EDIT", editFilePoignees263.fsName, fileName263);
+    } catch (e) {
+        logImportError(263, "EDIT", editFilePoignees263.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!importSuccess263 && editFileBis263.exists) {
+    try {
+        var editFootage263 = project.importFile(new ImportOptions(editFileBis263));
+        editFootage263.parentFolder = fromEditFolder;
+        editFootage263.name = "UNDLM_00263";
+        editSources[263] = editFootage263;
+        fileName263 = "UNDLM_00263bis.mov";
+        importSuccess263 = true;
+        editImportCount++;
+        logImportSuccess(263, "EDIT", editFileBis263.fsName, fileName263);
+    } catch (e) {
+        logImportError(263, "EDIT", editFileBis263.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné
+if (!importSuccess263) {
+    missingEditCount++;
+    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00263.mov\n" +
+          "Variantes testées:\n" +
+          "• UNDLM_00263.mov: " + editFile263.exists + "\n" +
+          "• UNDLM_00263_AVEC_POIGNEES.mov: " + editFilePoignees263.exists + "\n" +
+          "• UNDLM_00263bis.mov: " + editFileBis263.exists);
+}
 
 // Import plan EDIT 00275
 // Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
@@ -321,73 +1862,6 @@ if (!importSuccess277) {
           "• UNDLM_00277bis.mov: " + editFileBis277.exists);
 }
 
-// Import plan EDIT 00278
-// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
-var editFile278 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00278.mov");
-var editFilePoignees278 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00278_AVEC_POIGNEES.mov");
-var editFileBis278 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00278bis.mov");
-
-var importSuccess278 = false;
-var fileName278 = "";
-
-// Tenter import standard
-if (editFile278.exists) {
-    try {
-        var editFootage278 = project.importFile(new ImportOptions(editFile278));
-        editFootage278.parentFolder = fromEditFolder;
-        editFootage278.name = "UNDLM_00278";
-        editSources[278] = editFootage278;
-        fileName278 = "UNDLM_00278.mov";
-        importSuccess278 = true;
-        editImportCount++;
-        logImportSuccess(278, "EDIT", editFile278.fsName, fileName278);
-    } catch (e) {
-        logImportError(278, "EDIT", editFile278.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import AVEC_POIGNEES
-if (!importSuccess278 && editFilePoignees278.exists) {
-    try {
-        var editFootage278 = project.importFile(new ImportOptions(editFilePoignees278));
-        editFootage278.parentFolder = fromEditFolder;
-        editFootage278.name = "UNDLM_00278";
-        editSources[278] = editFootage278;
-        fileName278 = "UNDLM_00278_AVEC_POIGNEES.mov";
-        importSuccess278 = true;
-        editImportCount++;
-        logImportSuccess(278, "EDIT", editFilePoignees278.fsName, fileName278);
-    } catch (e) {
-        logImportError(278, "EDIT", editFilePoignees278.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import bis
-if (!importSuccess278 && editFileBis278.exists) {
-    try {
-        var editFootage278 = project.importFile(new ImportOptions(editFileBis278));
-        editFootage278.parentFolder = fromEditFolder;
-        editFootage278.name = "UNDLM_00278";
-        editSources[278] = editFootage278;
-        fileName278 = "UNDLM_00278bis.mov";
-        importSuccess278 = true;
-        editImportCount++;
-        logImportSuccess(278, "EDIT", editFileBis278.fsName, fileName278);
-    } catch (e) {
-        logImportError(278, "EDIT", editFileBis278.fsName, e.toString());
-    }
-}
-
-// Si aucune variante n'a fonctionné
-if (!importSuccess278) {
-    missingEditCount++;
-    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00278.mov\n" +
-          "Variantes testées:\n" +
-          "• UNDLM_00278.mov: " + editFile278.exists + "\n" +
-          "• UNDLM_00278_AVEC_POIGNEES.mov: " + editFilePoignees278.exists + "\n" +
-          "• UNDLM_00278bis.mov: " + editFileBis278.exists);
-}
-
 // Import plan EDIT 00279
 // Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
 var editFile279 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00279.mov");
@@ -520,73 +1994,6 @@ if (!importSuccess280) {
           "• UNDLM_00280.mov: " + editFile280.exists + "\n" +
           "• UNDLM_00280_AVEC_POIGNEES.mov: " + editFilePoignees280.exists + "\n" +
           "• UNDLM_00280bis.mov: " + editFileBis280.exists);
-}
-
-// Import plan EDIT 00281
-// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
-var editFile281 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00281.mov");
-var editFilePoignees281 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00281_AVEC_POIGNEES.mov");
-var editFileBis281 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00281bis.mov");
-
-var importSuccess281 = false;
-var fileName281 = "";
-
-// Tenter import standard
-if (editFile281.exists) {
-    try {
-        var editFootage281 = project.importFile(new ImportOptions(editFile281));
-        editFootage281.parentFolder = fromEditFolder;
-        editFootage281.name = "UNDLM_00281";
-        editSources[281] = editFootage281;
-        fileName281 = "UNDLM_00281.mov";
-        importSuccess281 = true;
-        editImportCount++;
-        logImportSuccess(281, "EDIT", editFile281.fsName, fileName281);
-    } catch (e) {
-        logImportError(281, "EDIT", editFile281.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import AVEC_POIGNEES
-if (!importSuccess281 && editFilePoignees281.exists) {
-    try {
-        var editFootage281 = project.importFile(new ImportOptions(editFilePoignees281));
-        editFootage281.parentFolder = fromEditFolder;
-        editFootage281.name = "UNDLM_00281";
-        editSources[281] = editFootage281;
-        fileName281 = "UNDLM_00281_AVEC_POIGNEES.mov";
-        importSuccess281 = true;
-        editImportCount++;
-        logImportSuccess(281, "EDIT", editFilePoignees281.fsName, fileName281);
-    } catch (e) {
-        logImportError(281, "EDIT", editFilePoignees281.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import bis
-if (!importSuccess281 && editFileBis281.exists) {
-    try {
-        var editFootage281 = project.importFile(new ImportOptions(editFileBis281));
-        editFootage281.parentFolder = fromEditFolder;
-        editFootage281.name = "UNDLM_00281";
-        editSources[281] = editFootage281;
-        fileName281 = "UNDLM_00281bis.mov";
-        importSuccess281 = true;
-        editImportCount++;
-        logImportSuccess(281, "EDIT", editFileBis281.fsName, fileName281);
-    } catch (e) {
-        logImportError(281, "EDIT", editFileBis281.fsName, e.toString());
-    }
-}
-
-// Si aucune variante n'a fonctionné
-if (!importSuccess281) {
-    missingEditCount++;
-    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00281.mov\n" +
-          "Variantes testées:\n" +
-          "• UNDLM_00281.mov: " + editFile281.exists + "\n" +
-          "• UNDLM_00281_AVEC_POIGNEES.mov: " + editFilePoignees281.exists + "\n" +
-          "• UNDLM_00281bis.mov: " + editFileBis281.exists);
 }
 
 // Import plan EDIT 00282
@@ -723,73 +2130,6 @@ if (!importSuccess283) {
           "• UNDLM_00283bis.mov: " + editFileBis283.exists);
 }
 
-// Import plan EDIT 00284
-// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
-var editFile284 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00284.mov");
-var editFilePoignees284 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00284_AVEC_POIGNEES.mov");
-var editFileBis284 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00284bis.mov");
-
-var importSuccess284 = false;
-var fileName284 = "";
-
-// Tenter import standard
-if (editFile284.exists) {
-    try {
-        var editFootage284 = project.importFile(new ImportOptions(editFile284));
-        editFootage284.parentFolder = fromEditFolder;
-        editFootage284.name = "UNDLM_00284";
-        editSources[284] = editFootage284;
-        fileName284 = "UNDLM_00284.mov";
-        importSuccess284 = true;
-        editImportCount++;
-        logImportSuccess(284, "EDIT", editFile284.fsName, fileName284);
-    } catch (e) {
-        logImportError(284, "EDIT", editFile284.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import AVEC_POIGNEES
-if (!importSuccess284 && editFilePoignees284.exists) {
-    try {
-        var editFootage284 = project.importFile(new ImportOptions(editFilePoignees284));
-        editFootage284.parentFolder = fromEditFolder;
-        editFootage284.name = "UNDLM_00284";
-        editSources[284] = editFootage284;
-        fileName284 = "UNDLM_00284_AVEC_POIGNEES.mov";
-        importSuccess284 = true;
-        editImportCount++;
-        logImportSuccess(284, "EDIT", editFilePoignees284.fsName, fileName284);
-    } catch (e) {
-        logImportError(284, "EDIT", editFilePoignees284.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import bis
-if (!importSuccess284 && editFileBis284.exists) {
-    try {
-        var editFootage284 = project.importFile(new ImportOptions(editFileBis284));
-        editFootage284.parentFolder = fromEditFolder;
-        editFootage284.name = "UNDLM_00284";
-        editSources[284] = editFootage284;
-        fileName284 = "UNDLM_00284bis.mov";
-        importSuccess284 = true;
-        editImportCount++;
-        logImportSuccess(284, "EDIT", editFileBis284.fsName, fileName284);
-    } catch (e) {
-        logImportError(284, "EDIT", editFileBis284.fsName, e.toString());
-    }
-}
-
-// Si aucune variante n'a fonctionné
-if (!importSuccess284) {
-    missingEditCount++;
-    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00284.mov\n" +
-          "Variantes testées:\n" +
-          "• UNDLM_00284.mov: " + editFile284.exists + "\n" +
-          "• UNDLM_00284_AVEC_POIGNEES.mov: " + editFilePoignees284.exists + "\n" +
-          "• UNDLM_00284bis.mov: " + editFileBis284.exists);
-}
-
 // Import plan EDIT 00285
 // Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
 var editFile285 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00285.mov");
@@ -855,73 +2195,6 @@ if (!importSuccess285) {
           "• UNDLM_00285.mov: " + editFile285.exists + "\n" +
           "• UNDLM_00285_AVEC_POIGNEES.mov: " + editFilePoignees285.exists + "\n" +
           "• UNDLM_00285bis.mov: " + editFileBis285.exists);
-}
-
-// Import plan EDIT 00286
-// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
-var editFile286 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00286.mov");
-var editFilePoignees286 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00286_AVEC_POIGNEES.mov");
-var editFileBis286 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00286bis.mov");
-
-var importSuccess286 = false;
-var fileName286 = "";
-
-// Tenter import standard
-if (editFile286.exists) {
-    try {
-        var editFootage286 = project.importFile(new ImportOptions(editFile286));
-        editFootage286.parentFolder = fromEditFolder;
-        editFootage286.name = "UNDLM_00286";
-        editSources[286] = editFootage286;
-        fileName286 = "UNDLM_00286.mov";
-        importSuccess286 = true;
-        editImportCount++;
-        logImportSuccess(286, "EDIT", editFile286.fsName, fileName286);
-    } catch (e) {
-        logImportError(286, "EDIT", editFile286.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import AVEC_POIGNEES
-if (!importSuccess286 && editFilePoignees286.exists) {
-    try {
-        var editFootage286 = project.importFile(new ImportOptions(editFilePoignees286));
-        editFootage286.parentFolder = fromEditFolder;
-        editFootage286.name = "UNDLM_00286";
-        editSources[286] = editFootage286;
-        fileName286 = "UNDLM_00286_AVEC_POIGNEES.mov";
-        importSuccess286 = true;
-        editImportCount++;
-        logImportSuccess(286, "EDIT", editFilePoignees286.fsName, fileName286);
-    } catch (e) {
-        logImportError(286, "EDIT", editFilePoignees286.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import bis
-if (!importSuccess286 && editFileBis286.exists) {
-    try {
-        var editFootage286 = project.importFile(new ImportOptions(editFileBis286));
-        editFootage286.parentFolder = fromEditFolder;
-        editFootage286.name = "UNDLM_00286";
-        editSources[286] = editFootage286;
-        fileName286 = "UNDLM_00286bis.mov";
-        importSuccess286 = true;
-        editImportCount++;
-        logImportSuccess(286, "EDIT", editFileBis286.fsName, fileName286);
-    } catch (e) {
-        logImportError(286, "EDIT", editFileBis286.fsName, e.toString());
-    }
-}
-
-// Si aucune variante n'a fonctionné
-if (!importSuccess286) {
-    missingEditCount++;
-    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00286.mov\n" +
-          "Variantes testées:\n" +
-          "• UNDLM_00286.mov: " + editFile286.exists + "\n" +
-          "• UNDLM_00286_AVEC_POIGNEES.mov: " + editFilePoignees286.exists + "\n" +
-          "• UNDLM_00286bis.mov: " + editFileBis286.exists);
 }
 
 // Import plan EDIT 00311
@@ -1728,73 +3001,6 @@ if (!importSuccess331) {
           "• UNDLM_00331bis.mov: " + editFileBis331.exists);
 }
 
-// Import plan EDIT 00383
-// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
-var editFile383 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00383.mov");
-var editFilePoignees383 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00383_AVEC_POIGNEES.mov");
-var editFileBis383 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00383bis.mov");
-
-var importSuccess383 = false;
-var fileName383 = "";
-
-// Tenter import standard
-if (editFile383.exists) {
-    try {
-        var editFootage383 = project.importFile(new ImportOptions(editFile383));
-        editFootage383.parentFolder = fromEditFolder;
-        editFootage383.name = "UNDLM_00383";
-        editSources[383] = editFootage383;
-        fileName383 = "UNDLM_00383.mov";
-        importSuccess383 = true;
-        editImportCount++;
-        logImportSuccess(383, "EDIT", editFile383.fsName, fileName383);
-    } catch (e) {
-        logImportError(383, "EDIT", editFile383.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import AVEC_POIGNEES
-if (!importSuccess383 && editFilePoignees383.exists) {
-    try {
-        var editFootage383 = project.importFile(new ImportOptions(editFilePoignees383));
-        editFootage383.parentFolder = fromEditFolder;
-        editFootage383.name = "UNDLM_00383";
-        editSources[383] = editFootage383;
-        fileName383 = "UNDLM_00383_AVEC_POIGNEES.mov";
-        importSuccess383 = true;
-        editImportCount++;
-        logImportSuccess(383, "EDIT", editFilePoignees383.fsName, fileName383);
-    } catch (e) {
-        logImportError(383, "EDIT", editFilePoignees383.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import bis
-if (!importSuccess383 && editFileBis383.exists) {
-    try {
-        var editFootage383 = project.importFile(new ImportOptions(editFileBis383));
-        editFootage383.parentFolder = fromEditFolder;
-        editFootage383.name = "UNDLM_00383";
-        editSources[383] = editFootage383;
-        fileName383 = "UNDLM_00383bis.mov";
-        importSuccess383 = true;
-        editImportCount++;
-        logImportSuccess(383, "EDIT", editFileBis383.fsName, fileName383);
-    } catch (e) {
-        logImportError(383, "EDIT", editFileBis383.fsName, e.toString());
-    }
-}
-
-// Si aucune variante n'a fonctionné
-if (!importSuccess383) {
-    missingEditCount++;
-    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00383.mov\n" +
-          "Variantes testées:\n" +
-          "• UNDLM_00383.mov: " + editFile383.exists + "\n" +
-          "• UNDLM_00383_AVEC_POIGNEES.mov: " + editFilePoignees383.exists + "\n" +
-          "• UNDLM_00383bis.mov: " + editFileBis383.exists);
-}
-
 // Import plan EDIT 00384
 // Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
 var editFile384 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00384.mov");
@@ -2061,73 +3267,6 @@ if (!importSuccess387) {
           "• UNDLM_00387.mov: " + editFile387.exists + "\n" +
           "• UNDLM_00387_AVEC_POIGNEES.mov: " + editFilePoignees387.exists + "\n" +
           "• UNDLM_00387bis.mov: " + editFileBis387.exists);
-}
-
-// Import plan EDIT 00388
-// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
-var editFile388 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00388.mov");
-var editFilePoignees388 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00388_AVEC_POIGNEES.mov");
-var editFileBis388 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_EDIT/BY_SHOTS/UNDLM_00388bis.mov");
-
-var importSuccess388 = false;
-var fileName388 = "";
-
-// Tenter import standard
-if (editFile388.exists) {
-    try {
-        var editFootage388 = project.importFile(new ImportOptions(editFile388));
-        editFootage388.parentFolder = fromEditFolder;
-        editFootage388.name = "UNDLM_00388";
-        editSources[388] = editFootage388;
-        fileName388 = "UNDLM_00388.mov";
-        importSuccess388 = true;
-        editImportCount++;
-        logImportSuccess(388, "EDIT", editFile388.fsName, fileName388);
-    } catch (e) {
-        logImportError(388, "EDIT", editFile388.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import AVEC_POIGNEES
-if (!importSuccess388 && editFilePoignees388.exists) {
-    try {
-        var editFootage388 = project.importFile(new ImportOptions(editFilePoignees388));
-        editFootage388.parentFolder = fromEditFolder;
-        editFootage388.name = "UNDLM_00388";
-        editSources[388] = editFootage388;
-        fileName388 = "UNDLM_00388_AVEC_POIGNEES.mov";
-        importSuccess388 = true;
-        editImportCount++;
-        logImportSuccess(388, "EDIT", editFilePoignees388.fsName, fileName388);
-    } catch (e) {
-        logImportError(388, "EDIT", editFilePoignees388.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import bis
-if (!importSuccess388 && editFileBis388.exists) {
-    try {
-        var editFootage388 = project.importFile(new ImportOptions(editFileBis388));
-        editFootage388.parentFolder = fromEditFolder;
-        editFootage388.name = "UNDLM_00388";
-        editSources[388] = editFootage388;
-        fileName388 = "UNDLM_00388bis.mov";
-        importSuccess388 = true;
-        editImportCount++;
-        logImportSuccess(388, "EDIT", editFileBis388.fsName, fileName388);
-    } catch (e) {
-        logImportError(388, "EDIT", editFileBis388.fsName, e.toString());
-    }
-}
-
-// Si aucune variante n'a fonctionné
-if (!importSuccess388) {
-    missingEditCount++;
-    alert("❌ ERREUR: Plan EDIT manquant - UNDLM_00388.mov\n" +
-          "Variantes testées:\n" +
-          "• UNDLM_00388.mov: " + editFile388.exists + "\n" +
-          "• UNDLM_00388_AVEC_POIGNEES.mov: " + editFilePoignees388.exists + "\n" +
-          "• UNDLM_00388bis.mov: " + editFileBis388.exists);
 }
 
 // Import plan EDIT 00391
@@ -3738,6 +4877,1455 @@ if (!importSuccess501) {
           "• UNDLM_00501bis.mov: " + editFileBis501.exists);
 }
 
+// Import plan GRADED 00175
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile175 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00175.mov");
+var gradedFilePoignees175 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00175_AVEC_POIGNEES.mov");
+var gradedFileBis175 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00175bis.mov");
+
+var gradedImportSuccess175 = false;
+var gradedFileName175 = "";
+
+// Tenter import standard
+if (gradedFile175.exists) {
+    try {
+        var gradedFootage175 = project.importFile(new ImportOptions(gradedFile175));
+        gradedFootage175.parentFolder = fromGradingFolder;
+        gradedFootage175.name = "UNDLM_00175";
+        gradingSources[175] = gradedFootage175;
+        gradedFileName175 = "UNDLM_00175.mov";
+        gradedImportSuccess175 = true;
+        gradingImportCount++;
+        logImportSuccess(175, "GRADED", gradedFile175.fsName, gradedFileName175);
+    } catch (e) {
+        logImportError(175, "GRADED", gradedFile175.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess175 && gradedFilePoignees175.exists) {
+    try {
+        var gradedFootage175 = project.importFile(new ImportOptions(gradedFilePoignees175));
+        gradedFootage175.parentFolder = fromGradingFolder;
+        gradedFootage175.name = "UNDLM_00175";
+        gradingSources[175] = gradedFootage175;
+        gradedFileName175 = "UNDLM_00175_AVEC_POIGNEES.mov";
+        gradedImportSuccess175 = true;
+        gradingImportCount++;
+        logImportSuccess(175, "GRADED", gradedFilePoignees175.fsName, gradedFileName175);
+    } catch (e) {
+        logImportError(175, "GRADED", gradedFilePoignees175.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess175 && gradedFileBis175.exists) {
+    try {
+        var gradedFootage175 = project.importFile(new ImportOptions(gradedFileBis175));
+        gradedFootage175.parentFolder = fromGradingFolder;
+        gradedFootage175.name = "UNDLM_00175";
+        gradingSources[175] = gradedFootage175;
+        gradedFileName175 = "UNDLM_00175bis.mov";
+        gradedImportSuccess175 = true;
+        gradingImportCount++;
+        logImportSuccess(175, "GRADED", gradedFileBis175.fsName, gradedFileName175);
+    } catch (e) {
+        logImportError(175, "GRADED", gradedFileBis175.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess175) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00175 (normal)");
+}
+
+// Import plan GRADED 00176
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile176 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00176.mov");
+var gradedFilePoignees176 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00176_AVEC_POIGNEES.mov");
+var gradedFileBis176 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00176bis.mov");
+
+var gradedImportSuccess176 = false;
+var gradedFileName176 = "";
+
+// Tenter import standard
+if (gradedFile176.exists) {
+    try {
+        var gradedFootage176 = project.importFile(new ImportOptions(gradedFile176));
+        gradedFootage176.parentFolder = fromGradingFolder;
+        gradedFootage176.name = "UNDLM_00176";
+        gradingSources[176] = gradedFootage176;
+        gradedFileName176 = "UNDLM_00176.mov";
+        gradedImportSuccess176 = true;
+        gradingImportCount++;
+        logImportSuccess(176, "GRADED", gradedFile176.fsName, gradedFileName176);
+    } catch (e) {
+        logImportError(176, "GRADED", gradedFile176.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess176 && gradedFilePoignees176.exists) {
+    try {
+        var gradedFootage176 = project.importFile(new ImportOptions(gradedFilePoignees176));
+        gradedFootage176.parentFolder = fromGradingFolder;
+        gradedFootage176.name = "UNDLM_00176";
+        gradingSources[176] = gradedFootage176;
+        gradedFileName176 = "UNDLM_00176_AVEC_POIGNEES.mov";
+        gradedImportSuccess176 = true;
+        gradingImportCount++;
+        logImportSuccess(176, "GRADED", gradedFilePoignees176.fsName, gradedFileName176);
+    } catch (e) {
+        logImportError(176, "GRADED", gradedFilePoignees176.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess176 && gradedFileBis176.exists) {
+    try {
+        var gradedFootage176 = project.importFile(new ImportOptions(gradedFileBis176));
+        gradedFootage176.parentFolder = fromGradingFolder;
+        gradedFootage176.name = "UNDLM_00176";
+        gradingSources[176] = gradedFootage176;
+        gradedFileName176 = "UNDLM_00176bis.mov";
+        gradedImportSuccess176 = true;
+        gradingImportCount++;
+        logImportSuccess(176, "GRADED", gradedFileBis176.fsName, gradedFileName176);
+    } catch (e) {
+        logImportError(176, "GRADED", gradedFileBis176.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess176) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00176 (normal)");
+}
+
+// Import plan GRADED 00177
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile177 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00177.mov");
+var gradedFilePoignees177 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00177_AVEC_POIGNEES.mov");
+var gradedFileBis177 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00177bis.mov");
+
+var gradedImportSuccess177 = false;
+var gradedFileName177 = "";
+
+// Tenter import standard
+if (gradedFile177.exists) {
+    try {
+        var gradedFootage177 = project.importFile(new ImportOptions(gradedFile177));
+        gradedFootage177.parentFolder = fromGradingFolder;
+        gradedFootage177.name = "UNDLM_00177";
+        gradingSources[177] = gradedFootage177;
+        gradedFileName177 = "UNDLM_00177.mov";
+        gradedImportSuccess177 = true;
+        gradingImportCount++;
+        logImportSuccess(177, "GRADED", gradedFile177.fsName, gradedFileName177);
+    } catch (e) {
+        logImportError(177, "GRADED", gradedFile177.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess177 && gradedFilePoignees177.exists) {
+    try {
+        var gradedFootage177 = project.importFile(new ImportOptions(gradedFilePoignees177));
+        gradedFootage177.parentFolder = fromGradingFolder;
+        gradedFootage177.name = "UNDLM_00177";
+        gradingSources[177] = gradedFootage177;
+        gradedFileName177 = "UNDLM_00177_AVEC_POIGNEES.mov";
+        gradedImportSuccess177 = true;
+        gradingImportCount++;
+        logImportSuccess(177, "GRADED", gradedFilePoignees177.fsName, gradedFileName177);
+    } catch (e) {
+        logImportError(177, "GRADED", gradedFilePoignees177.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess177 && gradedFileBis177.exists) {
+    try {
+        var gradedFootage177 = project.importFile(new ImportOptions(gradedFileBis177));
+        gradedFootage177.parentFolder = fromGradingFolder;
+        gradedFootage177.name = "UNDLM_00177";
+        gradingSources[177] = gradedFootage177;
+        gradedFileName177 = "UNDLM_00177bis.mov";
+        gradedImportSuccess177 = true;
+        gradingImportCount++;
+        logImportSuccess(177, "GRADED", gradedFileBis177.fsName, gradedFileName177);
+    } catch (e) {
+        logImportError(177, "GRADED", gradedFileBis177.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess177) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00177 (normal)");
+}
+
+// Import plan GRADED 00193
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile193 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00193.mov");
+var gradedFilePoignees193 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00193_AVEC_POIGNEES.mov");
+var gradedFileBis193 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00193bis.mov");
+
+var gradedImportSuccess193 = false;
+var gradedFileName193 = "";
+
+// Tenter import standard
+if (gradedFile193.exists) {
+    try {
+        var gradedFootage193 = project.importFile(new ImportOptions(gradedFile193));
+        gradedFootage193.parentFolder = fromGradingFolder;
+        gradedFootage193.name = "UNDLM_00193";
+        gradingSources[193] = gradedFootage193;
+        gradedFileName193 = "UNDLM_00193.mov";
+        gradedImportSuccess193 = true;
+        gradingImportCount++;
+        logImportSuccess(193, "GRADED", gradedFile193.fsName, gradedFileName193);
+    } catch (e) {
+        logImportError(193, "GRADED", gradedFile193.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess193 && gradedFilePoignees193.exists) {
+    try {
+        var gradedFootage193 = project.importFile(new ImportOptions(gradedFilePoignees193));
+        gradedFootage193.parentFolder = fromGradingFolder;
+        gradedFootage193.name = "UNDLM_00193";
+        gradingSources[193] = gradedFootage193;
+        gradedFileName193 = "UNDLM_00193_AVEC_POIGNEES.mov";
+        gradedImportSuccess193 = true;
+        gradingImportCount++;
+        logImportSuccess(193, "GRADED", gradedFilePoignees193.fsName, gradedFileName193);
+    } catch (e) {
+        logImportError(193, "GRADED", gradedFilePoignees193.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess193 && gradedFileBis193.exists) {
+    try {
+        var gradedFootage193 = project.importFile(new ImportOptions(gradedFileBis193));
+        gradedFootage193.parentFolder = fromGradingFolder;
+        gradedFootage193.name = "UNDLM_00193";
+        gradingSources[193] = gradedFootage193;
+        gradedFileName193 = "UNDLM_00193bis.mov";
+        gradedImportSuccess193 = true;
+        gradingImportCount++;
+        logImportSuccess(193, "GRADED", gradedFileBis193.fsName, gradedFileName193);
+    } catch (e) {
+        logImportError(193, "GRADED", gradedFileBis193.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess193) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00193 (normal)");
+}
+
+// Import plan GRADED 00194
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile194 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00194.mov");
+var gradedFilePoignees194 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00194_AVEC_POIGNEES.mov");
+var gradedFileBis194 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00194bis.mov");
+
+var gradedImportSuccess194 = false;
+var gradedFileName194 = "";
+
+// Tenter import standard
+if (gradedFile194.exists) {
+    try {
+        var gradedFootage194 = project.importFile(new ImportOptions(gradedFile194));
+        gradedFootage194.parentFolder = fromGradingFolder;
+        gradedFootage194.name = "UNDLM_00194";
+        gradingSources[194] = gradedFootage194;
+        gradedFileName194 = "UNDLM_00194.mov";
+        gradedImportSuccess194 = true;
+        gradingImportCount++;
+        logImportSuccess(194, "GRADED", gradedFile194.fsName, gradedFileName194);
+    } catch (e) {
+        logImportError(194, "GRADED", gradedFile194.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess194 && gradedFilePoignees194.exists) {
+    try {
+        var gradedFootage194 = project.importFile(new ImportOptions(gradedFilePoignees194));
+        gradedFootage194.parentFolder = fromGradingFolder;
+        gradedFootage194.name = "UNDLM_00194";
+        gradingSources[194] = gradedFootage194;
+        gradedFileName194 = "UNDLM_00194_AVEC_POIGNEES.mov";
+        gradedImportSuccess194 = true;
+        gradingImportCount++;
+        logImportSuccess(194, "GRADED", gradedFilePoignees194.fsName, gradedFileName194);
+    } catch (e) {
+        logImportError(194, "GRADED", gradedFilePoignees194.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess194 && gradedFileBis194.exists) {
+    try {
+        var gradedFootage194 = project.importFile(new ImportOptions(gradedFileBis194));
+        gradedFootage194.parentFolder = fromGradingFolder;
+        gradedFootage194.name = "UNDLM_00194";
+        gradingSources[194] = gradedFootage194;
+        gradedFileName194 = "UNDLM_00194bis.mov";
+        gradedImportSuccess194 = true;
+        gradingImportCount++;
+        logImportSuccess(194, "GRADED", gradedFileBis194.fsName, gradedFileName194);
+    } catch (e) {
+        logImportError(194, "GRADED", gradedFileBis194.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess194) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00194 (normal)");
+}
+
+// Import plan GRADED 00195
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile195 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00195.mov");
+var gradedFilePoignees195 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00195_AVEC_POIGNEES.mov");
+var gradedFileBis195 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00195bis.mov");
+
+var gradedImportSuccess195 = false;
+var gradedFileName195 = "";
+
+// Tenter import standard
+if (gradedFile195.exists) {
+    try {
+        var gradedFootage195 = project.importFile(new ImportOptions(gradedFile195));
+        gradedFootage195.parentFolder = fromGradingFolder;
+        gradedFootage195.name = "UNDLM_00195";
+        gradingSources[195] = gradedFootage195;
+        gradedFileName195 = "UNDLM_00195.mov";
+        gradedImportSuccess195 = true;
+        gradingImportCount++;
+        logImportSuccess(195, "GRADED", gradedFile195.fsName, gradedFileName195);
+    } catch (e) {
+        logImportError(195, "GRADED", gradedFile195.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess195 && gradedFilePoignees195.exists) {
+    try {
+        var gradedFootage195 = project.importFile(new ImportOptions(gradedFilePoignees195));
+        gradedFootage195.parentFolder = fromGradingFolder;
+        gradedFootage195.name = "UNDLM_00195";
+        gradingSources[195] = gradedFootage195;
+        gradedFileName195 = "UNDLM_00195_AVEC_POIGNEES.mov";
+        gradedImportSuccess195 = true;
+        gradingImportCount++;
+        logImportSuccess(195, "GRADED", gradedFilePoignees195.fsName, gradedFileName195);
+    } catch (e) {
+        logImportError(195, "GRADED", gradedFilePoignees195.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess195 && gradedFileBis195.exists) {
+    try {
+        var gradedFootage195 = project.importFile(new ImportOptions(gradedFileBis195));
+        gradedFootage195.parentFolder = fromGradingFolder;
+        gradedFootage195.name = "UNDLM_00195";
+        gradingSources[195] = gradedFootage195;
+        gradedFileName195 = "UNDLM_00195bis.mov";
+        gradedImportSuccess195 = true;
+        gradingImportCount++;
+        logImportSuccess(195, "GRADED", gradedFileBis195.fsName, gradedFileName195);
+    } catch (e) {
+        logImportError(195, "GRADED", gradedFileBis195.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess195) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00195 (normal)");
+}
+
+// Import plan GRADED 00196
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile196 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00196.mov");
+var gradedFilePoignees196 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00196_AVEC_POIGNEES.mov");
+var gradedFileBis196 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00196bis.mov");
+
+var gradedImportSuccess196 = false;
+var gradedFileName196 = "";
+
+// Tenter import standard
+if (gradedFile196.exists) {
+    try {
+        var gradedFootage196 = project.importFile(new ImportOptions(gradedFile196));
+        gradedFootage196.parentFolder = fromGradingFolder;
+        gradedFootage196.name = "UNDLM_00196";
+        gradingSources[196] = gradedFootage196;
+        gradedFileName196 = "UNDLM_00196.mov";
+        gradedImportSuccess196 = true;
+        gradingImportCount++;
+        logImportSuccess(196, "GRADED", gradedFile196.fsName, gradedFileName196);
+    } catch (e) {
+        logImportError(196, "GRADED", gradedFile196.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess196 && gradedFilePoignees196.exists) {
+    try {
+        var gradedFootage196 = project.importFile(new ImportOptions(gradedFilePoignees196));
+        gradedFootage196.parentFolder = fromGradingFolder;
+        gradedFootage196.name = "UNDLM_00196";
+        gradingSources[196] = gradedFootage196;
+        gradedFileName196 = "UNDLM_00196_AVEC_POIGNEES.mov";
+        gradedImportSuccess196 = true;
+        gradingImportCount++;
+        logImportSuccess(196, "GRADED", gradedFilePoignees196.fsName, gradedFileName196);
+    } catch (e) {
+        logImportError(196, "GRADED", gradedFilePoignees196.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess196 && gradedFileBis196.exists) {
+    try {
+        var gradedFootage196 = project.importFile(new ImportOptions(gradedFileBis196));
+        gradedFootage196.parentFolder = fromGradingFolder;
+        gradedFootage196.name = "UNDLM_00196";
+        gradingSources[196] = gradedFootage196;
+        gradedFileName196 = "UNDLM_00196bis.mov";
+        gradedImportSuccess196 = true;
+        gradingImportCount++;
+        logImportSuccess(196, "GRADED", gradedFileBis196.fsName, gradedFileName196);
+    } catch (e) {
+        logImportError(196, "GRADED", gradedFileBis196.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess196) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00196 (normal)");
+}
+
+// Import plan GRADED 00197
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile197 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00197.mov");
+var gradedFilePoignees197 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00197_AVEC_POIGNEES.mov");
+var gradedFileBis197 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00197bis.mov");
+
+var gradedImportSuccess197 = false;
+var gradedFileName197 = "";
+
+// Tenter import standard
+if (gradedFile197.exists) {
+    try {
+        var gradedFootage197 = project.importFile(new ImportOptions(gradedFile197));
+        gradedFootage197.parentFolder = fromGradingFolder;
+        gradedFootage197.name = "UNDLM_00197";
+        gradingSources[197] = gradedFootage197;
+        gradedFileName197 = "UNDLM_00197.mov";
+        gradedImportSuccess197 = true;
+        gradingImportCount++;
+        logImportSuccess(197, "GRADED", gradedFile197.fsName, gradedFileName197);
+    } catch (e) {
+        logImportError(197, "GRADED", gradedFile197.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess197 && gradedFilePoignees197.exists) {
+    try {
+        var gradedFootage197 = project.importFile(new ImportOptions(gradedFilePoignees197));
+        gradedFootage197.parentFolder = fromGradingFolder;
+        gradedFootage197.name = "UNDLM_00197";
+        gradingSources[197] = gradedFootage197;
+        gradedFileName197 = "UNDLM_00197_AVEC_POIGNEES.mov";
+        gradedImportSuccess197 = true;
+        gradingImportCount++;
+        logImportSuccess(197, "GRADED", gradedFilePoignees197.fsName, gradedFileName197);
+    } catch (e) {
+        logImportError(197, "GRADED", gradedFilePoignees197.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess197 && gradedFileBis197.exists) {
+    try {
+        var gradedFootage197 = project.importFile(new ImportOptions(gradedFileBis197));
+        gradedFootage197.parentFolder = fromGradingFolder;
+        gradedFootage197.name = "UNDLM_00197";
+        gradingSources[197] = gradedFootage197;
+        gradedFileName197 = "UNDLM_00197bis.mov";
+        gradedImportSuccess197 = true;
+        gradingImportCount++;
+        logImportSuccess(197, "GRADED", gradedFileBis197.fsName, gradedFileName197);
+    } catch (e) {
+        logImportError(197, "GRADED", gradedFileBis197.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess197) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00197 (normal)");
+}
+
+// Import plan GRADED 00198
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile198 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00198.mov");
+var gradedFilePoignees198 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00198_AVEC_POIGNEES.mov");
+var gradedFileBis198 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00198bis.mov");
+
+var gradedImportSuccess198 = false;
+var gradedFileName198 = "";
+
+// Tenter import standard
+if (gradedFile198.exists) {
+    try {
+        var gradedFootage198 = project.importFile(new ImportOptions(gradedFile198));
+        gradedFootage198.parentFolder = fromGradingFolder;
+        gradedFootage198.name = "UNDLM_00198";
+        gradingSources[198] = gradedFootage198;
+        gradedFileName198 = "UNDLM_00198.mov";
+        gradedImportSuccess198 = true;
+        gradingImportCount++;
+        logImportSuccess(198, "GRADED", gradedFile198.fsName, gradedFileName198);
+    } catch (e) {
+        logImportError(198, "GRADED", gradedFile198.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess198 && gradedFilePoignees198.exists) {
+    try {
+        var gradedFootage198 = project.importFile(new ImportOptions(gradedFilePoignees198));
+        gradedFootage198.parentFolder = fromGradingFolder;
+        gradedFootage198.name = "UNDLM_00198";
+        gradingSources[198] = gradedFootage198;
+        gradedFileName198 = "UNDLM_00198_AVEC_POIGNEES.mov";
+        gradedImportSuccess198 = true;
+        gradingImportCount++;
+        logImportSuccess(198, "GRADED", gradedFilePoignees198.fsName, gradedFileName198);
+    } catch (e) {
+        logImportError(198, "GRADED", gradedFilePoignees198.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess198 && gradedFileBis198.exists) {
+    try {
+        var gradedFootage198 = project.importFile(new ImportOptions(gradedFileBis198));
+        gradedFootage198.parentFolder = fromGradingFolder;
+        gradedFootage198.name = "UNDLM_00198";
+        gradingSources[198] = gradedFootage198;
+        gradedFileName198 = "UNDLM_00198bis.mov";
+        gradedImportSuccess198 = true;
+        gradingImportCount++;
+        logImportSuccess(198, "GRADED", gradedFileBis198.fsName, gradedFileName198);
+    } catch (e) {
+        logImportError(198, "GRADED", gradedFileBis198.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess198) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00198 (normal)");
+}
+
+// Import plan GRADED 00199
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile199 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00199.mov");
+var gradedFilePoignees199 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00199_AVEC_POIGNEES.mov");
+var gradedFileBis199 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00199bis.mov");
+
+var gradedImportSuccess199 = false;
+var gradedFileName199 = "";
+
+// Tenter import standard
+if (gradedFile199.exists) {
+    try {
+        var gradedFootage199 = project.importFile(new ImportOptions(gradedFile199));
+        gradedFootage199.parentFolder = fromGradingFolder;
+        gradedFootage199.name = "UNDLM_00199";
+        gradingSources[199] = gradedFootage199;
+        gradedFileName199 = "UNDLM_00199.mov";
+        gradedImportSuccess199 = true;
+        gradingImportCount++;
+        logImportSuccess(199, "GRADED", gradedFile199.fsName, gradedFileName199);
+    } catch (e) {
+        logImportError(199, "GRADED", gradedFile199.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess199 && gradedFilePoignees199.exists) {
+    try {
+        var gradedFootage199 = project.importFile(new ImportOptions(gradedFilePoignees199));
+        gradedFootage199.parentFolder = fromGradingFolder;
+        gradedFootage199.name = "UNDLM_00199";
+        gradingSources[199] = gradedFootage199;
+        gradedFileName199 = "UNDLM_00199_AVEC_POIGNEES.mov";
+        gradedImportSuccess199 = true;
+        gradingImportCount++;
+        logImportSuccess(199, "GRADED", gradedFilePoignees199.fsName, gradedFileName199);
+    } catch (e) {
+        logImportError(199, "GRADED", gradedFilePoignees199.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess199 && gradedFileBis199.exists) {
+    try {
+        var gradedFootage199 = project.importFile(new ImportOptions(gradedFileBis199));
+        gradedFootage199.parentFolder = fromGradingFolder;
+        gradedFootage199.name = "UNDLM_00199";
+        gradingSources[199] = gradedFootage199;
+        gradedFileName199 = "UNDLM_00199bis.mov";
+        gradedImportSuccess199 = true;
+        gradingImportCount++;
+        logImportSuccess(199, "GRADED", gradedFileBis199.fsName, gradedFileName199);
+    } catch (e) {
+        logImportError(199, "GRADED", gradedFileBis199.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess199) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00199 (normal)");
+}
+
+// Import plan GRADED 00200
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile200 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00200.mov");
+var gradedFilePoignees200 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00200_AVEC_POIGNEES.mov");
+var gradedFileBis200 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00200bis.mov");
+
+var gradedImportSuccess200 = false;
+var gradedFileName200 = "";
+
+// Tenter import standard
+if (gradedFile200.exists) {
+    try {
+        var gradedFootage200 = project.importFile(new ImportOptions(gradedFile200));
+        gradedFootage200.parentFolder = fromGradingFolder;
+        gradedFootage200.name = "UNDLM_00200";
+        gradingSources[200] = gradedFootage200;
+        gradedFileName200 = "UNDLM_00200.mov";
+        gradedImportSuccess200 = true;
+        gradingImportCount++;
+        logImportSuccess(200, "GRADED", gradedFile200.fsName, gradedFileName200);
+    } catch (e) {
+        logImportError(200, "GRADED", gradedFile200.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess200 && gradedFilePoignees200.exists) {
+    try {
+        var gradedFootage200 = project.importFile(new ImportOptions(gradedFilePoignees200));
+        gradedFootage200.parentFolder = fromGradingFolder;
+        gradedFootage200.name = "UNDLM_00200";
+        gradingSources[200] = gradedFootage200;
+        gradedFileName200 = "UNDLM_00200_AVEC_POIGNEES.mov";
+        gradedImportSuccess200 = true;
+        gradingImportCount++;
+        logImportSuccess(200, "GRADED", gradedFilePoignees200.fsName, gradedFileName200);
+    } catch (e) {
+        logImportError(200, "GRADED", gradedFilePoignees200.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess200 && gradedFileBis200.exists) {
+    try {
+        var gradedFootage200 = project.importFile(new ImportOptions(gradedFileBis200));
+        gradedFootage200.parentFolder = fromGradingFolder;
+        gradedFootage200.name = "UNDLM_00200";
+        gradingSources[200] = gradedFootage200;
+        gradedFileName200 = "UNDLM_00200bis.mov";
+        gradedImportSuccess200 = true;
+        gradingImportCount++;
+        logImportSuccess(200, "GRADED", gradedFileBis200.fsName, gradedFileName200);
+    } catch (e) {
+        logImportError(200, "GRADED", gradedFileBis200.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess200) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00200 (normal)");
+}
+
+// Import plan GRADED 00201
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile201 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00201.mov");
+var gradedFilePoignees201 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00201_AVEC_POIGNEES.mov");
+var gradedFileBis201 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00201bis.mov");
+
+var gradedImportSuccess201 = false;
+var gradedFileName201 = "";
+
+// Tenter import standard
+if (gradedFile201.exists) {
+    try {
+        var gradedFootage201 = project.importFile(new ImportOptions(gradedFile201));
+        gradedFootage201.parentFolder = fromGradingFolder;
+        gradedFootage201.name = "UNDLM_00201";
+        gradingSources[201] = gradedFootage201;
+        gradedFileName201 = "UNDLM_00201.mov";
+        gradedImportSuccess201 = true;
+        gradingImportCount++;
+        logImportSuccess(201, "GRADED", gradedFile201.fsName, gradedFileName201);
+    } catch (e) {
+        logImportError(201, "GRADED", gradedFile201.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess201 && gradedFilePoignees201.exists) {
+    try {
+        var gradedFootage201 = project.importFile(new ImportOptions(gradedFilePoignees201));
+        gradedFootage201.parentFolder = fromGradingFolder;
+        gradedFootage201.name = "UNDLM_00201";
+        gradingSources[201] = gradedFootage201;
+        gradedFileName201 = "UNDLM_00201_AVEC_POIGNEES.mov";
+        gradedImportSuccess201 = true;
+        gradingImportCount++;
+        logImportSuccess(201, "GRADED", gradedFilePoignees201.fsName, gradedFileName201);
+    } catch (e) {
+        logImportError(201, "GRADED", gradedFilePoignees201.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess201 && gradedFileBis201.exists) {
+    try {
+        var gradedFootage201 = project.importFile(new ImportOptions(gradedFileBis201));
+        gradedFootage201.parentFolder = fromGradingFolder;
+        gradedFootage201.name = "UNDLM_00201";
+        gradingSources[201] = gradedFootage201;
+        gradedFileName201 = "UNDLM_00201bis.mov";
+        gradedImportSuccess201 = true;
+        gradingImportCount++;
+        logImportSuccess(201, "GRADED", gradedFileBis201.fsName, gradedFileName201);
+    } catch (e) {
+        logImportError(201, "GRADED", gradedFileBis201.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess201) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00201 (normal)");
+}
+
+// Import plan GRADED 00212
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile212 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00212.mov");
+var gradedFilePoignees212 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00212_AVEC_POIGNEES.mov");
+var gradedFileBis212 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00212bis.mov");
+
+var gradedImportSuccess212 = false;
+var gradedFileName212 = "";
+
+// Tenter import standard
+if (gradedFile212.exists) {
+    try {
+        var gradedFootage212 = project.importFile(new ImportOptions(gradedFile212));
+        gradedFootage212.parentFolder = fromGradingFolder;
+        gradedFootage212.name = "UNDLM_00212";
+        gradingSources[212] = gradedFootage212;
+        gradedFileName212 = "UNDLM_00212.mov";
+        gradedImportSuccess212 = true;
+        gradingImportCount++;
+        logImportSuccess(212, "GRADED", gradedFile212.fsName, gradedFileName212);
+    } catch (e) {
+        logImportError(212, "GRADED", gradedFile212.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess212 && gradedFilePoignees212.exists) {
+    try {
+        var gradedFootage212 = project.importFile(new ImportOptions(gradedFilePoignees212));
+        gradedFootage212.parentFolder = fromGradingFolder;
+        gradedFootage212.name = "UNDLM_00212";
+        gradingSources[212] = gradedFootage212;
+        gradedFileName212 = "UNDLM_00212_AVEC_POIGNEES.mov";
+        gradedImportSuccess212 = true;
+        gradingImportCount++;
+        logImportSuccess(212, "GRADED", gradedFilePoignees212.fsName, gradedFileName212);
+    } catch (e) {
+        logImportError(212, "GRADED", gradedFilePoignees212.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess212 && gradedFileBis212.exists) {
+    try {
+        var gradedFootage212 = project.importFile(new ImportOptions(gradedFileBis212));
+        gradedFootage212.parentFolder = fromGradingFolder;
+        gradedFootage212.name = "UNDLM_00212";
+        gradingSources[212] = gradedFootage212;
+        gradedFileName212 = "UNDLM_00212bis.mov";
+        gradedImportSuccess212 = true;
+        gradingImportCount++;
+        logImportSuccess(212, "GRADED", gradedFileBis212.fsName, gradedFileName212);
+    } catch (e) {
+        logImportError(212, "GRADED", gradedFileBis212.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess212) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00212 (normal)");
+}
+
+// Import plan GRADED 00213
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile213 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00213.mov");
+var gradedFilePoignees213 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00213_AVEC_POIGNEES.mov");
+var gradedFileBis213 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00213bis.mov");
+
+var gradedImportSuccess213 = false;
+var gradedFileName213 = "";
+
+// Tenter import standard
+if (gradedFile213.exists) {
+    try {
+        var gradedFootage213 = project.importFile(new ImportOptions(gradedFile213));
+        gradedFootage213.parentFolder = fromGradingFolder;
+        gradedFootage213.name = "UNDLM_00213";
+        gradingSources[213] = gradedFootage213;
+        gradedFileName213 = "UNDLM_00213.mov";
+        gradedImportSuccess213 = true;
+        gradingImportCount++;
+        logImportSuccess(213, "GRADED", gradedFile213.fsName, gradedFileName213);
+    } catch (e) {
+        logImportError(213, "GRADED", gradedFile213.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess213 && gradedFilePoignees213.exists) {
+    try {
+        var gradedFootage213 = project.importFile(new ImportOptions(gradedFilePoignees213));
+        gradedFootage213.parentFolder = fromGradingFolder;
+        gradedFootage213.name = "UNDLM_00213";
+        gradingSources[213] = gradedFootage213;
+        gradedFileName213 = "UNDLM_00213_AVEC_POIGNEES.mov";
+        gradedImportSuccess213 = true;
+        gradingImportCount++;
+        logImportSuccess(213, "GRADED", gradedFilePoignees213.fsName, gradedFileName213);
+    } catch (e) {
+        logImportError(213, "GRADED", gradedFilePoignees213.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess213 && gradedFileBis213.exists) {
+    try {
+        var gradedFootage213 = project.importFile(new ImportOptions(gradedFileBis213));
+        gradedFootage213.parentFolder = fromGradingFolder;
+        gradedFootage213.name = "UNDLM_00213";
+        gradingSources[213] = gradedFootage213;
+        gradedFileName213 = "UNDLM_00213bis.mov";
+        gradedImportSuccess213 = true;
+        gradingImportCount++;
+        logImportSuccess(213, "GRADED", gradedFileBis213.fsName, gradedFileName213);
+    } catch (e) {
+        logImportError(213, "GRADED", gradedFileBis213.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess213) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00213 (normal)");
+}
+
+// Import plan GRADED 00215
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile215 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00215.mov");
+var gradedFilePoignees215 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00215_AVEC_POIGNEES.mov");
+var gradedFileBis215 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00215bis.mov");
+
+var gradedImportSuccess215 = false;
+var gradedFileName215 = "";
+
+// Tenter import standard
+if (gradedFile215.exists) {
+    try {
+        var gradedFootage215 = project.importFile(new ImportOptions(gradedFile215));
+        gradedFootage215.parentFolder = fromGradingFolder;
+        gradedFootage215.name = "UNDLM_00215";
+        gradingSources[215] = gradedFootage215;
+        gradedFileName215 = "UNDLM_00215.mov";
+        gradedImportSuccess215 = true;
+        gradingImportCount++;
+        logImportSuccess(215, "GRADED", gradedFile215.fsName, gradedFileName215);
+    } catch (e) {
+        logImportError(215, "GRADED", gradedFile215.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess215 && gradedFilePoignees215.exists) {
+    try {
+        var gradedFootage215 = project.importFile(new ImportOptions(gradedFilePoignees215));
+        gradedFootage215.parentFolder = fromGradingFolder;
+        gradedFootage215.name = "UNDLM_00215";
+        gradingSources[215] = gradedFootage215;
+        gradedFileName215 = "UNDLM_00215_AVEC_POIGNEES.mov";
+        gradedImportSuccess215 = true;
+        gradingImportCount++;
+        logImportSuccess(215, "GRADED", gradedFilePoignees215.fsName, gradedFileName215);
+    } catch (e) {
+        logImportError(215, "GRADED", gradedFilePoignees215.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess215 && gradedFileBis215.exists) {
+    try {
+        var gradedFootage215 = project.importFile(new ImportOptions(gradedFileBis215));
+        gradedFootage215.parentFolder = fromGradingFolder;
+        gradedFootage215.name = "UNDLM_00215";
+        gradingSources[215] = gradedFootage215;
+        gradedFileName215 = "UNDLM_00215bis.mov";
+        gradedImportSuccess215 = true;
+        gradingImportCount++;
+        logImportSuccess(215, "GRADED", gradedFileBis215.fsName, gradedFileName215);
+    } catch (e) {
+        logImportError(215, "GRADED", gradedFileBis215.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess215) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00215 (normal)");
+}
+
+// Import plan GRADED 00216
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile216 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00216.mov");
+var gradedFilePoignees216 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00216_AVEC_POIGNEES.mov");
+var gradedFileBis216 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00216bis.mov");
+
+var gradedImportSuccess216 = false;
+var gradedFileName216 = "";
+
+// Tenter import standard
+if (gradedFile216.exists) {
+    try {
+        var gradedFootage216 = project.importFile(new ImportOptions(gradedFile216));
+        gradedFootage216.parentFolder = fromGradingFolder;
+        gradedFootage216.name = "UNDLM_00216";
+        gradingSources[216] = gradedFootage216;
+        gradedFileName216 = "UNDLM_00216.mov";
+        gradedImportSuccess216 = true;
+        gradingImportCount++;
+        logImportSuccess(216, "GRADED", gradedFile216.fsName, gradedFileName216);
+    } catch (e) {
+        logImportError(216, "GRADED", gradedFile216.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess216 && gradedFilePoignees216.exists) {
+    try {
+        var gradedFootage216 = project.importFile(new ImportOptions(gradedFilePoignees216));
+        gradedFootage216.parentFolder = fromGradingFolder;
+        gradedFootage216.name = "UNDLM_00216";
+        gradingSources[216] = gradedFootage216;
+        gradedFileName216 = "UNDLM_00216_AVEC_POIGNEES.mov";
+        gradedImportSuccess216 = true;
+        gradingImportCount++;
+        logImportSuccess(216, "GRADED", gradedFilePoignees216.fsName, gradedFileName216);
+    } catch (e) {
+        logImportError(216, "GRADED", gradedFilePoignees216.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess216 && gradedFileBis216.exists) {
+    try {
+        var gradedFootage216 = project.importFile(new ImportOptions(gradedFileBis216));
+        gradedFootage216.parentFolder = fromGradingFolder;
+        gradedFootage216.name = "UNDLM_00216";
+        gradingSources[216] = gradedFootage216;
+        gradedFileName216 = "UNDLM_00216bis.mov";
+        gradedImportSuccess216 = true;
+        gradingImportCount++;
+        logImportSuccess(216, "GRADED", gradedFileBis216.fsName, gradedFileName216);
+    } catch (e) {
+        logImportError(216, "GRADED", gradedFileBis216.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess216) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00216 (normal)");
+}
+
+// Import plan GRADED 00251
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile251 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00251.mov");
+var gradedFilePoignees251 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00251_AVEC_POIGNEES.mov");
+var gradedFileBis251 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00251bis.mov");
+
+var gradedImportSuccess251 = false;
+var gradedFileName251 = "";
+
+// Tenter import standard
+if (gradedFile251.exists) {
+    try {
+        var gradedFootage251 = project.importFile(new ImportOptions(gradedFile251));
+        gradedFootage251.parentFolder = fromGradingFolder;
+        gradedFootage251.name = "UNDLM_00251";
+        gradingSources[251] = gradedFootage251;
+        gradedFileName251 = "UNDLM_00251.mov";
+        gradedImportSuccess251 = true;
+        gradingImportCount++;
+        logImportSuccess(251, "GRADED", gradedFile251.fsName, gradedFileName251);
+    } catch (e) {
+        logImportError(251, "GRADED", gradedFile251.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess251 && gradedFilePoignees251.exists) {
+    try {
+        var gradedFootage251 = project.importFile(new ImportOptions(gradedFilePoignees251));
+        gradedFootage251.parentFolder = fromGradingFolder;
+        gradedFootage251.name = "UNDLM_00251";
+        gradingSources[251] = gradedFootage251;
+        gradedFileName251 = "UNDLM_00251_AVEC_POIGNEES.mov";
+        gradedImportSuccess251 = true;
+        gradingImportCount++;
+        logImportSuccess(251, "GRADED", gradedFilePoignees251.fsName, gradedFileName251);
+    } catch (e) {
+        logImportError(251, "GRADED", gradedFilePoignees251.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess251 && gradedFileBis251.exists) {
+    try {
+        var gradedFootage251 = project.importFile(new ImportOptions(gradedFileBis251));
+        gradedFootage251.parentFolder = fromGradingFolder;
+        gradedFootage251.name = "UNDLM_00251";
+        gradingSources[251] = gradedFootage251;
+        gradedFileName251 = "UNDLM_00251bis.mov";
+        gradedImportSuccess251 = true;
+        gradingImportCount++;
+        logImportSuccess(251, "GRADED", gradedFileBis251.fsName, gradedFileName251);
+    } catch (e) {
+        logImportError(251, "GRADED", gradedFileBis251.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess251) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00251 (normal)");
+}
+
+// Import plan GRADED 00252
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile252 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00252.mov");
+var gradedFilePoignees252 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00252_AVEC_POIGNEES.mov");
+var gradedFileBis252 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00252bis.mov");
+
+var gradedImportSuccess252 = false;
+var gradedFileName252 = "";
+
+// Tenter import standard
+if (gradedFile252.exists) {
+    try {
+        var gradedFootage252 = project.importFile(new ImportOptions(gradedFile252));
+        gradedFootage252.parentFolder = fromGradingFolder;
+        gradedFootage252.name = "UNDLM_00252";
+        gradingSources[252] = gradedFootage252;
+        gradedFileName252 = "UNDLM_00252.mov";
+        gradedImportSuccess252 = true;
+        gradingImportCount++;
+        logImportSuccess(252, "GRADED", gradedFile252.fsName, gradedFileName252);
+    } catch (e) {
+        logImportError(252, "GRADED", gradedFile252.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess252 && gradedFilePoignees252.exists) {
+    try {
+        var gradedFootage252 = project.importFile(new ImportOptions(gradedFilePoignees252));
+        gradedFootage252.parentFolder = fromGradingFolder;
+        gradedFootage252.name = "UNDLM_00252";
+        gradingSources[252] = gradedFootage252;
+        gradedFileName252 = "UNDLM_00252_AVEC_POIGNEES.mov";
+        gradedImportSuccess252 = true;
+        gradingImportCount++;
+        logImportSuccess(252, "GRADED", gradedFilePoignees252.fsName, gradedFileName252);
+    } catch (e) {
+        logImportError(252, "GRADED", gradedFilePoignees252.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess252 && gradedFileBis252.exists) {
+    try {
+        var gradedFootage252 = project.importFile(new ImportOptions(gradedFileBis252));
+        gradedFootage252.parentFolder = fromGradingFolder;
+        gradedFootage252.name = "UNDLM_00252";
+        gradingSources[252] = gradedFootage252;
+        gradedFileName252 = "UNDLM_00252bis.mov";
+        gradedImportSuccess252 = true;
+        gradingImportCount++;
+        logImportSuccess(252, "GRADED", gradedFileBis252.fsName, gradedFileName252);
+    } catch (e) {
+        logImportError(252, "GRADED", gradedFileBis252.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess252) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00252 (normal)");
+}
+
+// Import plan GRADED 00254
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile254 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00254.mov");
+var gradedFilePoignees254 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00254_AVEC_POIGNEES.mov");
+var gradedFileBis254 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00254bis.mov");
+
+var gradedImportSuccess254 = false;
+var gradedFileName254 = "";
+
+// Tenter import standard
+if (gradedFile254.exists) {
+    try {
+        var gradedFootage254 = project.importFile(new ImportOptions(gradedFile254));
+        gradedFootage254.parentFolder = fromGradingFolder;
+        gradedFootage254.name = "UNDLM_00254";
+        gradingSources[254] = gradedFootage254;
+        gradedFileName254 = "UNDLM_00254.mov";
+        gradedImportSuccess254 = true;
+        gradingImportCount++;
+        logImportSuccess(254, "GRADED", gradedFile254.fsName, gradedFileName254);
+    } catch (e) {
+        logImportError(254, "GRADED", gradedFile254.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess254 && gradedFilePoignees254.exists) {
+    try {
+        var gradedFootage254 = project.importFile(new ImportOptions(gradedFilePoignees254));
+        gradedFootage254.parentFolder = fromGradingFolder;
+        gradedFootage254.name = "UNDLM_00254";
+        gradingSources[254] = gradedFootage254;
+        gradedFileName254 = "UNDLM_00254_AVEC_POIGNEES.mov";
+        gradedImportSuccess254 = true;
+        gradingImportCount++;
+        logImportSuccess(254, "GRADED", gradedFilePoignees254.fsName, gradedFileName254);
+    } catch (e) {
+        logImportError(254, "GRADED", gradedFilePoignees254.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess254 && gradedFileBis254.exists) {
+    try {
+        var gradedFootage254 = project.importFile(new ImportOptions(gradedFileBis254));
+        gradedFootage254.parentFolder = fromGradingFolder;
+        gradedFootage254.name = "UNDLM_00254";
+        gradingSources[254] = gradedFootage254;
+        gradedFileName254 = "UNDLM_00254bis.mov";
+        gradedImportSuccess254 = true;
+        gradingImportCount++;
+        logImportSuccess(254, "GRADED", gradedFileBis254.fsName, gradedFileName254);
+    } catch (e) {
+        logImportError(254, "GRADED", gradedFileBis254.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess254) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00254 (normal)");
+}
+
+// Import plan GRADED 00255
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile255 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00255.mov");
+var gradedFilePoignees255 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00255_AVEC_POIGNEES.mov");
+var gradedFileBis255 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00255bis.mov");
+
+var gradedImportSuccess255 = false;
+var gradedFileName255 = "";
+
+// Tenter import standard
+if (gradedFile255.exists) {
+    try {
+        var gradedFootage255 = project.importFile(new ImportOptions(gradedFile255));
+        gradedFootage255.parentFolder = fromGradingFolder;
+        gradedFootage255.name = "UNDLM_00255";
+        gradingSources[255] = gradedFootage255;
+        gradedFileName255 = "UNDLM_00255.mov";
+        gradedImportSuccess255 = true;
+        gradingImportCount++;
+        logImportSuccess(255, "GRADED", gradedFile255.fsName, gradedFileName255);
+    } catch (e) {
+        logImportError(255, "GRADED", gradedFile255.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess255 && gradedFilePoignees255.exists) {
+    try {
+        var gradedFootage255 = project.importFile(new ImportOptions(gradedFilePoignees255));
+        gradedFootage255.parentFolder = fromGradingFolder;
+        gradedFootage255.name = "UNDLM_00255";
+        gradingSources[255] = gradedFootage255;
+        gradedFileName255 = "UNDLM_00255_AVEC_POIGNEES.mov";
+        gradedImportSuccess255 = true;
+        gradingImportCount++;
+        logImportSuccess(255, "GRADED", gradedFilePoignees255.fsName, gradedFileName255);
+    } catch (e) {
+        logImportError(255, "GRADED", gradedFilePoignees255.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess255 && gradedFileBis255.exists) {
+    try {
+        var gradedFootage255 = project.importFile(new ImportOptions(gradedFileBis255));
+        gradedFootage255.parentFolder = fromGradingFolder;
+        gradedFootage255.name = "UNDLM_00255";
+        gradingSources[255] = gradedFootage255;
+        gradedFileName255 = "UNDLM_00255bis.mov";
+        gradedImportSuccess255 = true;
+        gradingImportCount++;
+        logImportSuccess(255, "GRADED", gradedFileBis255.fsName, gradedFileName255);
+    } catch (e) {
+        logImportError(255, "GRADED", gradedFileBis255.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess255) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00255 (normal)");
+}
+
+// Import plan GRADED 00256
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile256 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00256.mov");
+var gradedFilePoignees256 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00256_AVEC_POIGNEES.mov");
+var gradedFileBis256 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00256bis.mov");
+
+var gradedImportSuccess256 = false;
+var gradedFileName256 = "";
+
+// Tenter import standard
+if (gradedFile256.exists) {
+    try {
+        var gradedFootage256 = project.importFile(new ImportOptions(gradedFile256));
+        gradedFootage256.parentFolder = fromGradingFolder;
+        gradedFootage256.name = "UNDLM_00256";
+        gradingSources[256] = gradedFootage256;
+        gradedFileName256 = "UNDLM_00256.mov";
+        gradedImportSuccess256 = true;
+        gradingImportCount++;
+        logImportSuccess(256, "GRADED", gradedFile256.fsName, gradedFileName256);
+    } catch (e) {
+        logImportError(256, "GRADED", gradedFile256.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess256 && gradedFilePoignees256.exists) {
+    try {
+        var gradedFootage256 = project.importFile(new ImportOptions(gradedFilePoignees256));
+        gradedFootage256.parentFolder = fromGradingFolder;
+        gradedFootage256.name = "UNDLM_00256";
+        gradingSources[256] = gradedFootage256;
+        gradedFileName256 = "UNDLM_00256_AVEC_POIGNEES.mov";
+        gradedImportSuccess256 = true;
+        gradingImportCount++;
+        logImportSuccess(256, "GRADED", gradedFilePoignees256.fsName, gradedFileName256);
+    } catch (e) {
+        logImportError(256, "GRADED", gradedFilePoignees256.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess256 && gradedFileBis256.exists) {
+    try {
+        var gradedFootage256 = project.importFile(new ImportOptions(gradedFileBis256));
+        gradedFootage256.parentFolder = fromGradingFolder;
+        gradedFootage256.name = "UNDLM_00256";
+        gradingSources[256] = gradedFootage256;
+        gradedFileName256 = "UNDLM_00256bis.mov";
+        gradedImportSuccess256 = true;
+        gradingImportCount++;
+        logImportSuccess(256, "GRADED", gradedFileBis256.fsName, gradedFileName256);
+    } catch (e) {
+        logImportError(256, "GRADED", gradedFileBis256.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess256) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00256 (normal)");
+}
+
+// Import plan GRADED 00262
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile262 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00262.mov");
+var gradedFilePoignees262 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00262_AVEC_POIGNEES.mov");
+var gradedFileBis262 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00262bis.mov");
+
+var gradedImportSuccess262 = false;
+var gradedFileName262 = "";
+
+// Tenter import standard
+if (gradedFile262.exists) {
+    try {
+        var gradedFootage262 = project.importFile(new ImportOptions(gradedFile262));
+        gradedFootage262.parentFolder = fromGradingFolder;
+        gradedFootage262.name = "UNDLM_00262";
+        gradingSources[262] = gradedFootage262;
+        gradedFileName262 = "UNDLM_00262.mov";
+        gradedImportSuccess262 = true;
+        gradingImportCount++;
+        logImportSuccess(262, "GRADED", gradedFile262.fsName, gradedFileName262);
+    } catch (e) {
+        logImportError(262, "GRADED", gradedFile262.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess262 && gradedFilePoignees262.exists) {
+    try {
+        var gradedFootage262 = project.importFile(new ImportOptions(gradedFilePoignees262));
+        gradedFootage262.parentFolder = fromGradingFolder;
+        gradedFootage262.name = "UNDLM_00262";
+        gradingSources[262] = gradedFootage262;
+        gradedFileName262 = "UNDLM_00262_AVEC_POIGNEES.mov";
+        gradedImportSuccess262 = true;
+        gradingImportCount++;
+        logImportSuccess(262, "GRADED", gradedFilePoignees262.fsName, gradedFileName262);
+    } catch (e) {
+        logImportError(262, "GRADED", gradedFilePoignees262.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess262 && gradedFileBis262.exists) {
+    try {
+        var gradedFootage262 = project.importFile(new ImportOptions(gradedFileBis262));
+        gradedFootage262.parentFolder = fromGradingFolder;
+        gradedFootage262.name = "UNDLM_00262";
+        gradingSources[262] = gradedFootage262;
+        gradedFileName262 = "UNDLM_00262bis.mov";
+        gradedImportSuccess262 = true;
+        gradingImportCount++;
+        logImportSuccess(262, "GRADED", gradedFileBis262.fsName, gradedFileName262);
+    } catch (e) {
+        logImportError(262, "GRADED", gradedFileBis262.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess262) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00262 (normal)");
+}
+
+// Import plan GRADED 00263
+// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
+var gradedFile263 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00263.mov");
+var gradedFilePoignees263 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00263_AVEC_POIGNEES.mov");
+var gradedFileBis263 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00263bis.mov");
+
+var gradedImportSuccess263 = false;
+var gradedFileName263 = "";
+
+// Tenter import standard
+if (gradedFile263.exists) {
+    try {
+        var gradedFootage263 = project.importFile(new ImportOptions(gradedFile263));
+        gradedFootage263.parentFolder = fromGradingFolder;
+        gradedFootage263.name = "UNDLM_00263";
+        gradingSources[263] = gradedFootage263;
+        gradedFileName263 = "UNDLM_00263.mov";
+        gradedImportSuccess263 = true;
+        gradingImportCount++;
+        logImportSuccess(263, "GRADED", gradedFile263.fsName, gradedFileName263);
+    } catch (e) {
+        logImportError(263, "GRADED", gradedFile263.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import AVEC_POIGNEES
+if (!gradedImportSuccess263 && gradedFilePoignees263.exists) {
+    try {
+        var gradedFootage263 = project.importFile(new ImportOptions(gradedFilePoignees263));
+        gradedFootage263.parentFolder = fromGradingFolder;
+        gradedFootage263.name = "UNDLM_00263";
+        gradingSources[263] = gradedFootage263;
+        gradedFileName263 = "UNDLM_00263_AVEC_POIGNEES.mov";
+        gradedImportSuccess263 = true;
+        gradingImportCount++;
+        logImportSuccess(263, "GRADED", gradedFilePoignees263.fsName, gradedFileName263);
+    } catch (e) {
+        logImportError(263, "GRADED", gradedFilePoignees263.fsName, e.toString());
+    }
+}
+
+// Si échec, tenter import bis
+if (!gradedImportSuccess263 && gradedFileBis263.exists) {
+    try {
+        var gradedFootage263 = project.importFile(new ImportOptions(gradedFileBis263));
+        gradedFootage263.parentFolder = fromGradingFolder;
+        gradedFootage263.name = "UNDLM_00263";
+        gradingSources[263] = gradedFootage263;
+        gradedFileName263 = "UNDLM_00263bis.mov";
+        gradedImportSuccess263 = true;
+        gradingImportCount++;
+        logImportSuccess(263, "GRADED", gradedFileBis263.fsName, gradedFileName263);
+    } catch (e) {
+        logImportError(263, "GRADED", gradedFileBis263.fsName, e.toString());
+    }
+}
+
+// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
+if (!gradedImportSuccess263) {
+    missingGradingCount++;
+    $.writeln("📝 Plan GRADED non disponible: UNDLM_00263 (normal)");
+}
+
 // Import plan GRADED 00275
 // Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
 var gradedFile275 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00275.mov");
@@ -3927,69 +6515,6 @@ if (!gradedImportSuccess277) {
     $.writeln("📝 Plan GRADED non disponible: UNDLM_00277 (normal)");
 }
 
-// Import plan GRADED 00278
-// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
-var gradedFile278 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00278.mov");
-var gradedFilePoignees278 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00278_AVEC_POIGNEES.mov");
-var gradedFileBis278 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00278bis.mov");
-
-var gradedImportSuccess278 = false;
-var gradedFileName278 = "";
-
-// Tenter import standard
-if (gradedFile278.exists) {
-    try {
-        var gradedFootage278 = project.importFile(new ImportOptions(gradedFile278));
-        gradedFootage278.parentFolder = fromGradingFolder;
-        gradedFootage278.name = "UNDLM_00278";
-        gradingSources[278] = gradedFootage278;
-        gradedFileName278 = "UNDLM_00278.mov";
-        gradedImportSuccess278 = true;
-        gradingImportCount++;
-        logImportSuccess(278, "GRADED", gradedFile278.fsName, gradedFileName278);
-    } catch (e) {
-        logImportError(278, "GRADED", gradedFile278.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import AVEC_POIGNEES
-if (!gradedImportSuccess278 && gradedFilePoignees278.exists) {
-    try {
-        var gradedFootage278 = project.importFile(new ImportOptions(gradedFilePoignees278));
-        gradedFootage278.parentFolder = fromGradingFolder;
-        gradedFootage278.name = "UNDLM_00278";
-        gradingSources[278] = gradedFootage278;
-        gradedFileName278 = "UNDLM_00278_AVEC_POIGNEES.mov";
-        gradedImportSuccess278 = true;
-        gradingImportCount++;
-        logImportSuccess(278, "GRADED", gradedFilePoignees278.fsName, gradedFileName278);
-    } catch (e) {
-        logImportError(278, "GRADED", gradedFilePoignees278.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import bis
-if (!gradedImportSuccess278 && gradedFileBis278.exists) {
-    try {
-        var gradedFootage278 = project.importFile(new ImportOptions(gradedFileBis278));
-        gradedFootage278.parentFolder = fromGradingFolder;
-        gradedFootage278.name = "UNDLM_00278";
-        gradingSources[278] = gradedFootage278;
-        gradedFileName278 = "UNDLM_00278bis.mov";
-        gradedImportSuccess278 = true;
-        gradingImportCount++;
-        logImportSuccess(278, "GRADED", gradedFileBis278.fsName, gradedFileName278);
-    } catch (e) {
-        logImportError(278, "GRADED", gradedFileBis278.fsName, e.toString());
-    }
-}
-
-// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
-if (!gradedImportSuccess278) {
-    missingGradingCount++;
-    $.writeln("📝 Plan GRADED non disponible: UNDLM_00278 (normal)");
-}
-
 // Import plan GRADED 00279
 // Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
 var gradedFile279 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00279.mov");
@@ -4114,69 +6639,6 @@ if (!gradedImportSuccess280 && gradedFileBis280.exists) {
 if (!gradedImportSuccess280) {
     missingGradingCount++;
     $.writeln("📝 Plan GRADED non disponible: UNDLM_00280 (normal)");
-}
-
-// Import plan GRADED 00281
-// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
-var gradedFile281 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00281.mov");
-var gradedFilePoignees281 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00281_AVEC_POIGNEES.mov");
-var gradedFileBis281 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00281bis.mov");
-
-var gradedImportSuccess281 = false;
-var gradedFileName281 = "";
-
-// Tenter import standard
-if (gradedFile281.exists) {
-    try {
-        var gradedFootage281 = project.importFile(new ImportOptions(gradedFile281));
-        gradedFootage281.parentFolder = fromGradingFolder;
-        gradedFootage281.name = "UNDLM_00281";
-        gradingSources[281] = gradedFootage281;
-        gradedFileName281 = "UNDLM_00281.mov";
-        gradedImportSuccess281 = true;
-        gradingImportCount++;
-        logImportSuccess(281, "GRADED", gradedFile281.fsName, gradedFileName281);
-    } catch (e) {
-        logImportError(281, "GRADED", gradedFile281.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import AVEC_POIGNEES
-if (!gradedImportSuccess281 && gradedFilePoignees281.exists) {
-    try {
-        var gradedFootage281 = project.importFile(new ImportOptions(gradedFilePoignees281));
-        gradedFootage281.parentFolder = fromGradingFolder;
-        gradedFootage281.name = "UNDLM_00281";
-        gradingSources[281] = gradedFootage281;
-        gradedFileName281 = "UNDLM_00281_AVEC_POIGNEES.mov";
-        gradedImportSuccess281 = true;
-        gradingImportCount++;
-        logImportSuccess(281, "GRADED", gradedFilePoignees281.fsName, gradedFileName281);
-    } catch (e) {
-        logImportError(281, "GRADED", gradedFilePoignees281.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import bis
-if (!gradedImportSuccess281 && gradedFileBis281.exists) {
-    try {
-        var gradedFootage281 = project.importFile(new ImportOptions(gradedFileBis281));
-        gradedFootage281.parentFolder = fromGradingFolder;
-        gradedFootage281.name = "UNDLM_00281";
-        gradingSources[281] = gradedFootage281;
-        gradedFileName281 = "UNDLM_00281bis.mov";
-        gradedImportSuccess281 = true;
-        gradingImportCount++;
-        logImportSuccess(281, "GRADED", gradedFileBis281.fsName, gradedFileName281);
-    } catch (e) {
-        logImportError(281, "GRADED", gradedFileBis281.fsName, e.toString());
-    }
-}
-
-// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
-if (!gradedImportSuccess281) {
-    missingGradingCount++;
-    $.writeln("📝 Plan GRADED non disponible: UNDLM_00281 (normal)");
 }
 
 // Import plan GRADED 00282
@@ -4305,69 +6767,6 @@ if (!gradedImportSuccess283) {
     $.writeln("📝 Plan GRADED non disponible: UNDLM_00283 (normal)");
 }
 
-// Import plan GRADED 00284
-// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
-var gradedFile284 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00284.mov");
-var gradedFilePoignees284 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00284_AVEC_POIGNEES.mov");
-var gradedFileBis284 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00284bis.mov");
-
-var gradedImportSuccess284 = false;
-var gradedFileName284 = "";
-
-// Tenter import standard
-if (gradedFile284.exists) {
-    try {
-        var gradedFootage284 = project.importFile(new ImportOptions(gradedFile284));
-        gradedFootage284.parentFolder = fromGradingFolder;
-        gradedFootage284.name = "UNDLM_00284";
-        gradingSources[284] = gradedFootage284;
-        gradedFileName284 = "UNDLM_00284.mov";
-        gradedImportSuccess284 = true;
-        gradingImportCount++;
-        logImportSuccess(284, "GRADED", gradedFile284.fsName, gradedFileName284);
-    } catch (e) {
-        logImportError(284, "GRADED", gradedFile284.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import AVEC_POIGNEES
-if (!gradedImportSuccess284 && gradedFilePoignees284.exists) {
-    try {
-        var gradedFootage284 = project.importFile(new ImportOptions(gradedFilePoignees284));
-        gradedFootage284.parentFolder = fromGradingFolder;
-        gradedFootage284.name = "UNDLM_00284";
-        gradingSources[284] = gradedFootage284;
-        gradedFileName284 = "UNDLM_00284_AVEC_POIGNEES.mov";
-        gradedImportSuccess284 = true;
-        gradingImportCount++;
-        logImportSuccess(284, "GRADED", gradedFilePoignees284.fsName, gradedFileName284);
-    } catch (e) {
-        logImportError(284, "GRADED", gradedFilePoignees284.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import bis
-if (!gradedImportSuccess284 && gradedFileBis284.exists) {
-    try {
-        var gradedFootage284 = project.importFile(new ImportOptions(gradedFileBis284));
-        gradedFootage284.parentFolder = fromGradingFolder;
-        gradedFootage284.name = "UNDLM_00284";
-        gradingSources[284] = gradedFootage284;
-        gradedFileName284 = "UNDLM_00284bis.mov";
-        gradedImportSuccess284 = true;
-        gradingImportCount++;
-        logImportSuccess(284, "GRADED", gradedFileBis284.fsName, gradedFileName284);
-    } catch (e) {
-        logImportError(284, "GRADED", gradedFileBis284.fsName, e.toString());
-    }
-}
-
-// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
-if (!gradedImportSuccess284) {
-    missingGradingCount++;
-    $.writeln("📝 Plan GRADED non disponible: UNDLM_00284 (normal)");
-}
-
 // Import plan GRADED 00285
 // Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
 var gradedFile285 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00285.mov");
@@ -4429,69 +6828,6 @@ if (!gradedImportSuccess285 && gradedFileBis285.exists) {
 if (!gradedImportSuccess285) {
     missingGradingCount++;
     $.writeln("📝 Plan GRADED non disponible: UNDLM_00285 (normal)");
-}
-
-// Import plan GRADED 00286
-// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
-var gradedFile286 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00286.mov");
-var gradedFilePoignees286 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00286_AVEC_POIGNEES.mov");
-var gradedFileBis286 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00286bis.mov");
-
-var gradedImportSuccess286 = false;
-var gradedFileName286 = "";
-
-// Tenter import standard
-if (gradedFile286.exists) {
-    try {
-        var gradedFootage286 = project.importFile(new ImportOptions(gradedFile286));
-        gradedFootage286.parentFolder = fromGradingFolder;
-        gradedFootage286.name = "UNDLM_00286";
-        gradingSources[286] = gradedFootage286;
-        gradedFileName286 = "UNDLM_00286.mov";
-        gradedImportSuccess286 = true;
-        gradingImportCount++;
-        logImportSuccess(286, "GRADED", gradedFile286.fsName, gradedFileName286);
-    } catch (e) {
-        logImportError(286, "GRADED", gradedFile286.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import AVEC_POIGNEES
-if (!gradedImportSuccess286 && gradedFilePoignees286.exists) {
-    try {
-        var gradedFootage286 = project.importFile(new ImportOptions(gradedFilePoignees286));
-        gradedFootage286.parentFolder = fromGradingFolder;
-        gradedFootage286.name = "UNDLM_00286";
-        gradingSources[286] = gradedFootage286;
-        gradedFileName286 = "UNDLM_00286_AVEC_POIGNEES.mov";
-        gradedImportSuccess286 = true;
-        gradingImportCount++;
-        logImportSuccess(286, "GRADED", gradedFilePoignees286.fsName, gradedFileName286);
-    } catch (e) {
-        logImportError(286, "GRADED", gradedFilePoignees286.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import bis
-if (!gradedImportSuccess286 && gradedFileBis286.exists) {
-    try {
-        var gradedFootage286 = project.importFile(new ImportOptions(gradedFileBis286));
-        gradedFootage286.parentFolder = fromGradingFolder;
-        gradedFootage286.name = "UNDLM_00286";
-        gradingSources[286] = gradedFootage286;
-        gradedFileName286 = "UNDLM_00286bis.mov";
-        gradedImportSuccess286 = true;
-        gradingImportCount++;
-        logImportSuccess(286, "GRADED", gradedFileBis286.fsName, gradedFileName286);
-    } catch (e) {
-        logImportError(286, "GRADED", gradedFileBis286.fsName, e.toString());
-    }
-}
-
-// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
-if (!gradedImportSuccess286) {
-    missingGradingCount++;
-    $.writeln("📝 Plan GRADED non disponible: UNDLM_00286 (normal)");
 }
 
 // Import plan GRADED 00311
@@ -5250,69 +7586,6 @@ if (!gradedImportSuccess331) {
     $.writeln("📝 Plan GRADED non disponible: UNDLM_00331 (normal)");
 }
 
-// Import plan GRADED 00383
-// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
-var gradedFile383 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00383.mov");
-var gradedFilePoignees383 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00383_AVEC_POIGNEES.mov");
-var gradedFileBis383 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00383bis.mov");
-
-var gradedImportSuccess383 = false;
-var gradedFileName383 = "";
-
-// Tenter import standard
-if (gradedFile383.exists) {
-    try {
-        var gradedFootage383 = project.importFile(new ImportOptions(gradedFile383));
-        gradedFootage383.parentFolder = fromGradingFolder;
-        gradedFootage383.name = "UNDLM_00383";
-        gradingSources[383] = gradedFootage383;
-        gradedFileName383 = "UNDLM_00383.mov";
-        gradedImportSuccess383 = true;
-        gradingImportCount++;
-        logImportSuccess(383, "GRADED", gradedFile383.fsName, gradedFileName383);
-    } catch (e) {
-        logImportError(383, "GRADED", gradedFile383.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import AVEC_POIGNEES
-if (!gradedImportSuccess383 && gradedFilePoignees383.exists) {
-    try {
-        var gradedFootage383 = project.importFile(new ImportOptions(gradedFilePoignees383));
-        gradedFootage383.parentFolder = fromGradingFolder;
-        gradedFootage383.name = "UNDLM_00383";
-        gradingSources[383] = gradedFootage383;
-        gradedFileName383 = "UNDLM_00383_AVEC_POIGNEES.mov";
-        gradedImportSuccess383 = true;
-        gradingImportCount++;
-        logImportSuccess(383, "GRADED", gradedFilePoignees383.fsName, gradedFileName383);
-    } catch (e) {
-        logImportError(383, "GRADED", gradedFilePoignees383.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import bis
-if (!gradedImportSuccess383 && gradedFileBis383.exists) {
-    try {
-        var gradedFootage383 = project.importFile(new ImportOptions(gradedFileBis383));
-        gradedFootage383.parentFolder = fromGradingFolder;
-        gradedFootage383.name = "UNDLM_00383";
-        gradingSources[383] = gradedFootage383;
-        gradedFileName383 = "UNDLM_00383bis.mov";
-        gradedImportSuccess383 = true;
-        gradingImportCount++;
-        logImportSuccess(383, "GRADED", gradedFileBis383.fsName, gradedFileName383);
-    } catch (e) {
-        logImportError(383, "GRADED", gradedFileBis383.fsName, e.toString());
-    }
-}
-
-// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
-if (!gradedImportSuccess383) {
-    missingGradingCount++;
-    $.writeln("📝 Plan GRADED non disponible: UNDLM_00383 (normal)");
-}
-
 // Import plan GRADED 00384
 // Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
 var gradedFile384 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00384.mov");
@@ -5563,69 +7836,6 @@ if (!gradedImportSuccess387 && gradedFileBis387.exists) {
 if (!gradedImportSuccess387) {
     missingGradingCount++;
     $.writeln("📝 Plan GRADED non disponible: UNDLM_00387 (normal)");
-}
-
-// Import plan GRADED 00388
-// Test des variantes dans l'ordre : standard -> _AVEC_POIGNEES -> bis
-var gradedFile388 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00388.mov");
-var gradedFilePoignees388 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00388_AVEC_POIGNEES.mov");
-var gradedFileBis388 = new File("/Volumes/resizelab/o2b-undllm/2_IN/_FROM_GRADING/BY_SHOTS/UNDLM_00388bis.mov");
-
-var gradedImportSuccess388 = false;
-var gradedFileName388 = "";
-
-// Tenter import standard
-if (gradedFile388.exists) {
-    try {
-        var gradedFootage388 = project.importFile(new ImportOptions(gradedFile388));
-        gradedFootage388.parentFolder = fromGradingFolder;
-        gradedFootage388.name = "UNDLM_00388";
-        gradingSources[388] = gradedFootage388;
-        gradedFileName388 = "UNDLM_00388.mov";
-        gradedImportSuccess388 = true;
-        gradingImportCount++;
-        logImportSuccess(388, "GRADED", gradedFile388.fsName, gradedFileName388);
-    } catch (e) {
-        logImportError(388, "GRADED", gradedFile388.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import AVEC_POIGNEES
-if (!gradedImportSuccess388 && gradedFilePoignees388.exists) {
-    try {
-        var gradedFootage388 = project.importFile(new ImportOptions(gradedFilePoignees388));
-        gradedFootage388.parentFolder = fromGradingFolder;
-        gradedFootage388.name = "UNDLM_00388";
-        gradingSources[388] = gradedFootage388;
-        gradedFileName388 = "UNDLM_00388_AVEC_POIGNEES.mov";
-        gradedImportSuccess388 = true;
-        gradingImportCount++;
-        logImportSuccess(388, "GRADED", gradedFilePoignees388.fsName, gradedFileName388);
-    } catch (e) {
-        logImportError(388, "GRADED", gradedFilePoignees388.fsName, e.toString());
-    }
-}
-
-// Si échec, tenter import bis
-if (!gradedImportSuccess388 && gradedFileBis388.exists) {
-    try {
-        var gradedFootage388 = project.importFile(new ImportOptions(gradedFileBis388));
-        gradedFootage388.parentFolder = fromGradingFolder;
-        gradedFootage388.name = "UNDLM_00388";
-        gradingSources[388] = gradedFootage388;
-        gradedFileName388 = "UNDLM_00388bis.mov";
-        gradedImportSuccess388 = true;
-        gradingImportCount++;
-        logImportSuccess(388, "GRADED", gradedFileBis388.fsName, gradedFileName388);
-    } catch (e) {
-        logImportError(388, "GRADED", gradedFileBis388.fsName, e.toString());
-    }
-}
-
-// Si aucune variante n'a fonctionné, c'est normal (pas d'erreur pour GRADED)
-if (!gradedImportSuccess388) {
-    missingGradingCount++;
-    $.writeln("📝 Plan GRADED non disponible: UNDLM_00388 (normal)");
 }
 
 // Import plan GRADED 00391
@@ -7142,8 +9352,8 @@ if (!gradedImportSuccess501) {
 
 // Rapport final d'import
 alert("📊 RAPPORT D'IMPORT FINAL:" + "\n" +
-      "EDIT importés: " + editImportCount + "/54" + "\n" +
-      "GRADED importés: " + gradingImportCount + "/54" + "\n" +
+      "EDIT importés: " + editImportCount + "/71" + "\n" +
+      "GRADED importés: " + gradingImportCount + "/71" + "\n" +
       "EDIT manquants: " + missingEditCount + "\n" +
       "GRADED manquants: " + missingGradingCount + "\n" + "\n" +
       "Erreurs d'import: " + importErrors.length + "\n" +
@@ -7162,6 +9372,1961 @@ var planCompositions = {};
 var bgSolidComp = project.items.addComp("BG_SOLID_BLACK", 2560, 1440, 1.0, 10.0, 25);
 bgSolidComp.parentFolder = workLayersFolder;
 var bgSolidLayer = bgSolidComp.layers.addSolid([0.05, 0.05, 0.05], "BG_SOLID", 2560, 1440, 1.0);
+
+
+// Composition pour plan 00175
+var planComp175 = project.items.addComp(
+    "SQ08_UNDLM_00175",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    4.76,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp175.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer175 = planComp175.layers.add(bgSolidComp);
+bgLayer175.name = "BG_SOLID";
+bgLayer175.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer175 = false;
+if (gradingSources[175]) {
+    var gradedLayer175 = planComp175.layers.add(gradingSources[175]);
+    gradedLayer175.name = "UNDLM_00175_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer175.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer175.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer175 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer175 = false;
+if (editSources[175]) {
+    var editLayer175 = planComp175.layers.add(editSources[175]);
+    editLayer175.name = "UNDLM_00175_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer175.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer175.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer175 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer175) {
+    // EDIT toujours activé quand disponible
+    editLayer175.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer175) {
+        gradedLayer175.enabled = false;
+    }
+} else if (hasGradedLayer175) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer175.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText175 = planComp175.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText175.name = "WARNING_NO_EDIT";
+    warningText175.property("Transform").property("Position").setValue([1280, 200]);
+    warningText175.guideLayer = true;
+    
+    var warningTextDoc175 = warningText175.property("Source Text").value;
+    warningTextDoc175.fontSize = 32;
+    warningTextDoc175.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc175.font = "Arial-BoldMT";
+    warningTextDoc175.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText175.property("Source Text").setValue(warningTextDoc175);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText175 = planComp175.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00175");
+    errorText175.name = "ERROR_NO_SOURCE";
+    errorText175.property("Transform").property("Position").setValue([1280, 720]);
+    errorText175.guideLayer = true;
+    
+    var errorTextDoc175 = errorText175.property("Source Text").value;
+    errorTextDoc175.fontSize = 48;
+    errorTextDoc175.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc175.font = "Arial-BoldMT";
+    errorTextDoc175.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText175.property("Source Text").setValue(errorTextDoc175);
+}
+
+planCompositions[175] = planComp175;
+
+
+// Composition pour plan 00176
+var planComp176 = project.items.addComp(
+    "SQ09_UNDLM_00176",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    8.0,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp176.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer176 = planComp176.layers.add(bgSolidComp);
+bgLayer176.name = "BG_SOLID";
+bgLayer176.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer176 = false;
+if (gradingSources[176]) {
+    var gradedLayer176 = planComp176.layers.add(gradingSources[176]);
+    gradedLayer176.name = "UNDLM_00176_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer176.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer176.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer176 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer176 = false;
+if (editSources[176]) {
+    var editLayer176 = planComp176.layers.add(editSources[176]);
+    editLayer176.name = "UNDLM_00176_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer176.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer176.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer176 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer176) {
+    // EDIT toujours activé quand disponible
+    editLayer176.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer176) {
+        gradedLayer176.enabled = false;
+    }
+} else if (hasGradedLayer176) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer176.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText176 = planComp176.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText176.name = "WARNING_NO_EDIT";
+    warningText176.property("Transform").property("Position").setValue([1280, 200]);
+    warningText176.guideLayer = true;
+    
+    var warningTextDoc176 = warningText176.property("Source Text").value;
+    warningTextDoc176.fontSize = 32;
+    warningTextDoc176.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc176.font = "Arial-BoldMT";
+    warningTextDoc176.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText176.property("Source Text").setValue(warningTextDoc176);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText176 = planComp176.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00176");
+    errorText176.name = "ERROR_NO_SOURCE";
+    errorText176.property("Transform").property("Position").setValue([1280, 720]);
+    errorText176.guideLayer = true;
+    
+    var errorTextDoc176 = errorText176.property("Source Text").value;
+    errorTextDoc176.fontSize = 48;
+    errorTextDoc176.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc176.font = "Arial-BoldMT";
+    errorTextDoc176.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText176.property("Source Text").setValue(errorTextDoc176);
+}
+
+planCompositions[176] = planComp176;
+
+
+// Composition pour plan 00177
+var planComp177 = project.items.addComp(
+    "SQ09_UNDLM_00177",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    4.44,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp177.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer177 = planComp177.layers.add(bgSolidComp);
+bgLayer177.name = "BG_SOLID";
+bgLayer177.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer177 = false;
+if (gradingSources[177]) {
+    var gradedLayer177 = planComp177.layers.add(gradingSources[177]);
+    gradedLayer177.name = "UNDLM_00177_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer177.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer177.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer177 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer177 = false;
+if (editSources[177]) {
+    var editLayer177 = planComp177.layers.add(editSources[177]);
+    editLayer177.name = "UNDLM_00177_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer177.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer177.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer177 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer177) {
+    // EDIT toujours activé quand disponible
+    editLayer177.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer177) {
+        gradedLayer177.enabled = false;
+    }
+} else if (hasGradedLayer177) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer177.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText177 = planComp177.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText177.name = "WARNING_NO_EDIT";
+    warningText177.property("Transform").property("Position").setValue([1280, 200]);
+    warningText177.guideLayer = true;
+    
+    var warningTextDoc177 = warningText177.property("Source Text").value;
+    warningTextDoc177.fontSize = 32;
+    warningTextDoc177.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc177.font = "Arial-BoldMT";
+    warningTextDoc177.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText177.property("Source Text").setValue(warningTextDoc177);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText177 = planComp177.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00177");
+    errorText177.name = "ERROR_NO_SOURCE";
+    errorText177.property("Transform").property("Position").setValue([1280, 720]);
+    errorText177.guideLayer = true;
+    
+    var errorTextDoc177 = errorText177.property("Source Text").value;
+    errorTextDoc177.fontSize = 48;
+    errorTextDoc177.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc177.font = "Arial-BoldMT";
+    errorTextDoc177.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText177.property("Source Text").setValue(errorTextDoc177);
+}
+
+planCompositions[177] = planComp177;
+
+
+// Composition pour plan 00193
+var planComp193 = project.items.addComp(
+    "SQ10_UNDLM_00193",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    5.4,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp193.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer193 = planComp193.layers.add(bgSolidComp);
+bgLayer193.name = "BG_SOLID";
+bgLayer193.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer193 = false;
+if (gradingSources[193]) {
+    var gradedLayer193 = planComp193.layers.add(gradingSources[193]);
+    gradedLayer193.name = "UNDLM_00193_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer193.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer193.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer193 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer193 = false;
+if (editSources[193]) {
+    var editLayer193 = planComp193.layers.add(editSources[193]);
+    editLayer193.name = "UNDLM_00193_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer193.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer193.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer193 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer193) {
+    // EDIT toujours activé quand disponible
+    editLayer193.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer193) {
+        gradedLayer193.enabled = false;
+    }
+} else if (hasGradedLayer193) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer193.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText193 = planComp193.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText193.name = "WARNING_NO_EDIT";
+    warningText193.property("Transform").property("Position").setValue([1280, 200]);
+    warningText193.guideLayer = true;
+    
+    var warningTextDoc193 = warningText193.property("Source Text").value;
+    warningTextDoc193.fontSize = 32;
+    warningTextDoc193.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc193.font = "Arial-BoldMT";
+    warningTextDoc193.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText193.property("Source Text").setValue(warningTextDoc193);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText193 = planComp193.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00193");
+    errorText193.name = "ERROR_NO_SOURCE";
+    errorText193.property("Transform").property("Position").setValue([1280, 720]);
+    errorText193.guideLayer = true;
+    
+    var errorTextDoc193 = errorText193.property("Source Text").value;
+    errorTextDoc193.fontSize = 48;
+    errorTextDoc193.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc193.font = "Arial-BoldMT";
+    errorTextDoc193.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText193.property("Source Text").setValue(errorTextDoc193);
+}
+
+planCompositions[193] = planComp193;
+
+
+// Composition pour plan 00194
+var planComp194 = project.items.addComp(
+    "SQ10_UNDLM_00194",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    10.36,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp194.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer194 = planComp194.layers.add(bgSolidComp);
+bgLayer194.name = "BG_SOLID";
+bgLayer194.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer194 = false;
+if (gradingSources[194]) {
+    var gradedLayer194 = planComp194.layers.add(gradingSources[194]);
+    gradedLayer194.name = "UNDLM_00194_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer194.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer194.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer194 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer194 = false;
+if (editSources[194]) {
+    var editLayer194 = planComp194.layers.add(editSources[194]);
+    editLayer194.name = "UNDLM_00194_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer194.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer194.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer194 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer194) {
+    // EDIT toujours activé quand disponible
+    editLayer194.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer194) {
+        gradedLayer194.enabled = false;
+    }
+} else if (hasGradedLayer194) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer194.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText194 = planComp194.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText194.name = "WARNING_NO_EDIT";
+    warningText194.property("Transform").property("Position").setValue([1280, 200]);
+    warningText194.guideLayer = true;
+    
+    var warningTextDoc194 = warningText194.property("Source Text").value;
+    warningTextDoc194.fontSize = 32;
+    warningTextDoc194.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc194.font = "Arial-BoldMT";
+    warningTextDoc194.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText194.property("Source Text").setValue(warningTextDoc194);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText194 = planComp194.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00194");
+    errorText194.name = "ERROR_NO_SOURCE";
+    errorText194.property("Transform").property("Position").setValue([1280, 720]);
+    errorText194.guideLayer = true;
+    
+    var errorTextDoc194 = errorText194.property("Source Text").value;
+    errorTextDoc194.fontSize = 48;
+    errorTextDoc194.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc194.font = "Arial-BoldMT";
+    errorTextDoc194.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText194.property("Source Text").setValue(errorTextDoc194);
+}
+
+planCompositions[194] = planComp194;
+
+
+// Composition pour plan 00195
+var planComp195 = project.items.addComp(
+    "SQ10_UNDLM_00195",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    12.8,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp195.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer195 = planComp195.layers.add(bgSolidComp);
+bgLayer195.name = "BG_SOLID";
+bgLayer195.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer195 = false;
+if (gradingSources[195]) {
+    var gradedLayer195 = planComp195.layers.add(gradingSources[195]);
+    gradedLayer195.name = "UNDLM_00195_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer195.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer195.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer195 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer195 = false;
+if (editSources[195]) {
+    var editLayer195 = planComp195.layers.add(editSources[195]);
+    editLayer195.name = "UNDLM_00195_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer195.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer195.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer195 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer195) {
+    // EDIT toujours activé quand disponible
+    editLayer195.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer195) {
+        gradedLayer195.enabled = false;
+    }
+} else if (hasGradedLayer195) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer195.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText195 = planComp195.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText195.name = "WARNING_NO_EDIT";
+    warningText195.property("Transform").property("Position").setValue([1280, 200]);
+    warningText195.guideLayer = true;
+    
+    var warningTextDoc195 = warningText195.property("Source Text").value;
+    warningTextDoc195.fontSize = 32;
+    warningTextDoc195.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc195.font = "Arial-BoldMT";
+    warningTextDoc195.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText195.property("Source Text").setValue(warningTextDoc195);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText195 = planComp195.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00195");
+    errorText195.name = "ERROR_NO_SOURCE";
+    errorText195.property("Transform").property("Position").setValue([1280, 720]);
+    errorText195.guideLayer = true;
+    
+    var errorTextDoc195 = errorText195.property("Source Text").value;
+    errorTextDoc195.fontSize = 48;
+    errorTextDoc195.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc195.font = "Arial-BoldMT";
+    errorTextDoc195.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText195.property("Source Text").setValue(errorTextDoc195);
+}
+
+planCompositions[195] = planComp195;
+
+
+// Composition pour plan 00196
+var planComp196 = project.items.addComp(
+    "SQ10_UNDLM_00196",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    3.8,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp196.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer196 = planComp196.layers.add(bgSolidComp);
+bgLayer196.name = "BG_SOLID";
+bgLayer196.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer196 = false;
+if (gradingSources[196]) {
+    var gradedLayer196 = planComp196.layers.add(gradingSources[196]);
+    gradedLayer196.name = "UNDLM_00196_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer196.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer196.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer196 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer196 = false;
+if (editSources[196]) {
+    var editLayer196 = planComp196.layers.add(editSources[196]);
+    editLayer196.name = "UNDLM_00196_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer196.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer196.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer196 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer196) {
+    // EDIT toujours activé quand disponible
+    editLayer196.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer196) {
+        gradedLayer196.enabled = false;
+    }
+} else if (hasGradedLayer196) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer196.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText196 = planComp196.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText196.name = "WARNING_NO_EDIT";
+    warningText196.property("Transform").property("Position").setValue([1280, 200]);
+    warningText196.guideLayer = true;
+    
+    var warningTextDoc196 = warningText196.property("Source Text").value;
+    warningTextDoc196.fontSize = 32;
+    warningTextDoc196.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc196.font = "Arial-BoldMT";
+    warningTextDoc196.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText196.property("Source Text").setValue(warningTextDoc196);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText196 = planComp196.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00196");
+    errorText196.name = "ERROR_NO_SOURCE";
+    errorText196.property("Transform").property("Position").setValue([1280, 720]);
+    errorText196.guideLayer = true;
+    
+    var errorTextDoc196 = errorText196.property("Source Text").value;
+    errorTextDoc196.fontSize = 48;
+    errorTextDoc196.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc196.font = "Arial-BoldMT";
+    errorTextDoc196.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText196.property("Source Text").setValue(errorTextDoc196);
+}
+
+planCompositions[196] = planComp196;
+
+
+// Composition pour plan 00197
+var planComp197 = project.items.addComp(
+    "SQ10_UNDLM_00197",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    6.2,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp197.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer197 = planComp197.layers.add(bgSolidComp);
+bgLayer197.name = "BG_SOLID";
+bgLayer197.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer197 = false;
+if (gradingSources[197]) {
+    var gradedLayer197 = planComp197.layers.add(gradingSources[197]);
+    gradedLayer197.name = "UNDLM_00197_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer197.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer197.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer197 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer197 = false;
+if (editSources[197]) {
+    var editLayer197 = planComp197.layers.add(editSources[197]);
+    editLayer197.name = "UNDLM_00197_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer197.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer197.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer197 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer197) {
+    // EDIT toujours activé quand disponible
+    editLayer197.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer197) {
+        gradedLayer197.enabled = false;
+    }
+} else if (hasGradedLayer197) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer197.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText197 = planComp197.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText197.name = "WARNING_NO_EDIT";
+    warningText197.property("Transform").property("Position").setValue([1280, 200]);
+    warningText197.guideLayer = true;
+    
+    var warningTextDoc197 = warningText197.property("Source Text").value;
+    warningTextDoc197.fontSize = 32;
+    warningTextDoc197.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc197.font = "Arial-BoldMT";
+    warningTextDoc197.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText197.property("Source Text").setValue(warningTextDoc197);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText197 = planComp197.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00197");
+    errorText197.name = "ERROR_NO_SOURCE";
+    errorText197.property("Transform").property("Position").setValue([1280, 720]);
+    errorText197.guideLayer = true;
+    
+    var errorTextDoc197 = errorText197.property("Source Text").value;
+    errorTextDoc197.fontSize = 48;
+    errorTextDoc197.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc197.font = "Arial-BoldMT";
+    errorTextDoc197.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText197.property("Source Text").setValue(errorTextDoc197);
+}
+
+planCompositions[197] = planComp197;
+
+
+// Composition pour plan 00198
+var planComp198 = project.items.addComp(
+    "SQ10_UNDLM_00198",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    5.68,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp198.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer198 = planComp198.layers.add(bgSolidComp);
+bgLayer198.name = "BG_SOLID";
+bgLayer198.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer198 = false;
+if (gradingSources[198]) {
+    var gradedLayer198 = planComp198.layers.add(gradingSources[198]);
+    gradedLayer198.name = "UNDLM_00198_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer198.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer198.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer198 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer198 = false;
+if (editSources[198]) {
+    var editLayer198 = planComp198.layers.add(editSources[198]);
+    editLayer198.name = "UNDLM_00198_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer198.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer198.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer198 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer198) {
+    // EDIT toujours activé quand disponible
+    editLayer198.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer198) {
+        gradedLayer198.enabled = false;
+    }
+} else if (hasGradedLayer198) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer198.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText198 = planComp198.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText198.name = "WARNING_NO_EDIT";
+    warningText198.property("Transform").property("Position").setValue([1280, 200]);
+    warningText198.guideLayer = true;
+    
+    var warningTextDoc198 = warningText198.property("Source Text").value;
+    warningTextDoc198.fontSize = 32;
+    warningTextDoc198.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc198.font = "Arial-BoldMT";
+    warningTextDoc198.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText198.property("Source Text").setValue(warningTextDoc198);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText198 = planComp198.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00198");
+    errorText198.name = "ERROR_NO_SOURCE";
+    errorText198.property("Transform").property("Position").setValue([1280, 720]);
+    errorText198.guideLayer = true;
+    
+    var errorTextDoc198 = errorText198.property("Source Text").value;
+    errorTextDoc198.fontSize = 48;
+    errorTextDoc198.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc198.font = "Arial-BoldMT";
+    errorTextDoc198.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText198.property("Source Text").setValue(errorTextDoc198);
+}
+
+planCompositions[198] = planComp198;
+
+
+// Composition pour plan 00199
+var planComp199 = project.items.addComp(
+    "SQ10_UNDLM_00199",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    4.92,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp199.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer199 = planComp199.layers.add(bgSolidComp);
+bgLayer199.name = "BG_SOLID";
+bgLayer199.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer199 = false;
+if (gradingSources[199]) {
+    var gradedLayer199 = planComp199.layers.add(gradingSources[199]);
+    gradedLayer199.name = "UNDLM_00199_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer199.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer199.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer199 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer199 = false;
+if (editSources[199]) {
+    var editLayer199 = planComp199.layers.add(editSources[199]);
+    editLayer199.name = "UNDLM_00199_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer199.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer199.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer199 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer199) {
+    // EDIT toujours activé quand disponible
+    editLayer199.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer199) {
+        gradedLayer199.enabled = false;
+    }
+} else if (hasGradedLayer199) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer199.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText199 = planComp199.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText199.name = "WARNING_NO_EDIT";
+    warningText199.property("Transform").property("Position").setValue([1280, 200]);
+    warningText199.guideLayer = true;
+    
+    var warningTextDoc199 = warningText199.property("Source Text").value;
+    warningTextDoc199.fontSize = 32;
+    warningTextDoc199.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc199.font = "Arial-BoldMT";
+    warningTextDoc199.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText199.property("Source Text").setValue(warningTextDoc199);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText199 = planComp199.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00199");
+    errorText199.name = "ERROR_NO_SOURCE";
+    errorText199.property("Transform").property("Position").setValue([1280, 720]);
+    errorText199.guideLayer = true;
+    
+    var errorTextDoc199 = errorText199.property("Source Text").value;
+    errorTextDoc199.fontSize = 48;
+    errorTextDoc199.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc199.font = "Arial-BoldMT";
+    errorTextDoc199.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText199.property("Source Text").setValue(errorTextDoc199);
+}
+
+planCompositions[199] = planComp199;
+
+
+// Composition pour plan 00200
+var planComp200 = project.items.addComp(
+    "SQ10_UNDLM_00200",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    2.2,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp200.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer200 = planComp200.layers.add(bgSolidComp);
+bgLayer200.name = "BG_SOLID";
+bgLayer200.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer200 = false;
+if (gradingSources[200]) {
+    var gradedLayer200 = planComp200.layers.add(gradingSources[200]);
+    gradedLayer200.name = "UNDLM_00200_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer200.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer200.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer200 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer200 = false;
+if (editSources[200]) {
+    var editLayer200 = planComp200.layers.add(editSources[200]);
+    editLayer200.name = "UNDLM_00200_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer200.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer200.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer200 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer200) {
+    // EDIT toujours activé quand disponible
+    editLayer200.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer200) {
+        gradedLayer200.enabled = false;
+    }
+} else if (hasGradedLayer200) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer200.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText200 = planComp200.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText200.name = "WARNING_NO_EDIT";
+    warningText200.property("Transform").property("Position").setValue([1280, 200]);
+    warningText200.guideLayer = true;
+    
+    var warningTextDoc200 = warningText200.property("Source Text").value;
+    warningTextDoc200.fontSize = 32;
+    warningTextDoc200.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc200.font = "Arial-BoldMT";
+    warningTextDoc200.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText200.property("Source Text").setValue(warningTextDoc200);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText200 = planComp200.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00200");
+    errorText200.name = "ERROR_NO_SOURCE";
+    errorText200.property("Transform").property("Position").setValue([1280, 720]);
+    errorText200.guideLayer = true;
+    
+    var errorTextDoc200 = errorText200.property("Source Text").value;
+    errorTextDoc200.fontSize = 48;
+    errorTextDoc200.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc200.font = "Arial-BoldMT";
+    errorTextDoc200.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText200.property("Source Text").setValue(errorTextDoc200);
+}
+
+planCompositions[200] = planComp200;
+
+
+// Composition pour plan 00201
+var planComp201 = project.items.addComp(
+    "SQ10_UNDLM_00201",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    4.16,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp201.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer201 = planComp201.layers.add(bgSolidComp);
+bgLayer201.name = "BG_SOLID";
+bgLayer201.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer201 = false;
+if (gradingSources[201]) {
+    var gradedLayer201 = planComp201.layers.add(gradingSources[201]);
+    gradedLayer201.name = "UNDLM_00201_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer201.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer201.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer201 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer201 = false;
+if (editSources[201]) {
+    var editLayer201 = planComp201.layers.add(editSources[201]);
+    editLayer201.name = "UNDLM_00201_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer201.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer201.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer201 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer201) {
+    // EDIT toujours activé quand disponible
+    editLayer201.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer201) {
+        gradedLayer201.enabled = false;
+    }
+} else if (hasGradedLayer201) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer201.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText201 = planComp201.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText201.name = "WARNING_NO_EDIT";
+    warningText201.property("Transform").property("Position").setValue([1280, 200]);
+    warningText201.guideLayer = true;
+    
+    var warningTextDoc201 = warningText201.property("Source Text").value;
+    warningTextDoc201.fontSize = 32;
+    warningTextDoc201.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc201.font = "Arial-BoldMT";
+    warningTextDoc201.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText201.property("Source Text").setValue(warningTextDoc201);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText201 = planComp201.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00201");
+    errorText201.name = "ERROR_NO_SOURCE";
+    errorText201.property("Transform").property("Position").setValue([1280, 720]);
+    errorText201.guideLayer = true;
+    
+    var errorTextDoc201 = errorText201.property("Source Text").value;
+    errorTextDoc201.fontSize = 48;
+    errorTextDoc201.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc201.font = "Arial-BoldMT";
+    errorTextDoc201.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText201.property("Source Text").setValue(errorTextDoc201);
+}
+
+planCompositions[201] = planComp201;
+
+
+// Composition pour plan 00212
+var planComp212 = project.items.addComp(
+    "SQ12_UNDLM_00212",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    7.48,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp212.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer212 = planComp212.layers.add(bgSolidComp);
+bgLayer212.name = "BG_SOLID";
+bgLayer212.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer212 = false;
+if (gradingSources[212]) {
+    var gradedLayer212 = planComp212.layers.add(gradingSources[212]);
+    gradedLayer212.name = "UNDLM_00212_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer212.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer212.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer212 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer212 = false;
+if (editSources[212]) {
+    var editLayer212 = planComp212.layers.add(editSources[212]);
+    editLayer212.name = "UNDLM_00212_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer212.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer212.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer212 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer212) {
+    // EDIT toujours activé quand disponible
+    editLayer212.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer212) {
+        gradedLayer212.enabled = false;
+    }
+} else if (hasGradedLayer212) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer212.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText212 = planComp212.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText212.name = "WARNING_NO_EDIT";
+    warningText212.property("Transform").property("Position").setValue([1280, 200]);
+    warningText212.guideLayer = true;
+    
+    var warningTextDoc212 = warningText212.property("Source Text").value;
+    warningTextDoc212.fontSize = 32;
+    warningTextDoc212.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc212.font = "Arial-BoldMT";
+    warningTextDoc212.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText212.property("Source Text").setValue(warningTextDoc212);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText212 = planComp212.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00212");
+    errorText212.name = "ERROR_NO_SOURCE";
+    errorText212.property("Transform").property("Position").setValue([1280, 720]);
+    errorText212.guideLayer = true;
+    
+    var errorTextDoc212 = errorText212.property("Source Text").value;
+    errorTextDoc212.fontSize = 48;
+    errorTextDoc212.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc212.font = "Arial-BoldMT";
+    errorTextDoc212.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText212.property("Source Text").setValue(errorTextDoc212);
+}
+
+planCompositions[212] = planComp212;
+
+
+// Composition pour plan 00213
+var planComp213 = project.items.addComp(
+    "SQ12_UNDLM_00213",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    9.96,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp213.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer213 = planComp213.layers.add(bgSolidComp);
+bgLayer213.name = "BG_SOLID";
+bgLayer213.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer213 = false;
+if (gradingSources[213]) {
+    var gradedLayer213 = planComp213.layers.add(gradingSources[213]);
+    gradedLayer213.name = "UNDLM_00213_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer213.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer213.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer213 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer213 = false;
+if (editSources[213]) {
+    var editLayer213 = planComp213.layers.add(editSources[213]);
+    editLayer213.name = "UNDLM_00213_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer213.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer213.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer213 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer213) {
+    // EDIT toujours activé quand disponible
+    editLayer213.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer213) {
+        gradedLayer213.enabled = false;
+    }
+} else if (hasGradedLayer213) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer213.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText213 = planComp213.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText213.name = "WARNING_NO_EDIT";
+    warningText213.property("Transform").property("Position").setValue([1280, 200]);
+    warningText213.guideLayer = true;
+    
+    var warningTextDoc213 = warningText213.property("Source Text").value;
+    warningTextDoc213.fontSize = 32;
+    warningTextDoc213.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc213.font = "Arial-BoldMT";
+    warningTextDoc213.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText213.property("Source Text").setValue(warningTextDoc213);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText213 = planComp213.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00213");
+    errorText213.name = "ERROR_NO_SOURCE";
+    errorText213.property("Transform").property("Position").setValue([1280, 720]);
+    errorText213.guideLayer = true;
+    
+    var errorTextDoc213 = errorText213.property("Source Text").value;
+    errorTextDoc213.fontSize = 48;
+    errorTextDoc213.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc213.font = "Arial-BoldMT";
+    errorTextDoc213.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText213.property("Source Text").setValue(errorTextDoc213);
+}
+
+planCompositions[213] = planComp213;
+
+
+// Composition pour plan 00215
+var planComp215 = project.items.addComp(
+    "SQ12_UNDLM_00215",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    7.84,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp215.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer215 = planComp215.layers.add(bgSolidComp);
+bgLayer215.name = "BG_SOLID";
+bgLayer215.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer215 = false;
+if (gradingSources[215]) {
+    var gradedLayer215 = planComp215.layers.add(gradingSources[215]);
+    gradedLayer215.name = "UNDLM_00215_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer215.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer215.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer215 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer215 = false;
+if (editSources[215]) {
+    var editLayer215 = planComp215.layers.add(editSources[215]);
+    editLayer215.name = "UNDLM_00215_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer215.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer215.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer215 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer215) {
+    // EDIT toujours activé quand disponible
+    editLayer215.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer215) {
+        gradedLayer215.enabled = false;
+    }
+} else if (hasGradedLayer215) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer215.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText215 = planComp215.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText215.name = "WARNING_NO_EDIT";
+    warningText215.property("Transform").property("Position").setValue([1280, 200]);
+    warningText215.guideLayer = true;
+    
+    var warningTextDoc215 = warningText215.property("Source Text").value;
+    warningTextDoc215.fontSize = 32;
+    warningTextDoc215.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc215.font = "Arial-BoldMT";
+    warningTextDoc215.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText215.property("Source Text").setValue(warningTextDoc215);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText215 = planComp215.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00215");
+    errorText215.name = "ERROR_NO_SOURCE";
+    errorText215.property("Transform").property("Position").setValue([1280, 720]);
+    errorText215.guideLayer = true;
+    
+    var errorTextDoc215 = errorText215.property("Source Text").value;
+    errorTextDoc215.fontSize = 48;
+    errorTextDoc215.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc215.font = "Arial-BoldMT";
+    errorTextDoc215.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText215.property("Source Text").setValue(errorTextDoc215);
+}
+
+planCompositions[215] = planComp215;
+
+
+// Composition pour plan 00216
+var planComp216 = project.items.addComp(
+    "SQ12_UNDLM_00216",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    6.52,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp216.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer216 = planComp216.layers.add(bgSolidComp);
+bgLayer216.name = "BG_SOLID";
+bgLayer216.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer216 = false;
+if (gradingSources[216]) {
+    var gradedLayer216 = planComp216.layers.add(gradingSources[216]);
+    gradedLayer216.name = "UNDLM_00216_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer216.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer216.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer216 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer216 = false;
+if (editSources[216]) {
+    var editLayer216 = planComp216.layers.add(editSources[216]);
+    editLayer216.name = "UNDLM_00216_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer216.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer216.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer216 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer216) {
+    // EDIT toujours activé quand disponible
+    editLayer216.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer216) {
+        gradedLayer216.enabled = false;
+    }
+} else if (hasGradedLayer216) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer216.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText216 = planComp216.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText216.name = "WARNING_NO_EDIT";
+    warningText216.property("Transform").property("Position").setValue([1280, 200]);
+    warningText216.guideLayer = true;
+    
+    var warningTextDoc216 = warningText216.property("Source Text").value;
+    warningTextDoc216.fontSize = 32;
+    warningTextDoc216.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc216.font = "Arial-BoldMT";
+    warningTextDoc216.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText216.property("Source Text").setValue(warningTextDoc216);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText216 = planComp216.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00216");
+    errorText216.name = "ERROR_NO_SOURCE";
+    errorText216.property("Transform").property("Position").setValue([1280, 720]);
+    errorText216.guideLayer = true;
+    
+    var errorTextDoc216 = errorText216.property("Source Text").value;
+    errorTextDoc216.fontSize = 48;
+    errorTextDoc216.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc216.font = "Arial-BoldMT";
+    errorTextDoc216.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText216.property("Source Text").setValue(errorTextDoc216);
+}
+
+planCompositions[216] = planComp216;
+
+
+// Composition pour plan 00251
+var planComp251 = project.items.addComp(
+    "SQ14_UNDLM_00251",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    11.12,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp251.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer251 = planComp251.layers.add(bgSolidComp);
+bgLayer251.name = "BG_SOLID";
+bgLayer251.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer251 = false;
+if (gradingSources[251]) {
+    var gradedLayer251 = planComp251.layers.add(gradingSources[251]);
+    gradedLayer251.name = "UNDLM_00251_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer251.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer251.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer251 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer251 = false;
+if (editSources[251]) {
+    var editLayer251 = planComp251.layers.add(editSources[251]);
+    editLayer251.name = "UNDLM_00251_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer251.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer251.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer251 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer251) {
+    // EDIT toujours activé quand disponible
+    editLayer251.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer251) {
+        gradedLayer251.enabled = false;
+    }
+} else if (hasGradedLayer251) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer251.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText251 = planComp251.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText251.name = "WARNING_NO_EDIT";
+    warningText251.property("Transform").property("Position").setValue([1280, 200]);
+    warningText251.guideLayer = true;
+    
+    var warningTextDoc251 = warningText251.property("Source Text").value;
+    warningTextDoc251.fontSize = 32;
+    warningTextDoc251.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc251.font = "Arial-BoldMT";
+    warningTextDoc251.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText251.property("Source Text").setValue(warningTextDoc251);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText251 = planComp251.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00251");
+    errorText251.name = "ERROR_NO_SOURCE";
+    errorText251.property("Transform").property("Position").setValue([1280, 720]);
+    errorText251.guideLayer = true;
+    
+    var errorTextDoc251 = errorText251.property("Source Text").value;
+    errorTextDoc251.fontSize = 48;
+    errorTextDoc251.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc251.font = "Arial-BoldMT";
+    errorTextDoc251.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText251.property("Source Text").setValue(errorTextDoc251);
+}
+
+planCompositions[251] = planComp251;
+
+
+// Composition pour plan 00252
+var planComp252 = project.items.addComp(
+    "SQ14_UNDLM_00252",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    13.0,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp252.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer252 = planComp252.layers.add(bgSolidComp);
+bgLayer252.name = "BG_SOLID";
+bgLayer252.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer252 = false;
+if (gradingSources[252]) {
+    var gradedLayer252 = planComp252.layers.add(gradingSources[252]);
+    gradedLayer252.name = "UNDLM_00252_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer252.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer252.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer252 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer252 = false;
+if (editSources[252]) {
+    var editLayer252 = planComp252.layers.add(editSources[252]);
+    editLayer252.name = "UNDLM_00252_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer252.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer252.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer252 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer252) {
+    // EDIT toujours activé quand disponible
+    editLayer252.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer252) {
+        gradedLayer252.enabled = false;
+    }
+} else if (hasGradedLayer252) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer252.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText252 = planComp252.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText252.name = "WARNING_NO_EDIT";
+    warningText252.property("Transform").property("Position").setValue([1280, 200]);
+    warningText252.guideLayer = true;
+    
+    var warningTextDoc252 = warningText252.property("Source Text").value;
+    warningTextDoc252.fontSize = 32;
+    warningTextDoc252.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc252.font = "Arial-BoldMT";
+    warningTextDoc252.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText252.property("Source Text").setValue(warningTextDoc252);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText252 = planComp252.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00252");
+    errorText252.name = "ERROR_NO_SOURCE";
+    errorText252.property("Transform").property("Position").setValue([1280, 720]);
+    errorText252.guideLayer = true;
+    
+    var errorTextDoc252 = errorText252.property("Source Text").value;
+    errorTextDoc252.fontSize = 48;
+    errorTextDoc252.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc252.font = "Arial-BoldMT";
+    errorTextDoc252.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText252.property("Source Text").setValue(errorTextDoc252);
+}
+
+planCompositions[252] = planComp252;
+
+
+// Composition pour plan 00254
+var planComp254 = project.items.addComp(
+    "SQ14_UNDLM_00254",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    8.4,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp254.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer254 = planComp254.layers.add(bgSolidComp);
+bgLayer254.name = "BG_SOLID";
+bgLayer254.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer254 = false;
+if (gradingSources[254]) {
+    var gradedLayer254 = planComp254.layers.add(gradingSources[254]);
+    gradedLayer254.name = "UNDLM_00254_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer254.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer254.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer254 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer254 = false;
+if (editSources[254]) {
+    var editLayer254 = planComp254.layers.add(editSources[254]);
+    editLayer254.name = "UNDLM_00254_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer254.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer254.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer254 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer254) {
+    // EDIT toujours activé quand disponible
+    editLayer254.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer254) {
+        gradedLayer254.enabled = false;
+    }
+} else if (hasGradedLayer254) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer254.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText254 = planComp254.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText254.name = "WARNING_NO_EDIT";
+    warningText254.property("Transform").property("Position").setValue([1280, 200]);
+    warningText254.guideLayer = true;
+    
+    var warningTextDoc254 = warningText254.property("Source Text").value;
+    warningTextDoc254.fontSize = 32;
+    warningTextDoc254.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc254.font = "Arial-BoldMT";
+    warningTextDoc254.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText254.property("Source Text").setValue(warningTextDoc254);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText254 = planComp254.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00254");
+    errorText254.name = "ERROR_NO_SOURCE";
+    errorText254.property("Transform").property("Position").setValue([1280, 720]);
+    errorText254.guideLayer = true;
+    
+    var errorTextDoc254 = errorText254.property("Source Text").value;
+    errorTextDoc254.fontSize = 48;
+    errorTextDoc254.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc254.font = "Arial-BoldMT";
+    errorTextDoc254.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText254.property("Source Text").setValue(errorTextDoc254);
+}
+
+planCompositions[254] = planComp254;
+
+
+// Composition pour plan 00255
+var planComp255 = project.items.addComp(
+    "SQ14_UNDLM_00255",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    3.52,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp255.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer255 = planComp255.layers.add(bgSolidComp);
+bgLayer255.name = "BG_SOLID";
+bgLayer255.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer255 = false;
+if (gradingSources[255]) {
+    var gradedLayer255 = planComp255.layers.add(gradingSources[255]);
+    gradedLayer255.name = "UNDLM_00255_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer255.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer255.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer255 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer255 = false;
+if (editSources[255]) {
+    var editLayer255 = planComp255.layers.add(editSources[255]);
+    editLayer255.name = "UNDLM_00255_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer255.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer255.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer255 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer255) {
+    // EDIT toujours activé quand disponible
+    editLayer255.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer255) {
+        gradedLayer255.enabled = false;
+    }
+} else if (hasGradedLayer255) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer255.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText255 = planComp255.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText255.name = "WARNING_NO_EDIT";
+    warningText255.property("Transform").property("Position").setValue([1280, 200]);
+    warningText255.guideLayer = true;
+    
+    var warningTextDoc255 = warningText255.property("Source Text").value;
+    warningTextDoc255.fontSize = 32;
+    warningTextDoc255.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc255.font = "Arial-BoldMT";
+    warningTextDoc255.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText255.property("Source Text").setValue(warningTextDoc255);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText255 = planComp255.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00255");
+    errorText255.name = "ERROR_NO_SOURCE";
+    errorText255.property("Transform").property("Position").setValue([1280, 720]);
+    errorText255.guideLayer = true;
+    
+    var errorTextDoc255 = errorText255.property("Source Text").value;
+    errorTextDoc255.fontSize = 48;
+    errorTextDoc255.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc255.font = "Arial-BoldMT";
+    errorTextDoc255.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText255.property("Source Text").setValue(errorTextDoc255);
+}
+
+planCompositions[255] = planComp255;
+
+
+// Composition pour plan 00256
+var planComp256 = project.items.addComp(
+    "SQ14_UNDLM_00256",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    1.6400000000000001,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp256.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer256 = planComp256.layers.add(bgSolidComp);
+bgLayer256.name = "BG_SOLID";
+bgLayer256.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer256 = false;
+if (gradingSources[256]) {
+    var gradedLayer256 = planComp256.layers.add(gradingSources[256]);
+    gradedLayer256.name = "UNDLM_00256_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer256.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer256.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer256 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer256 = false;
+if (editSources[256]) {
+    var editLayer256 = planComp256.layers.add(editSources[256]);
+    editLayer256.name = "UNDLM_00256_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer256.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer256.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer256 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer256) {
+    // EDIT toujours activé quand disponible
+    editLayer256.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer256) {
+        gradedLayer256.enabled = false;
+    }
+} else if (hasGradedLayer256) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer256.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText256 = planComp256.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText256.name = "WARNING_NO_EDIT";
+    warningText256.property("Transform").property("Position").setValue([1280, 200]);
+    warningText256.guideLayer = true;
+    
+    var warningTextDoc256 = warningText256.property("Source Text").value;
+    warningTextDoc256.fontSize = 32;
+    warningTextDoc256.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc256.font = "Arial-BoldMT";
+    warningTextDoc256.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText256.property("Source Text").setValue(warningTextDoc256);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText256 = planComp256.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00256");
+    errorText256.name = "ERROR_NO_SOURCE";
+    errorText256.property("Transform").property("Position").setValue([1280, 720]);
+    errorText256.guideLayer = true;
+    
+    var errorTextDoc256 = errorText256.property("Source Text").value;
+    errorTextDoc256.fontSize = 48;
+    errorTextDoc256.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc256.font = "Arial-BoldMT";
+    errorTextDoc256.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText256.property("Source Text").setValue(errorTextDoc256);
+}
+
+planCompositions[256] = planComp256;
+
+
+// Composition pour plan 00262
+var planComp262 = project.items.addComp(
+    "SQ14_UNDLM_00262",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    16.96,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp262.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer262 = planComp262.layers.add(bgSolidComp);
+bgLayer262.name = "BG_SOLID";
+bgLayer262.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer262 = false;
+if (gradingSources[262]) {
+    var gradedLayer262 = planComp262.layers.add(gradingSources[262]);
+    gradedLayer262.name = "UNDLM_00262_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer262.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer262.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer262 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer262 = false;
+if (editSources[262]) {
+    var editLayer262 = planComp262.layers.add(editSources[262]);
+    editLayer262.name = "UNDLM_00262_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer262.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer262.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer262 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer262) {
+    // EDIT toujours activé quand disponible
+    editLayer262.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer262) {
+        gradedLayer262.enabled = false;
+    }
+} else if (hasGradedLayer262) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer262.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText262 = planComp262.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText262.name = "WARNING_NO_EDIT";
+    warningText262.property("Transform").property("Position").setValue([1280, 200]);
+    warningText262.guideLayer = true;
+    
+    var warningTextDoc262 = warningText262.property("Source Text").value;
+    warningTextDoc262.fontSize = 32;
+    warningTextDoc262.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc262.font = "Arial-BoldMT";
+    warningTextDoc262.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText262.property("Source Text").setValue(warningTextDoc262);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText262 = planComp262.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00262");
+    errorText262.name = "ERROR_NO_SOURCE";
+    errorText262.property("Transform").property("Position").setValue([1280, 720]);
+    errorText262.guideLayer = true;
+    
+    var errorTextDoc262 = errorText262.property("Source Text").value;
+    errorTextDoc262.fontSize = 48;
+    errorTextDoc262.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc262.font = "Arial-BoldMT";
+    errorTextDoc262.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText262.property("Source Text").setValue(errorTextDoc262);
+}
+
+planCompositions[262] = planComp262;
+
+
+// Composition pour plan 00263
+var planComp263 = project.items.addComp(
+    "SQ14_UNDLM_00263",
+    2560,           // Largeur 1440p
+    1440,           // Hauteur 1440p  
+    1.0,            // Pixel aspect ratio
+    14.84,     // Durée du plan depuis CSV
+    25              // 25 fps
+);
+planComp263.parentFolder = masterCompsShotsFolder;
+
+// Réutiliser le solid de fond existant (AE 2025)
+var bgLayer263 = planComp263.layers.add(bgSolidComp);
+bgLayer263.name = "BG_SOLID";
+bgLayer263.moveToEnd();
+
+// 1. Ajouter layer GRADED en premier (sera en dessous)
+var hasGradedLayer263 = false;
+if (gradingSources[263]) {
+    var gradedLayer263 = planComp263.layers.add(gradingSources[263]);
+    gradedLayer263.name = "UNDLM_00263_graded";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    gradedLayer263.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    gradedLayer263.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasGradedLayer263 = true;
+}
+
+// 2. Ajouter layer EDIT en second (sera au-dessus)
+var hasEditLayer263 = false;
+if (editSources[263]) {
+    var editLayer263 = planComp263.layers.add(editSources[263]);
+    editLayer263.name = "UNDLM_00263_edit";
+    
+    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
+    editLayer263.property("Transform").property("Scale").setValue([66.67, 66.67]);
+    editLayer263.property("Transform").property("Position").setValue([1280, 720]);
+    
+    hasEditLayer263 = true;
+}
+
+// 4. Gestion de l'activation des layers
+if (hasEditLayer263) {
+    // EDIT toujours activé quand disponible
+    editLayer263.enabled = true;
+    
+    // GRADED toujours désactivé quand EDIT est présent
+    if (hasGradedLayer263) {
+        gradedLayer263.enabled = false;
+    }
+} else if (hasGradedLayer263) {
+    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
+    gradedLayer263.enabled = true;
+    
+    // Ajouter un texte d'avertissement pour absence EDIT
+    var warningText263 = planComp263.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
+    warningText263.name = "WARNING_NO_EDIT";
+    warningText263.property("Transform").property("Position").setValue([1280, 200]);
+    warningText263.guideLayer = true;
+    
+    var warningTextDoc263 = warningText263.property("Source Text").value;
+    warningTextDoc263.fontSize = 32;
+    warningTextDoc263.fillColor = [1.0, 0.8, 0.0]; // Orange
+    warningTextDoc263.font = "Arial-BoldMT";
+    warningTextDoc263.justification = ParagraphJustification.CENTER_JUSTIFY;
+    warningText263.property("Source Text").setValue(warningTextDoc263);
+} else {
+    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
+    var errorText263 = planComp263.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00263");
+    errorText263.name = "ERROR_NO_SOURCE";
+    errorText263.property("Transform").property("Position").setValue([1280, 720]);
+    errorText263.guideLayer = true;
+    
+    var errorTextDoc263 = errorText263.property("Source Text").value;
+    errorTextDoc263.fontSize = 48;
+    errorTextDoc263.fillColor = [1.0, 0.0, 0.0]; // Rouge
+    errorTextDoc263.font = "Arial-BoldMT";
+    errorTextDoc263.justification = ParagraphJustification.CENTER_JUSTIFY;
+    errorText263.property("Source Text").setValue(errorTextDoc263);
+}
+
+planCompositions[263] = planComp263;
 
 
 // Composition pour plan 00275
@@ -7419,91 +11584,6 @@ if (hasEditLayer277) {
 planCompositions[277] = planComp277;
 
 
-// Composition pour plan 00278
-var planComp278 = project.items.addComp(
-    "SQ15_UNDLM_00278",
-    2560,           // Largeur 1440p
-    1440,           // Hauteur 1440p  
-    1.0,            // Pixel aspect ratio
-    3.92,     // Durée du plan depuis CSV
-    25              // 25 fps
-);
-planComp278.parentFolder = masterCompsShotsFolder;
-
-// Réutiliser le solid de fond existant (AE 2025)
-var bgLayer278 = planComp278.layers.add(bgSolidComp);
-bgLayer278.name = "BG_SOLID";
-bgLayer278.moveToEnd();
-
-// 1. Ajouter layer GRADED en premier (sera en dessous)
-var hasGradedLayer278 = false;
-if (gradingSources[278]) {
-    var gradedLayer278 = planComp278.layers.add(gradingSources[278]);
-    gradedLayer278.name = "UNDLM_00278_graded";
-    
-    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
-    gradedLayer278.property("Transform").property("Scale").setValue([66.67, 66.67]);
-    gradedLayer278.property("Transform").property("Position").setValue([1280, 720]);
-    
-    hasGradedLayer278 = true;
-}
-
-// 2. Ajouter layer EDIT en second (sera au-dessus)
-var hasEditLayer278 = false;
-if (editSources[278]) {
-    var editLayer278 = planComp278.layers.add(editSources[278]);
-    editLayer278.name = "UNDLM_00278_edit";
-    
-    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
-    editLayer278.property("Transform").property("Scale").setValue([66.67, 66.67]);
-    editLayer278.property("Transform").property("Position").setValue([1280, 720]);
-    
-    hasEditLayer278 = true;
-}
-
-// 4. Gestion de l'activation des layers
-if (hasEditLayer278) {
-    // EDIT toujours activé quand disponible
-    editLayer278.enabled = true;
-    
-    // GRADED toujours désactivé quand EDIT est présent
-    if (hasGradedLayer278) {
-        gradedLayer278.enabled = false;
-    }
-} else if (hasGradedLayer278) {
-    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
-    gradedLayer278.enabled = true;
-    
-    // Ajouter un texte d'avertissement pour absence EDIT
-    var warningText278 = planComp278.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
-    warningText278.name = "WARNING_NO_EDIT";
-    warningText278.property("Transform").property("Position").setValue([1280, 200]);
-    warningText278.guideLayer = true;
-    
-    var warningTextDoc278 = warningText278.property("Source Text").value;
-    warningTextDoc278.fontSize = 32;
-    warningTextDoc278.fillColor = [1.0, 0.8, 0.0]; // Orange
-    warningTextDoc278.font = "Arial-BoldMT";
-    warningTextDoc278.justification = ParagraphJustification.CENTER_JUSTIFY;
-    warningText278.property("Source Text").setValue(warningTextDoc278);
-} else {
-    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
-    var errorText278 = planComp278.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00278");
-    errorText278.name = "ERROR_NO_SOURCE";
-    errorText278.property("Transform").property("Position").setValue([1280, 720]);
-    errorText278.guideLayer = true;
-    
-    var errorTextDoc278 = errorText278.property("Source Text").value;
-    errorTextDoc278.fontSize = 48;
-    errorTextDoc278.fillColor = [1.0, 0.0, 0.0]; // Rouge
-    errorTextDoc278.font = "Arial-BoldMT";
-    errorTextDoc278.justification = ParagraphJustification.CENTER_JUSTIFY;
-    errorText278.property("Source Text").setValue(errorTextDoc278);
-}
-
-planCompositions[278] = planComp278;
-
-
 // Composition pour plan 00279
 var planComp279 = project.items.addComp(
     "SQ15_UNDLM_00279",
@@ -7672,91 +11752,6 @@ if (hasEditLayer280) {
 }
 
 planCompositions[280] = planComp280;
-
-
-// Composition pour plan 00281
-var planComp281 = project.items.addComp(
-    "SQ15_UNDLM_00281",
-    2560,           // Largeur 1440p
-    1440,           // Hauteur 1440p  
-    1.0,            // Pixel aspect ratio
-    4.48,     // Durée du plan depuis CSV
-    25              // 25 fps
-);
-planComp281.parentFolder = masterCompsShotsFolder;
-
-// Réutiliser le solid de fond existant (AE 2025)
-var bgLayer281 = planComp281.layers.add(bgSolidComp);
-bgLayer281.name = "BG_SOLID";
-bgLayer281.moveToEnd();
-
-// 1. Ajouter layer GRADED en premier (sera en dessous)
-var hasGradedLayer281 = false;
-if (gradingSources[281]) {
-    var gradedLayer281 = planComp281.layers.add(gradingSources[281]);
-    gradedLayer281.name = "UNDLM_00281_graded";
-    
-    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
-    gradedLayer281.property("Transform").property("Scale").setValue([66.67, 66.67]);
-    gradedLayer281.property("Transform").property("Position").setValue([1280, 720]);
-    
-    hasGradedLayer281 = true;
-}
-
-// 2. Ajouter layer EDIT en second (sera au-dessus)
-var hasEditLayer281 = false;
-if (editSources[281]) {
-    var editLayer281 = planComp281.layers.add(editSources[281]);
-    editLayer281.name = "UNDLM_00281_edit";
-    
-    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
-    editLayer281.property("Transform").property("Scale").setValue([66.67, 66.67]);
-    editLayer281.property("Transform").property("Position").setValue([1280, 720]);
-    
-    hasEditLayer281 = true;
-}
-
-// 4. Gestion de l'activation des layers
-if (hasEditLayer281) {
-    // EDIT toujours activé quand disponible
-    editLayer281.enabled = true;
-    
-    // GRADED toujours désactivé quand EDIT est présent
-    if (hasGradedLayer281) {
-        gradedLayer281.enabled = false;
-    }
-} else if (hasGradedLayer281) {
-    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
-    gradedLayer281.enabled = true;
-    
-    // Ajouter un texte d'avertissement pour absence EDIT
-    var warningText281 = planComp281.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
-    warningText281.name = "WARNING_NO_EDIT";
-    warningText281.property("Transform").property("Position").setValue([1280, 200]);
-    warningText281.guideLayer = true;
-    
-    var warningTextDoc281 = warningText281.property("Source Text").value;
-    warningTextDoc281.fontSize = 32;
-    warningTextDoc281.fillColor = [1.0, 0.8, 0.0]; // Orange
-    warningTextDoc281.font = "Arial-BoldMT";
-    warningTextDoc281.justification = ParagraphJustification.CENTER_JUSTIFY;
-    warningText281.property("Source Text").setValue(warningTextDoc281);
-} else {
-    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
-    var errorText281 = planComp281.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00281");
-    errorText281.name = "ERROR_NO_SOURCE";
-    errorText281.property("Transform").property("Position").setValue([1280, 720]);
-    errorText281.guideLayer = true;
-    
-    var errorTextDoc281 = errorText281.property("Source Text").value;
-    errorTextDoc281.fontSize = 48;
-    errorTextDoc281.fillColor = [1.0, 0.0, 0.0]; // Rouge
-    errorTextDoc281.font = "Arial-BoldMT";
-    errorTextDoc281.justification = ParagraphJustification.CENTER_JUSTIFY;
-    errorText281.property("Source Text").setValue(errorTextDoc281);
-}
-
-planCompositions[281] = planComp281;
 
 
 // Composition pour plan 00282
@@ -7929,91 +11924,6 @@ if (hasEditLayer283) {
 planCompositions[283] = planComp283;
 
 
-// Composition pour plan 00284
-var planComp284 = project.items.addComp(
-    "SQ15_UNDLM_00284",
-    2560,           // Largeur 1440p
-    1440,           // Hauteur 1440p  
-    1.0,            // Pixel aspect ratio
-    8.52,     // Durée du plan depuis CSV
-    25              // 25 fps
-);
-planComp284.parentFolder = masterCompsShotsFolder;
-
-// Réutiliser le solid de fond existant (AE 2025)
-var bgLayer284 = planComp284.layers.add(bgSolidComp);
-bgLayer284.name = "BG_SOLID";
-bgLayer284.moveToEnd();
-
-// 1. Ajouter layer GRADED en premier (sera en dessous)
-var hasGradedLayer284 = false;
-if (gradingSources[284]) {
-    var gradedLayer284 = planComp284.layers.add(gradingSources[284]);
-    gradedLayer284.name = "UNDLM_00284_graded";
-    
-    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
-    gradedLayer284.property("Transform").property("Scale").setValue([66.67, 66.67]);
-    gradedLayer284.property("Transform").property("Position").setValue([1280, 720]);
-    
-    hasGradedLayer284 = true;
-}
-
-// 2. Ajouter layer EDIT en second (sera au-dessus)
-var hasEditLayer284 = false;
-if (editSources[284]) {
-    var editLayer284 = planComp284.layers.add(editSources[284]);
-    editLayer284.name = "UNDLM_00284_edit";
-    
-    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
-    editLayer284.property("Transform").property("Scale").setValue([66.67, 66.67]);
-    editLayer284.property("Transform").property("Position").setValue([1280, 720]);
-    
-    hasEditLayer284 = true;
-}
-
-// 4. Gestion de l'activation des layers
-if (hasEditLayer284) {
-    // EDIT toujours activé quand disponible
-    editLayer284.enabled = true;
-    
-    // GRADED toujours désactivé quand EDIT est présent
-    if (hasGradedLayer284) {
-        gradedLayer284.enabled = false;
-    }
-} else if (hasGradedLayer284) {
-    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
-    gradedLayer284.enabled = true;
-    
-    // Ajouter un texte d'avertissement pour absence EDIT
-    var warningText284 = planComp284.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
-    warningText284.name = "WARNING_NO_EDIT";
-    warningText284.property("Transform").property("Position").setValue([1280, 200]);
-    warningText284.guideLayer = true;
-    
-    var warningTextDoc284 = warningText284.property("Source Text").value;
-    warningTextDoc284.fontSize = 32;
-    warningTextDoc284.fillColor = [1.0, 0.8, 0.0]; // Orange
-    warningTextDoc284.font = "Arial-BoldMT";
-    warningTextDoc284.justification = ParagraphJustification.CENTER_JUSTIFY;
-    warningText284.property("Source Text").setValue(warningTextDoc284);
-} else {
-    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
-    var errorText284 = planComp284.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00284");
-    errorText284.name = "ERROR_NO_SOURCE";
-    errorText284.property("Transform").property("Position").setValue([1280, 720]);
-    errorText284.guideLayer = true;
-    
-    var errorTextDoc284 = errorText284.property("Source Text").value;
-    errorTextDoc284.fontSize = 48;
-    errorTextDoc284.fillColor = [1.0, 0.0, 0.0]; // Rouge
-    errorTextDoc284.font = "Arial-BoldMT";
-    errorTextDoc284.justification = ParagraphJustification.CENTER_JUSTIFY;
-    errorText284.property("Source Text").setValue(errorTextDoc284);
-}
-
-planCompositions[284] = planComp284;
-
-
 // Composition pour plan 00285
 var planComp285 = project.items.addComp(
     "SQ15_UNDLM_00285",
@@ -8097,91 +12007,6 @@ if (hasEditLayer285) {
 }
 
 planCompositions[285] = planComp285;
-
-
-// Composition pour plan 00286
-var planComp286 = project.items.addComp(
-    "SQ15_UNDLM_00286",
-    2560,           // Largeur 1440p
-    1440,           // Hauteur 1440p  
-    1.0,            // Pixel aspect ratio
-    5.68,     // Durée du plan depuis CSV
-    25              // 25 fps
-);
-planComp286.parentFolder = masterCompsShotsFolder;
-
-// Réutiliser le solid de fond existant (AE 2025)
-var bgLayer286 = planComp286.layers.add(bgSolidComp);
-bgLayer286.name = "BG_SOLID";
-bgLayer286.moveToEnd();
-
-// 1. Ajouter layer GRADED en premier (sera en dessous)
-var hasGradedLayer286 = false;
-if (gradingSources[286]) {
-    var gradedLayer286 = planComp286.layers.add(gradingSources[286]);
-    gradedLayer286.name = "UNDLM_00286_graded";
-    
-    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
-    gradedLayer286.property("Transform").property("Scale").setValue([66.67, 66.67]);
-    gradedLayer286.property("Transform").property("Position").setValue([1280, 720]);
-    
-    hasGradedLayer286 = true;
-}
-
-// 2. Ajouter layer EDIT en second (sera au-dessus)
-var hasEditLayer286 = false;
-if (editSources[286]) {
-    var editLayer286 = planComp286.layers.add(editSources[286]);
-    editLayer286.name = "UNDLM_00286_edit";
-    
-    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
-    editLayer286.property("Transform").property("Scale").setValue([66.67, 66.67]);
-    editLayer286.property("Transform").property("Position").setValue([1280, 720]);
-    
-    hasEditLayer286 = true;
-}
-
-// 4. Gestion de l'activation des layers
-if (hasEditLayer286) {
-    // EDIT toujours activé quand disponible
-    editLayer286.enabled = true;
-    
-    // GRADED toujours désactivé quand EDIT est présent
-    if (hasGradedLayer286) {
-        gradedLayer286.enabled = false;
-    }
-} else if (hasGradedLayer286) {
-    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
-    gradedLayer286.enabled = true;
-    
-    // Ajouter un texte d'avertissement pour absence EDIT
-    var warningText286 = planComp286.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
-    warningText286.name = "WARNING_NO_EDIT";
-    warningText286.property("Transform").property("Position").setValue([1280, 200]);
-    warningText286.guideLayer = true;
-    
-    var warningTextDoc286 = warningText286.property("Source Text").value;
-    warningTextDoc286.fontSize = 32;
-    warningTextDoc286.fillColor = [1.0, 0.8, 0.0]; // Orange
-    warningTextDoc286.font = "Arial-BoldMT";
-    warningTextDoc286.justification = ParagraphJustification.CENTER_JUSTIFY;
-    warningText286.property("Source Text").setValue(warningTextDoc286);
-} else {
-    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
-    var errorText286 = planComp286.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00286");
-    errorText286.name = "ERROR_NO_SOURCE";
-    errorText286.property("Transform").property("Position").setValue([1280, 720]);
-    errorText286.guideLayer = true;
-    
-    var errorTextDoc286 = errorText286.property("Source Text").value;
-    errorTextDoc286.fontSize = 48;
-    errorTextDoc286.fillColor = [1.0, 0.0, 0.0]; // Rouge
-    errorTextDoc286.font = "Arial-BoldMT";
-    errorTextDoc286.justification = ParagraphJustification.CENTER_JUSTIFY;
-    errorText286.property("Source Text").setValue(errorTextDoc286);
-}
-
-planCompositions[286] = planComp286;
 
 
 // Composition pour plan 00311
@@ -9204,91 +13029,6 @@ if (hasEditLayer331) {
 planCompositions[331] = planComp331;
 
 
-// Composition pour plan 00383
-var planComp383 = project.items.addComp(
-    "SQ22_UNDLM_00383",
-    2560,           // Largeur 1440p
-    1440,           // Hauteur 1440p  
-    1.0,            // Pixel aspect ratio
-    9.96,     // Durée du plan depuis CSV
-    25              // 25 fps
-);
-planComp383.parentFolder = masterCompsShotsFolder;
-
-// Réutiliser le solid de fond existant (AE 2025)
-var bgLayer383 = planComp383.layers.add(bgSolidComp);
-bgLayer383.name = "BG_SOLID";
-bgLayer383.moveToEnd();
-
-// 1. Ajouter layer GRADED en premier (sera en dessous)
-var hasGradedLayer383 = false;
-if (gradingSources[383]) {
-    var gradedLayer383 = planComp383.layers.add(gradingSources[383]);
-    gradedLayer383.name = "UNDLM_00383_graded";
-    
-    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
-    gradedLayer383.property("Transform").property("Scale").setValue([66.67, 66.67]);
-    gradedLayer383.property("Transform").property("Position").setValue([1280, 720]);
-    
-    hasGradedLayer383 = true;
-}
-
-// 2. Ajouter layer EDIT en second (sera au-dessus)
-var hasEditLayer383 = false;
-if (editSources[383]) {
-    var editLayer383 = planComp383.layers.add(editSources[383]);
-    editLayer383.name = "UNDLM_00383_edit";
-    
-    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
-    editLayer383.property("Transform").property("Scale").setValue([66.67, 66.67]);
-    editLayer383.property("Transform").property("Position").setValue([1280, 720]);
-    
-    hasEditLayer383 = true;
-}
-
-// 4. Gestion de l'activation des layers
-if (hasEditLayer383) {
-    // EDIT toujours activé quand disponible
-    editLayer383.enabled = true;
-    
-    // GRADED toujours désactivé quand EDIT est présent
-    if (hasGradedLayer383) {
-        gradedLayer383.enabled = false;
-    }
-} else if (hasGradedLayer383) {
-    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
-    gradedLayer383.enabled = true;
-    
-    // Ajouter un texte d'avertissement pour absence EDIT
-    var warningText383 = planComp383.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
-    warningText383.name = "WARNING_NO_EDIT";
-    warningText383.property("Transform").property("Position").setValue([1280, 200]);
-    warningText383.guideLayer = true;
-    
-    var warningTextDoc383 = warningText383.property("Source Text").value;
-    warningTextDoc383.fontSize = 32;
-    warningTextDoc383.fillColor = [1.0, 0.8, 0.0]; // Orange
-    warningTextDoc383.font = "Arial-BoldMT";
-    warningTextDoc383.justification = ParagraphJustification.CENTER_JUSTIFY;
-    warningText383.property("Source Text").setValue(warningTextDoc383);
-} else {
-    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
-    var errorText383 = planComp383.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00383");
-    errorText383.name = "ERROR_NO_SOURCE";
-    errorText383.property("Transform").property("Position").setValue([1280, 720]);
-    errorText383.guideLayer = true;
-    
-    var errorTextDoc383 = errorText383.property("Source Text").value;
-    errorTextDoc383.fontSize = 48;
-    errorTextDoc383.fillColor = [1.0, 0.0, 0.0]; // Rouge
-    errorTextDoc383.font = "Arial-BoldMT";
-    errorTextDoc383.justification = ParagraphJustification.CENTER_JUSTIFY;
-    errorText383.property("Source Text").setValue(errorTextDoc383);
-}
-
-planCompositions[383] = planComp383;
-
-
 // Composition pour plan 00384
 var planComp384 = project.items.addComp(
     "SQ22_UNDLM_00384",
@@ -9627,91 +13367,6 @@ if (hasEditLayer387) {
 }
 
 planCompositions[387] = planComp387;
-
-
-// Composition pour plan 00388
-var planComp388 = project.items.addComp(
-    "SQ22_UNDLM_00388",
-    2560,           // Largeur 1440p
-    1440,           // Hauteur 1440p  
-    1.0,            // Pixel aspect ratio
-    2.7199999999999998,     // Durée du plan depuis CSV
-    25              // 25 fps
-);
-planComp388.parentFolder = masterCompsShotsFolder;
-
-// Réutiliser le solid de fond existant (AE 2025)
-var bgLayer388 = planComp388.layers.add(bgSolidComp);
-bgLayer388.name = "BG_SOLID";
-bgLayer388.moveToEnd();
-
-// 1. Ajouter layer GRADED en premier (sera en dessous)
-var hasGradedLayer388 = false;
-if (gradingSources[388]) {
-    var gradedLayer388 = planComp388.layers.add(gradingSources[388]);
-    gradedLayer388.name = "UNDLM_00388_graded";
-    
-    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
-    gradedLayer388.property("Transform").property("Scale").setValue([66.67, 66.67]);
-    gradedLayer388.property("Transform").property("Position").setValue([1280, 720]);
-    
-    hasGradedLayer388 = true;
-}
-
-// 2. Ajouter layer EDIT en second (sera au-dessus)
-var hasEditLayer388 = false;
-if (editSources[388]) {
-    var editLayer388 = planComp388.layers.add(editSources[388]);
-    editLayer388.name = "UNDLM_00388_edit";
-    
-    // Mise à l'échelle UHD (3840x2160) vers 1440p (2560x1440)
-    editLayer388.property("Transform").property("Scale").setValue([66.67, 66.67]);
-    editLayer388.property("Transform").property("Position").setValue([1280, 720]);
-    
-    hasEditLayer388 = true;
-}
-
-// 4. Gestion de l'activation des layers
-if (hasEditLayer388) {
-    // EDIT toujours activé quand disponible
-    editLayer388.enabled = true;
-    
-    // GRADED toujours désactivé quand EDIT est présent
-    if (hasGradedLayer388) {
-        gradedLayer388.enabled = false;
-    }
-} else if (hasGradedLayer388) {
-    // Si pas d'EDIT mais GRADED disponible : activer GRADED + message
-    gradedLayer388.enabled = true;
-    
-    // Ajouter un texte d'avertissement pour absence EDIT
-    var warningText388 = planComp388.layers.addText("SOURCE EDIT MANQUANTE\nUtilisation GRADED uniquement");
-    warningText388.name = "WARNING_NO_EDIT";
-    warningText388.property("Transform").property("Position").setValue([1280, 200]);
-    warningText388.guideLayer = true;
-    
-    var warningTextDoc388 = warningText388.property("Source Text").value;
-    warningTextDoc388.fontSize = 32;
-    warningTextDoc388.fillColor = [1.0, 0.8, 0.0]; // Orange
-    warningTextDoc388.font = "Arial-BoldMT";
-    warningTextDoc388.justification = ParagraphJustification.CENTER_JUSTIFY;
-    warningText388.property("Source Text").setValue(warningTextDoc388);
-} else {
-    // Si on n'a ni EDIT ni GRADED : texte d'erreur rouge
-    var errorText388 = planComp388.layers.addText("AUCUNE SOURCE DISPONIBLE\nUNDLM_00388");
-    errorText388.name = "ERROR_NO_SOURCE";
-    errorText388.property("Transform").property("Position").setValue([1280, 720]);
-    errorText388.guideLayer = true;
-    
-    var errorTextDoc388 = errorText388.property("Source Text").value;
-    errorTextDoc388.fontSize = 48;
-    errorTextDoc388.fillColor = [1.0, 0.0, 0.0]; // Rouge
-    errorTextDoc388.font = "Arial-BoldMT";
-    errorTextDoc388.justification = ParagraphJustification.CENTER_JUSTIFY;
-    errorText388.property("Source Text").setValue(errorTextDoc388);
-}
-
-planCompositions[388] = planComp388;
 
 
 // Composition pour plan 00391
@@ -11765,7 +15420,7 @@ var masterComp = project.items.addComp(
     2560,           // Largeur 1440p
     1440,           // Hauteur 1440p
     1.0,            // Pixel aspect ratio
-    443.28000000000003, // Durée totale
+    582.0, // Durée totale
     25              // 25 fps
 );
 masterComp.parentFolder = masterCompSeqFolder;
@@ -11773,436 +15428,572 @@ masterComp.parentFolder = masterCompSeqFolder;
 // Assembly des plans dans la timeline
 var currentTime = 0;
 
+// Ajouter plan 00175 à la timeline master
+if (planCompositions[175]) {
+    var masterLayer175 = masterComp.layers.add(planCompositions[175]);
+    masterLayer175.startTime = 0;
+    masterLayer175.name = "UNDLM_00175";
+    masterLayer175.label = 1; // Couleurs alternées
+}
+
+// Ajouter plan 00176 à la timeline master
+if (planCompositions[176]) {
+    var masterLayer176 = masterComp.layers.add(planCompositions[176]);
+    masterLayer176.startTime = 4.76;
+    masterLayer176.name = "UNDLM_00176";
+    masterLayer176.label = 2; // Couleurs alternées
+}
+
+// Ajouter plan 00177 à la timeline master
+if (planCompositions[177]) {
+    var masterLayer177 = masterComp.layers.add(planCompositions[177]);
+    masterLayer177.startTime = 12.76;
+    masterLayer177.name = "UNDLM_00177";
+    masterLayer177.label = 3; // Couleurs alternées
+}
+
+// Ajouter plan 00193 à la timeline master
+if (planCompositions[193]) {
+    var masterLayer193 = masterComp.layers.add(planCompositions[193]);
+    masterLayer193.startTime = 17.2;
+    masterLayer193.name = "UNDLM_00193";
+    masterLayer193.label = 4; // Couleurs alternées
+}
+
+// Ajouter plan 00194 à la timeline master
+if (planCompositions[194]) {
+    var masterLayer194 = masterComp.layers.add(planCompositions[194]);
+    masterLayer194.startTime = 22.6;
+    masterLayer194.name = "UNDLM_00194";
+    masterLayer194.label = 5; // Couleurs alternées
+}
+
+// Ajouter plan 00195 à la timeline master
+if (planCompositions[195]) {
+    var masterLayer195 = masterComp.layers.add(planCompositions[195]);
+    masterLayer195.startTime = 32.96;
+    masterLayer195.name = "UNDLM_00195";
+    masterLayer195.label = 6; // Couleurs alternées
+}
+
+// Ajouter plan 00196 à la timeline master
+if (planCompositions[196]) {
+    var masterLayer196 = masterComp.layers.add(planCompositions[196]);
+    masterLayer196.startTime = 45.760000000000005;
+    masterLayer196.name = "UNDLM_00196";
+    masterLayer196.label = 7; // Couleurs alternées
+}
+
+// Ajouter plan 00197 à la timeline master
+if (planCompositions[197]) {
+    var masterLayer197 = masterComp.layers.add(planCompositions[197]);
+    masterLayer197.startTime = 49.56;
+    masterLayer197.name = "UNDLM_00197";
+    masterLayer197.label = 8; // Couleurs alternées
+}
+
+// Ajouter plan 00198 à la timeline master
+if (planCompositions[198]) {
+    var masterLayer198 = masterComp.layers.add(planCompositions[198]);
+    masterLayer198.startTime = 55.760000000000005;
+    masterLayer198.name = "UNDLM_00198";
+    masterLayer198.label = 9; // Couleurs alternées
+}
+
+// Ajouter plan 00199 à la timeline master
+if (planCompositions[199]) {
+    var masterLayer199 = masterComp.layers.add(planCompositions[199]);
+    masterLayer199.startTime = 61.440000000000005;
+    masterLayer199.name = "UNDLM_00199";
+    masterLayer199.label = 10; // Couleurs alternées
+}
+
+// Ajouter plan 00200 à la timeline master
+if (planCompositions[200]) {
+    var masterLayer200 = masterComp.layers.add(planCompositions[200]);
+    masterLayer200.startTime = 66.36;
+    masterLayer200.name = "UNDLM_00200";
+    masterLayer200.label = 11; // Couleurs alternées
+}
+
+// Ajouter plan 00201 à la timeline master
+if (planCompositions[201]) {
+    var masterLayer201 = masterComp.layers.add(planCompositions[201]);
+    masterLayer201.startTime = 68.56;
+    masterLayer201.name = "UNDLM_00201";
+    masterLayer201.label = 12; // Couleurs alternées
+}
+
+// Ajouter plan 00212 à la timeline master
+if (planCompositions[212]) {
+    var masterLayer212 = masterComp.layers.add(planCompositions[212]);
+    masterLayer212.startTime = 72.72;
+    masterLayer212.name = "UNDLM_00212";
+    masterLayer212.label = 13; // Couleurs alternées
+}
+
+// Ajouter plan 00213 à la timeline master
+if (planCompositions[213]) {
+    var masterLayer213 = masterComp.layers.add(planCompositions[213]);
+    masterLayer213.startTime = 80.2;
+    masterLayer213.name = "UNDLM_00213";
+    masterLayer213.label = 14; // Couleurs alternées
+}
+
+// Ajouter plan 00215 à la timeline master
+if (planCompositions[215]) {
+    var masterLayer215 = masterComp.layers.add(planCompositions[215]);
+    masterLayer215.startTime = 90.16;
+    masterLayer215.name = "UNDLM_00215";
+    masterLayer215.label = 15; // Couleurs alternées
+}
+
+// Ajouter plan 00216 à la timeline master
+if (planCompositions[216]) {
+    var masterLayer216 = masterComp.layers.add(planCompositions[216]);
+    masterLayer216.startTime = 98.0;
+    masterLayer216.name = "UNDLM_00216";
+    masterLayer216.label = 16; // Couleurs alternées
+}
+
+// Ajouter plan 00251 à la timeline master
+if (planCompositions[251]) {
+    var masterLayer251 = masterComp.layers.add(planCompositions[251]);
+    masterLayer251.startTime = 104.52;
+    masterLayer251.name = "UNDLM_00251";
+    masterLayer251.label = 1; // Couleurs alternées
+}
+
+// Ajouter plan 00252 à la timeline master
+if (planCompositions[252]) {
+    var masterLayer252 = masterComp.layers.add(planCompositions[252]);
+    masterLayer252.startTime = 115.64;
+    masterLayer252.name = "UNDLM_00252";
+    masterLayer252.label = 2; // Couleurs alternées
+}
+
+// Ajouter plan 00254 à la timeline master
+if (planCompositions[254]) {
+    var masterLayer254 = masterComp.layers.add(planCompositions[254]);
+    masterLayer254.startTime = 128.64;
+    masterLayer254.name = "UNDLM_00254";
+    masterLayer254.label = 3; // Couleurs alternées
+}
+
+// Ajouter plan 00255 à la timeline master
+if (planCompositions[255]) {
+    var masterLayer255 = masterComp.layers.add(planCompositions[255]);
+    masterLayer255.startTime = 137.04;
+    masterLayer255.name = "UNDLM_00255";
+    masterLayer255.label = 4; // Couleurs alternées
+}
+
+// Ajouter plan 00256 à la timeline master
+if (planCompositions[256]) {
+    var masterLayer256 = masterComp.layers.add(planCompositions[256]);
+    masterLayer256.startTime = 140.56;
+    masterLayer256.name = "UNDLM_00256";
+    masterLayer256.label = 5; // Couleurs alternées
+}
+
+// Ajouter plan 00262 à la timeline master
+if (planCompositions[262]) {
+    var masterLayer262 = masterComp.layers.add(planCompositions[262]);
+    masterLayer262.startTime = 142.2;
+    masterLayer262.name = "UNDLM_00262";
+    masterLayer262.label = 6; // Couleurs alternées
+}
+
+// Ajouter plan 00263 à la timeline master
+if (planCompositions[263]) {
+    var masterLayer263 = masterComp.layers.add(planCompositions[263]);
+    masterLayer263.startTime = 159.16;
+    masterLayer263.name = "UNDLM_00263";
+    masterLayer263.label = 7; // Couleurs alternées
+}
+
 // Ajouter plan 00275 à la timeline master
 if (planCompositions[275]) {
     var masterLayer275 = masterComp.layers.add(planCompositions[275]);
-    masterLayer275.startTime = 0;
+    masterLayer275.startTime = 174.0;
     masterLayer275.name = "UNDLM_00275";
-    masterLayer275.label = 1; // Couleurs alternées
+    masterLayer275.label = 8; // Couleurs alternées
 }
 
 // Ajouter plan 00276 à la timeline master
 if (planCompositions[276]) {
     var masterLayer276 = masterComp.layers.add(planCompositions[276]);
-    masterLayer276.startTime = 4.24;
+    masterLayer276.startTime = 178.24;
     masterLayer276.name = "UNDLM_00276";
-    masterLayer276.label = 2; // Couleurs alternées
+    masterLayer276.label = 9; // Couleurs alternées
 }
 
 // Ajouter plan 00277 à la timeline master
 if (planCompositions[277]) {
     var masterLayer277 = masterComp.layers.add(planCompositions[277]);
-    masterLayer277.startTime = 5.4;
+    masterLayer277.startTime = 179.4;
     masterLayer277.name = "UNDLM_00277";
-    masterLayer277.label = 3; // Couleurs alternées
-}
-
-// Ajouter plan 00278 à la timeline master
-if (planCompositions[278]) {
-    var masterLayer278 = masterComp.layers.add(planCompositions[278]);
-    masterLayer278.startTime = 8.92;
-    masterLayer278.name = "UNDLM_00278";
-    masterLayer278.label = 4; // Couleurs alternées
+    masterLayer277.label = 10; // Couleurs alternées
 }
 
 // Ajouter plan 00279 à la timeline master
 if (planCompositions[279]) {
     var masterLayer279 = masterComp.layers.add(planCompositions[279]);
-    masterLayer279.startTime = 12.84;
+    masterLayer279.startTime = 182.92000000000002;
     masterLayer279.name = "UNDLM_00279";
-    masterLayer279.label = 5; // Couleurs alternées
+    masterLayer279.label = 11; // Couleurs alternées
 }
 
 // Ajouter plan 00280 à la timeline master
 if (planCompositions[280]) {
     var masterLayer280 = masterComp.layers.add(planCompositions[280]);
-    masterLayer280.startTime = 21.48;
+    masterLayer280.startTime = 191.56;
     masterLayer280.name = "UNDLM_00280";
-    masterLayer280.label = 6; // Couleurs alternées
-}
-
-// Ajouter plan 00281 à la timeline master
-if (planCompositions[281]) {
-    var masterLayer281 = masterComp.layers.add(planCompositions[281]);
-    masterLayer281.startTime = 27.92;
-    masterLayer281.name = "UNDLM_00281";
-    masterLayer281.label = 7; // Couleurs alternées
+    masterLayer280.label = 12; // Couleurs alternées
 }
 
 // Ajouter plan 00282 à la timeline master
 if (planCompositions[282]) {
     var masterLayer282 = masterComp.layers.add(planCompositions[282]);
-    masterLayer282.startTime = 32.400000000000006;
+    masterLayer282.startTime = 198.0;
     masterLayer282.name = "UNDLM_00282";
-    masterLayer282.label = 8; // Couleurs alternées
+    masterLayer282.label = 13; // Couleurs alternées
 }
 
 // Ajouter plan 00283 à la timeline master
 if (planCompositions[283]) {
     var masterLayer283 = masterComp.layers.add(planCompositions[283]);
-    masterLayer283.startTime = 39.440000000000005;
+    masterLayer283.startTime = 205.04;
     masterLayer283.name = "UNDLM_00283";
-    masterLayer283.label = 9; // Couleurs alternées
-}
-
-// Ajouter plan 00284 à la timeline master
-if (planCompositions[284]) {
-    var masterLayer284 = masterComp.layers.add(planCompositions[284]);
-    masterLayer284.startTime = 44.120000000000005;
-    masterLayer284.name = "UNDLM_00284";
-    masterLayer284.label = 10; // Couleurs alternées
+    masterLayer283.label = 14; // Couleurs alternées
 }
 
 // Ajouter plan 00285 à la timeline master
 if (planCompositions[285]) {
     var masterLayer285 = masterComp.layers.add(planCompositions[285]);
-    masterLayer285.startTime = 52.64;
+    masterLayer285.startTime = 209.72;
     masterLayer285.name = "UNDLM_00285";
-    masterLayer285.label = 11; // Couleurs alternées
-}
-
-// Ajouter plan 00286 à la timeline master
-if (planCompositions[286]) {
-    var masterLayer286 = masterComp.layers.add(planCompositions[286]);
-    masterLayer286.startTime = 55.160000000000004;
-    masterLayer286.name = "UNDLM_00286";
-    masterLayer286.label = 12; // Couleurs alternées
+    masterLayer285.label = 15; // Couleurs alternées
 }
 
 // Ajouter plan 00311 à la timeline master
 if (planCompositions[311]) {
     var masterLayer311 = masterComp.layers.add(planCompositions[311]);
-    masterLayer311.startTime = 60.84;
+    masterLayer311.startTime = 212.24;
     masterLayer311.name = "UNDLM_00311";
-    masterLayer311.label = 13; // Couleurs alternées
+    masterLayer311.label = 16; // Couleurs alternées
 }
 
 // Ajouter plan 00312 à la timeline master
 if (planCompositions[312]) {
     var masterLayer312 = masterComp.layers.add(planCompositions[312]);
-    masterLayer312.startTime = 64.8;
+    masterLayer312.startTime = 216.20000000000002;
     masterLayer312.name = "UNDLM_00312";
-    masterLayer312.label = 14; // Couleurs alternées
+    masterLayer312.label = 1; // Couleurs alternées
 }
 
 // Ajouter plan 00313 à la timeline master
 if (planCompositions[313]) {
     var masterLayer313 = masterComp.layers.add(planCompositions[313]);
-    masterLayer313.startTime = 84.12;
+    masterLayer313.startTime = 235.52;
     masterLayer313.name = "UNDLM_00313";
-    masterLayer313.label = 15; // Couleurs alternées
+    masterLayer313.label = 2; // Couleurs alternées
 }
 
 // Ajouter plan 00314 à la timeline master
 if (planCompositions[314]) {
     var masterLayer314 = masterComp.layers.add(planCompositions[314]);
-    masterLayer314.startTime = 92.68;
+    masterLayer314.startTime = 244.08;
     masterLayer314.name = "UNDLM_00314";
-    masterLayer314.label = 16; // Couleurs alternées
+    masterLayer314.label = 3; // Couleurs alternées
 }
 
 // Ajouter plan 00315 à la timeline master
 if (planCompositions[315]) {
     var masterLayer315 = masterComp.layers.add(planCompositions[315]);
-    masterLayer315.startTime = 103.4;
+    masterLayer315.startTime = 254.8;
     masterLayer315.name = "UNDLM_00315";
-    masterLayer315.label = 1; // Couleurs alternées
+    masterLayer315.label = 4; // Couleurs alternées
 }
 
 // Ajouter plan 00316 à la timeline master
 if (planCompositions[316]) {
     var masterLayer316 = masterComp.layers.add(planCompositions[316]);
-    masterLayer316.startTime = 116.0;
+    masterLayer316.startTime = 267.40000000000003;
     masterLayer316.name = "UNDLM_00316";
-    masterLayer316.label = 2; // Couleurs alternées
+    masterLayer316.label = 5; // Couleurs alternées
 }
 
 // Ajouter plan 00317 à la timeline master
 if (planCompositions[317]) {
     var masterLayer317 = masterComp.layers.add(planCompositions[317]);
-    masterLayer317.startTime = 142.72;
+    masterLayer317.startTime = 294.12;
     masterLayer317.name = "UNDLM_00317";
-    masterLayer317.label = 3; // Couleurs alternées
+    masterLayer317.label = 6; // Couleurs alternées
 }
 
 // Ajouter plan 00327 à la timeline master
 if (planCompositions[327]) {
     var masterLayer327 = masterComp.layers.add(planCompositions[327]);
-    masterLayer327.startTime = 148.72;
+    masterLayer327.startTime = 300.12;
     masterLayer327.name = "UNDLM_00327";
-    masterLayer327.label = 4; // Couleurs alternées
+    masterLayer327.label = 7; // Couleurs alternées
 }
 
 // Ajouter plan 00328 à la timeline master
 if (planCompositions[328]) {
     var masterLayer328 = masterComp.layers.add(planCompositions[328]);
-    masterLayer328.startTime = 153.44;
+    masterLayer328.startTime = 304.84000000000003;
     masterLayer328.name = "UNDLM_00328";
-    masterLayer328.label = 5; // Couleurs alternées
+    masterLayer328.label = 8; // Couleurs alternées
 }
 
 // Ajouter plan 00329 à la timeline master
 if (planCompositions[329]) {
     var masterLayer329 = masterComp.layers.add(planCompositions[329]);
-    masterLayer329.startTime = 161.76;
+    masterLayer329.startTime = 313.16;
     masterLayer329.name = "UNDLM_00329";
-    masterLayer329.label = 6; // Couleurs alternées
+    masterLayer329.label = 9; // Couleurs alternées
 }
 
 // Ajouter plan 00330 à la timeline master
 if (planCompositions[330]) {
     var masterLayer330 = masterComp.layers.add(planCompositions[330]);
-    masterLayer330.startTime = 173.0;
+    masterLayer330.startTime = 324.40000000000003;
     masterLayer330.name = "UNDLM_00330";
-    masterLayer330.label = 7; // Couleurs alternées
+    masterLayer330.label = 10; // Couleurs alternées
 }
 
 // Ajouter plan 00331 à la timeline master
 if (planCompositions[331]) {
     var masterLayer331 = masterComp.layers.add(planCompositions[331]);
-    masterLayer331.startTime = 190.68;
+    masterLayer331.startTime = 342.08000000000004;
     masterLayer331.name = "UNDLM_00331";
-    masterLayer331.label = 8; // Couleurs alternées
-}
-
-// Ajouter plan 00383 à la timeline master
-if (planCompositions[383]) {
-    var masterLayer383 = masterComp.layers.add(planCompositions[383]);
-    masterLayer383.startTime = 217.32;
-    masterLayer383.name = "UNDLM_00383";
-    masterLayer383.label = 9; // Couleurs alternées
+    masterLayer331.label = 11; // Couleurs alternées
 }
 
 // Ajouter plan 00384 à la timeline master
 if (planCompositions[384]) {
     var masterLayer384 = masterComp.layers.add(planCompositions[384]);
-    masterLayer384.startTime = 227.28;
+    masterLayer384.startTime = 368.72;
     masterLayer384.name = "UNDLM_00384";
-    masterLayer384.label = 10; // Couleurs alternées
+    masterLayer384.label = 12; // Couleurs alternées
 }
 
 // Ajouter plan 00385 à la timeline master
 if (planCompositions[385]) {
     var masterLayer385 = masterComp.layers.add(planCompositions[385]);
-    masterLayer385.startTime = 236.36;
+    masterLayer385.startTime = 377.8;
     masterLayer385.name = "UNDLM_00385";
-    masterLayer385.label = 11; // Couleurs alternées
+    masterLayer385.label = 13; // Couleurs alternées
 }
 
 // Ajouter plan 00386 à la timeline master
 if (planCompositions[386]) {
     var masterLayer386 = masterComp.layers.add(planCompositions[386]);
-    masterLayer386.startTime = 249.12;
+    masterLayer386.startTime = 390.56;
     masterLayer386.name = "UNDLM_00386";
-    masterLayer386.label = 12; // Couleurs alternées
+    masterLayer386.label = 14; // Couleurs alternées
 }
 
 // Ajouter plan 00387 à la timeline master
 if (planCompositions[387]) {
     var masterLayer387 = masterComp.layers.add(planCompositions[387]);
-    masterLayer387.startTime = 265.68;
+    masterLayer387.startTime = 407.12;
     masterLayer387.name = "UNDLM_00387";
-    masterLayer387.label = 13; // Couleurs alternées
-}
-
-// Ajouter plan 00388 à la timeline master
-if (planCompositions[388]) {
-    var masterLayer388 = masterComp.layers.add(planCompositions[388]);
-    masterLayer388.startTime = 269.8;
-    masterLayer388.name = "UNDLM_00388";
-    masterLayer388.label = 14; // Couleurs alternées
+    masterLayer387.label = 15; // Couleurs alternées
 }
 
 // Ajouter plan 00391 à la timeline master
 if (planCompositions[391]) {
     var masterLayer391 = masterComp.layers.add(planCompositions[391]);
-    masterLayer391.startTime = 272.52000000000004;
+    masterLayer391.startTime = 411.24;
     masterLayer391.name = "UNDLM_00391";
-    masterLayer391.label = 15; // Couleurs alternées
+    masterLayer391.label = 16; // Couleurs alternées
 }
 
 // Ajouter plan 00393 à la timeline master
 if (planCompositions[393]) {
     var masterLayer393 = masterComp.layers.add(planCompositions[393]);
-    masterLayer393.startTime = 281.72;
+    masterLayer393.startTime = 420.44;
     masterLayer393.name = "UNDLM_00393";
-    masterLayer393.label = 16; // Couleurs alternées
+    masterLayer393.label = 1; // Couleurs alternées
 }
 
 // Ajouter plan 00394 à la timeline master
 if (planCompositions[394]) {
     var masterLayer394 = masterComp.layers.add(planCompositions[394]);
-    masterLayer394.startTime = 289.76000000000005;
+    masterLayer394.startTime = 428.48;
     masterLayer394.name = "UNDLM_00394";
-    masterLayer394.label = 1; // Couleurs alternées
+    masterLayer394.label = 2; // Couleurs alternées
 }
 
 // Ajouter plan 00395 à la timeline master
 if (planCompositions[395]) {
     var masterLayer395 = masterComp.layers.add(planCompositions[395]);
-    masterLayer395.startTime = 292.20000000000005;
+    masterLayer395.startTime = 430.92;
     masterLayer395.name = "UNDLM_00395";
-    masterLayer395.label = 2; // Couleurs alternées
+    masterLayer395.label = 3; // Couleurs alternées
 }
 
 // Ajouter plan 00396 à la timeline master
 if (planCompositions[396]) {
     var masterLayer396 = masterComp.layers.add(planCompositions[396]);
-    masterLayer396.startTime = 302.00000000000006;
+    masterLayer396.startTime = 440.72;
     masterLayer396.name = "UNDLM_00396";
-    masterLayer396.label = 3; // Couleurs alternées
+    masterLayer396.label = 4; // Couleurs alternées
 }
 
 // Ajouter plan 00397 à la timeline master
 if (planCompositions[397]) {
     var masterLayer397 = masterComp.layers.add(planCompositions[397]);
-    masterLayer397.startTime = 313.28000000000003;
+    masterLayer397.startTime = 452.0;
     masterLayer397.name = "UNDLM_00397";
-    masterLayer397.label = 4; // Couleurs alternées
+    masterLayer397.label = 5; // Couleurs alternées
 }
 
 // Ajouter plan 00398 à la timeline master
 if (planCompositions[398]) {
     var masterLayer398 = masterComp.layers.add(planCompositions[398]);
-    masterLayer398.startTime = 323.8;
+    masterLayer398.startTime = 462.52;
     masterLayer398.name = "UNDLM_00398";
-    masterLayer398.label = 5; // Couleurs alternées
+    masterLayer398.label = 6; // Couleurs alternées
 }
 
 // Ajouter plan 00399 à la timeline master
 if (planCompositions[399]) {
     var masterLayer399 = masterComp.layers.add(planCompositions[399]);
-    masterLayer399.startTime = 328.44;
+    masterLayer399.startTime = 467.15999999999997;
     masterLayer399.name = "UNDLM_00399";
-    masterLayer399.label = 6; // Couleurs alternées
+    masterLayer399.label = 7; // Couleurs alternées
 }
 
 // Ajouter plan 00400 à la timeline master
 if (planCompositions[400]) {
     var masterLayer400 = masterComp.layers.add(planCompositions[400]);
-    masterLayer400.startTime = 331.48;
+    masterLayer400.startTime = 470.2;
     masterLayer400.name = "UNDLM_00400";
-    masterLayer400.label = 7; // Couleurs alternées
+    masterLayer400.label = 8; // Couleurs alternées
 }
 
 // Ajouter plan 00464 à la timeline master
 if (planCompositions[464]) {
     var masterLayer464 = masterComp.layers.add(planCompositions[464]);
-    masterLayer464.startTime = 337.68;
+    masterLayer464.startTime = 476.4;
     masterLayer464.name = "UNDLM_00464";
-    masterLayer464.label = 8; // Couleurs alternées
+    masterLayer464.label = 9; // Couleurs alternées
 }
 
 // Ajouter plan 00465 à la timeline master
 if (planCompositions[465]) {
     var masterLayer465 = masterComp.layers.add(planCompositions[465]);
-    masterLayer465.startTime = 340.84000000000003;
+    masterLayer465.startTime = 479.56;
     masterLayer465.name = "UNDLM_00465";
-    masterLayer465.label = 9; // Couleurs alternées
+    masterLayer465.label = 10; // Couleurs alternées
 }
 
 // Ajouter plan 00466 à la timeline master
 if (planCompositions[466]) {
     var masterLayer466 = masterComp.layers.add(planCompositions[466]);
-    masterLayer466.startTime = 344.68;
+    masterLayer466.startTime = 483.4;
     masterLayer466.name = "UNDLM_00466";
-    masterLayer466.label = 10; // Couleurs alternées
+    masterLayer466.label = 11; // Couleurs alternées
 }
 
 // Ajouter plan 00467 à la timeline master
 if (planCompositions[467]) {
     var masterLayer467 = masterComp.layers.add(planCompositions[467]);
-    masterLayer467.startTime = 381.96000000000004;
+    masterLayer467.startTime = 520.68;
     masterLayer467.name = "UNDLM_00467";
-    masterLayer467.label = 11; // Couleurs alternées
+    masterLayer467.label = 12; // Couleurs alternées
 }
 
 // Ajouter plan 00468 à la timeline master
 if (planCompositions[468]) {
     var masterLayer468 = masterComp.layers.add(planCompositions[468]);
-    masterLayer468.startTime = 388.28000000000003;
+    masterLayer468.startTime = 527.0;
     masterLayer468.name = "UNDLM_00468";
-    masterLayer468.label = 12; // Couleurs alternées
+    masterLayer468.label = 13; // Couleurs alternées
 }
 
 // Ajouter plan 00469 à la timeline master
 if (planCompositions[469]) {
     var masterLayer469 = masterComp.layers.add(planCompositions[469]);
-    masterLayer469.startTime = 392.68;
+    masterLayer469.startTime = 531.4;
     masterLayer469.name = "UNDLM_00469";
-    masterLayer469.label = 13; // Couleurs alternées
+    masterLayer469.label = 14; // Couleurs alternées
 }
 
 // Ajouter plan 00470 à la timeline master
 if (planCompositions[470]) {
     var masterLayer470 = masterComp.layers.add(planCompositions[470]);
-    masterLayer470.startTime = 400.04;
+    masterLayer470.startTime = 538.76;
     masterLayer470.name = "UNDLM_00470";
-    masterLayer470.label = 14; // Couleurs alternées
+    masterLayer470.label = 15; // Couleurs alternées
 }
 
 // Ajouter plan 00471 à la timeline master
 if (planCompositions[471]) {
     var masterLayer471 = masterComp.layers.add(planCompositions[471]);
-    masterLayer471.startTime = 409.32;
+    masterLayer471.startTime = 548.04;
     masterLayer471.name = "UNDLM_00471";
-    masterLayer471.label = 15; // Couleurs alternées
+    masterLayer471.label = 16; // Couleurs alternées
 }
 
 // Ajouter plan 00472 à la timeline master
 if (planCompositions[472]) {
     var masterLayer472 = masterComp.layers.add(planCompositions[472]);
-    masterLayer472.startTime = 413.92;
+    masterLayer472.startTime = 552.64;
     masterLayer472.name = "UNDLM_00472";
-    masterLayer472.label = 16; // Couleurs alternées
+    masterLayer472.label = 1; // Couleurs alternées
 }
 
 // Ajouter plan 00473 à la timeline master
 if (planCompositions[473]) {
     var masterLayer473 = masterComp.layers.add(planCompositions[473]);
-    masterLayer473.startTime = 415.88;
+    masterLayer473.startTime = 554.6;
     masterLayer473.name = "UNDLM_00473";
-    masterLayer473.label = 1; // Couleurs alternées
+    masterLayer473.label = 2; // Couleurs alternées
 }
 
 // Ajouter plan 00474 à la timeline master
 if (planCompositions[474]) {
     var masterLayer474 = masterComp.layers.add(planCompositions[474]);
-    masterLayer474.startTime = 417.92;
+    masterLayer474.startTime = 556.64;
     masterLayer474.name = "UNDLM_00474";
-    masterLayer474.label = 2; // Couleurs alternées
+    masterLayer474.label = 3; // Couleurs alternées
 }
 
 // Ajouter plan 00475 à la timeline master
 if (planCompositions[475]) {
     var masterLayer475 = masterComp.layers.add(planCompositions[475]);
-    masterLayer475.startTime = 420.08000000000004;
+    masterLayer475.startTime = 558.8;
     masterLayer475.name = "UNDLM_00475";
-    masterLayer475.label = 3; // Couleurs alternées
+    masterLayer475.label = 4; // Couleurs alternées
 }
 
 // Ajouter plan 00476 à la timeline master
 if (planCompositions[476]) {
     var masterLayer476 = masterComp.layers.add(planCompositions[476]);
-    masterLayer476.startTime = 423.92;
+    masterLayer476.startTime = 562.64;
     masterLayer476.name = "UNDLM_00476";
-    masterLayer476.label = 4; // Couleurs alternées
+    masterLayer476.label = 5; // Couleurs alternées
 }
 
 // Ajouter plan 00477 à la timeline master
 if (planCompositions[477]) {
     var masterLayer477 = masterComp.layers.add(planCompositions[477]);
-    masterLayer477.startTime = 427.52000000000004;
+    masterLayer477.startTime = 566.24;
     masterLayer477.name = "UNDLM_00477";
-    masterLayer477.label = 5; // Couleurs alternées
+    masterLayer477.label = 6; // Couleurs alternées
 }
 
 // Ajouter plan 00501 à la timeline master
 if (planCompositions[501]) {
     var masterLayer501 = masterComp.layers.add(planCompositions[501]);
-    masterLayer501.startTime = 431.40000000000003;
+    masterLayer501.startTime = 570.12;
     masterLayer501.name = "UNDLM_00501";
-    masterLayer501.label = 6; // Couleurs alternées
+    masterLayer501.label = 7; // Couleurs alternées
 }
 
 // Ajouter l'adjustment layer TC en top de la composition master
@@ -12333,60 +16124,77 @@ var planExpression = 'var currentTime = time;' + String.fromCharCode(13) +
 
 // Ajouter la logique pour chaque plan dans l'expression (simplifié)
 var planTimeRanges = [
-    {start: 0, end: 4.24, name: "UNDLM_00275"},
-    {start: 4.24, end: 5.4, name: "UNDLM_00276"},
-    {start: 5.4, end: 8.92, name: "UNDLM_00277"},
-    {start: 8.92, end: 12.84, name: "UNDLM_00278"},
-    {start: 12.84, end: 21.48, name: "UNDLM_00279"},
-    {start: 21.48, end: 27.92, name: "UNDLM_00280"},
-    {start: 27.92, end: 32.400000000000006, name: "UNDLM_00281"},
-    {start: 32.400000000000006, end: 39.440000000000005, name: "UNDLM_00282"},
-    {start: 39.440000000000005, end: 44.120000000000005, name: "UNDLM_00283"},
-    {start: 44.120000000000005, end: 52.64, name: "UNDLM_00284"},
-    {start: 52.64, end: 55.160000000000004, name: "UNDLM_00285"},
-    {start: 55.160000000000004, end: 60.84, name: "UNDLM_00286"},
-    {start: 60.84, end: 64.8, name: "UNDLM_00311"},
-    {start: 64.8, end: 84.12, name: "UNDLM_00312"},
-    {start: 84.12, end: 92.68, name: "UNDLM_00313"},
-    {start: 92.68, end: 103.4, name: "UNDLM_00314"},
-    {start: 103.4, end: 116.0, name: "UNDLM_00315"},
-    {start: 116.0, end: 142.72, name: "UNDLM_00316"},
-    {start: 142.72, end: 148.72, name: "UNDLM_00317"},
-    {start: 148.72, end: 153.44, name: "UNDLM_00327"},
-    {start: 153.44, end: 161.76, name: "UNDLM_00328"},
-    {start: 161.76, end: 173.0, name: "UNDLM_00329"},
-    {start: 173.0, end: 190.68, name: "UNDLM_00330"},
-    {start: 190.68, end: 217.32, name: "UNDLM_00331"},
-    {start: 217.32, end: 227.28, name: "UNDLM_00383"},
-    {start: 227.28, end: 236.36, name: "UNDLM_00384"},
-    {start: 236.36, end: 249.12, name: "UNDLM_00385"},
-    {start: 249.12, end: 265.68, name: "UNDLM_00386"},
-    {start: 265.68, end: 269.8, name: "UNDLM_00387"},
-    {start: 269.8, end: 272.52000000000004, name: "UNDLM_00388"},
-    {start: 272.52000000000004, end: 281.72, name: "UNDLM_00391"},
-    {start: 281.72, end: 289.76000000000005, name: "UNDLM_00393"},
-    {start: 289.76000000000005, end: 292.20000000000005, name: "UNDLM_00394"},
-    {start: 292.20000000000005, end: 302.00000000000006, name: "UNDLM_00395"},
-    {start: 302.00000000000006, end: 313.28000000000003, name: "UNDLM_00396"},
-    {start: 313.28000000000003, end: 323.8, name: "UNDLM_00397"},
-    {start: 323.8, end: 328.44, name: "UNDLM_00398"},
-    {start: 328.44, end: 331.48, name: "UNDLM_00399"},
-    {start: 331.48, end: 337.68, name: "UNDLM_00400"},
-    {start: 337.68, end: 340.84000000000003, name: "UNDLM_00464"},
-    {start: 340.84000000000003, end: 344.68, name: "UNDLM_00465"},
-    {start: 344.68, end: 381.96000000000004, name: "UNDLM_00466"},
-    {start: 381.96000000000004, end: 388.28000000000003, name: "UNDLM_00467"},
-    {start: 388.28000000000003, end: 392.68, name: "UNDLM_00468"},
-    {start: 392.68, end: 400.04, name: "UNDLM_00469"},
-    {start: 400.04, end: 409.32, name: "UNDLM_00470"},
-    {start: 409.32, end: 413.92, name: "UNDLM_00471"},
-    {start: 413.92, end: 415.88, name: "UNDLM_00472"},
-    {start: 415.88, end: 417.92, name: "UNDLM_00473"},
-    {start: 417.92, end: 420.08000000000004, name: "UNDLM_00474"},
-    {start: 420.08000000000004, end: 423.92, name: "UNDLM_00475"},
-    {start: 423.92, end: 427.52000000000004, name: "UNDLM_00476"},
-    {start: 427.52000000000004, end: 431.40000000000003, name: "UNDLM_00477"},
-    {start: 431.40000000000003, end: 443.28000000000003, name: "UNDLM_00501"},
+    {start: 0, end: 4.76, name: "UNDLM_00175"},
+    {start: 4.76, end: 12.76, name: "UNDLM_00176"},
+    {start: 12.76, end: 17.2, name: "UNDLM_00177"},
+    {start: 17.2, end: 22.6, name: "UNDLM_00193"},
+    {start: 22.6, end: 32.96, name: "UNDLM_00194"},
+    {start: 32.96, end: 45.760000000000005, name: "UNDLM_00195"},
+    {start: 45.760000000000005, end: 49.56, name: "UNDLM_00196"},
+    {start: 49.56, end: 55.760000000000005, name: "UNDLM_00197"},
+    {start: 55.760000000000005, end: 61.440000000000005, name: "UNDLM_00198"},
+    {start: 61.440000000000005, end: 66.36, name: "UNDLM_00199"},
+    {start: 66.36, end: 68.56, name: "UNDLM_00200"},
+    {start: 68.56, end: 72.72, name: "UNDLM_00201"},
+    {start: 72.72, end: 80.2, name: "UNDLM_00212"},
+    {start: 80.2, end: 90.16, name: "UNDLM_00213"},
+    {start: 90.16, end: 98.0, name: "UNDLM_00215"},
+    {start: 98.0, end: 104.52, name: "UNDLM_00216"},
+    {start: 104.52, end: 115.64, name: "UNDLM_00251"},
+    {start: 115.64, end: 128.64, name: "UNDLM_00252"},
+    {start: 128.64, end: 137.04, name: "UNDLM_00254"},
+    {start: 137.04, end: 140.56, name: "UNDLM_00255"},
+    {start: 140.56, end: 142.2, name: "UNDLM_00256"},
+    {start: 142.2, end: 159.16, name: "UNDLM_00262"},
+    {start: 159.16, end: 174.0, name: "UNDLM_00263"},
+    {start: 174.0, end: 178.24, name: "UNDLM_00275"},
+    {start: 178.24, end: 179.4, name: "UNDLM_00276"},
+    {start: 179.4, end: 182.92000000000002, name: "UNDLM_00277"},
+    {start: 182.92000000000002, end: 191.56, name: "UNDLM_00279"},
+    {start: 191.56, end: 198.0, name: "UNDLM_00280"},
+    {start: 198.0, end: 205.04, name: "UNDLM_00282"},
+    {start: 205.04, end: 209.72, name: "UNDLM_00283"},
+    {start: 209.72, end: 212.24, name: "UNDLM_00285"},
+    {start: 212.24, end: 216.20000000000002, name: "UNDLM_00311"},
+    {start: 216.20000000000002, end: 235.52, name: "UNDLM_00312"},
+    {start: 235.52, end: 244.08, name: "UNDLM_00313"},
+    {start: 244.08, end: 254.8, name: "UNDLM_00314"},
+    {start: 254.8, end: 267.40000000000003, name: "UNDLM_00315"},
+    {start: 267.40000000000003, end: 294.12, name: "UNDLM_00316"},
+    {start: 294.12, end: 300.12, name: "UNDLM_00317"},
+    {start: 300.12, end: 304.84000000000003, name: "UNDLM_00327"},
+    {start: 304.84000000000003, end: 313.16, name: "UNDLM_00328"},
+    {start: 313.16, end: 324.40000000000003, name: "UNDLM_00329"},
+    {start: 324.40000000000003, end: 342.08000000000004, name: "UNDLM_00330"},
+    {start: 342.08000000000004, end: 368.72, name: "UNDLM_00331"},
+    {start: 368.72, end: 377.8, name: "UNDLM_00384"},
+    {start: 377.8, end: 390.56, name: "UNDLM_00385"},
+    {start: 390.56, end: 407.12, name: "UNDLM_00386"},
+    {start: 407.12, end: 411.24, name: "UNDLM_00387"},
+    {start: 411.24, end: 420.44, name: "UNDLM_00391"},
+    {start: 420.44, end: 428.48, name: "UNDLM_00393"},
+    {start: 428.48, end: 430.92, name: "UNDLM_00394"},
+    {start: 430.92, end: 440.72, name: "UNDLM_00395"},
+    {start: 440.72, end: 452.0, name: "UNDLM_00396"},
+    {start: 452.0, end: 462.52, name: "UNDLM_00397"},
+    {start: 462.52, end: 467.15999999999997, name: "UNDLM_00398"},
+    {start: 467.15999999999997, end: 470.2, name: "UNDLM_00399"},
+    {start: 470.2, end: 476.4, name: "UNDLM_00400"},
+    {start: 476.4, end: 479.56, name: "UNDLM_00464"},
+    {start: 479.56, end: 483.4, name: "UNDLM_00465"},
+    {start: 483.4, end: 520.68, name: "UNDLM_00466"},
+    {start: 520.68, end: 527.0, name: "UNDLM_00467"},
+    {start: 527.0, end: 531.4, name: "UNDLM_00468"},
+    {start: 531.4, end: 538.76, name: "UNDLM_00469"},
+    {start: 538.76, end: 548.04, name: "UNDLM_00470"},
+    {start: 548.04, end: 552.64, name: "UNDLM_00471"},
+    {start: 552.64, end: 554.6, name: "UNDLM_00472"},
+    {start: 554.6, end: 556.64, name: "UNDLM_00473"},
+    {start: 556.64, end: 558.8, name: "UNDLM_00474"},
+    {start: 558.8, end: 562.64, name: "UNDLM_00475"},
+    {start: 562.64, end: 566.24, name: "UNDLM_00476"},
+    {start: 566.24, end: 570.12, name: "UNDLM_00477"},
+    {start: 570.12, end: 582.0, name: "UNDLM_00501"},
 ];
 
 // Finaliser l'expression simplifiée avec version
@@ -12429,8 +16237,8 @@ var saveFile = new File("/Volumes/resizelab/o2b-undllm/3_PROJECTS/2_ANIM/SEQUENC
 project.save(saveFile);
 
 // Statistiques finales détaillées
-var gradedCount = 54;
-var totalCount = 54;
+var gradedCount = 71;
+var totalCount = 71;
 var editOnlyCount = totalCount - gradedCount;
 
 // Calcul des statistiques réelles d'import
@@ -12439,7 +16247,7 @@ var actualGradedImported = gradingImportCount;
 var editSuccessRate = Math.round((actualEditImported / totalCount) * 100);
 var gradedSuccessRate = gradedCount > 0 ? Math.round((actualGradedImported / gradedCount) * 100) : 0;
 
-alert("🎬 Séquence P02_ALL créée avec succès!" + "\n" + "\n" + "📊 Statistiques Détaillées:" + "\n" + "• Plans total: " + totalCount + "\n" + "• Plans EDIT importés: " + actualEditImported + "/" + totalCount + " (" + editSuccessRate + "%)" + "\n" + "• Plans GRADED importés: " + actualGradedImported + "/" + gradedCount + " (" + gradedSuccessRate + "%)" + "\n" + "• Plans EDIT manquants: " + missingEditCount + "\n" + "• Plans GRADED manquants: " + missingGradingCount + "\n" + "• Durée séquence: " + Math.round(443.28000000000003 * 100) / 100 + "s" + "\n" + "\n" + "💾 Sauvegardé: P02_ALL_01.aep" + "\n" + "\n" + "✅ Structure conforme au template AE" + "\n" + "✅ Sources UHD mises à l'échelle en 1440p" + "\n" + "✅ Import Edit + Graded avec variantes" + "\n" + "✅ Burn-ins avancés avec expressions dynamiques" + "\n" + "✅ Gestion intelligente EDIT vs GRADED" + "\n" + "✅ Messages d'avertissement et d'erreur" + "\n" + "\n" + "🔥 FONCTIONNALITÉS AVANCÉES:" + "\n" + "• Burn-in séquence (haut droite): P02_ALL v001" + "\n" + "• Burn-in plan courant (bas gauche): dynamique" + "\n" + "• Scope burn-in (centré): PNG ou texte fallback" + "\n" + "• Expressions avec détection de version" + "\n" + "• Drop shadows sur tous les burn-ins" + "\n" + "• Timecode automatique sur adjustment layer");
+alert("🎬 Séquence P02_ALL créée avec succès!" + "\n" + "\n" + "📊 Statistiques Détaillées:" + "\n" + "• Plans total: " + totalCount + "\n" + "• Plans EDIT importés: " + actualEditImported + "/" + totalCount + " (" + editSuccessRate + "%)" + "\n" + "• Plans GRADED importés: " + actualGradedImported + "/" + gradedCount + " (" + gradedSuccessRate + "%)" + "\n" + "• Plans EDIT manquants: " + missingEditCount + "\n" + "• Plans GRADED manquants: " + missingGradingCount + "\n" + "• Durée séquence: " + Math.round(582.0 * 100) / 100 + "s" + "\n" + "\n" + "💾 Sauvegardé: P02_ALL_01.aep" + "\n" + "\n" + "✅ Structure conforme au template AE" + "\n" + "✅ Sources UHD mises à l'échelle en 1440p" + "\n" + "✅ Import Edit + Graded avec variantes" + "\n" + "✅ Burn-ins avancés avec expressions dynamiques" + "\n" + "✅ Gestion intelligente EDIT vs GRADED" + "\n" + "✅ Messages d'avertissement et d'erreur" + "\n" + "\n" + "🔥 FONCTIONNALITÉS AVANCÉES:" + "\n" + "• Burn-in séquence (haut droite): P02_ALL v001" + "\n" + "• Burn-in plan courant (bas gauche): dynamique" + "\n" + "• Scope burn-in (centré): PNG ou texte fallback" + "\n" + "• Expressions avec détection de version" + "\n" + "• Drop shadows sur tous les burn-ins" + "\n" + "• Timecode automatique sur adjustment layer");
 
 // Log détaillé pour Python avec toutes les métriques
 $.writeln("AE_GENERATION_V2_SUCCESS:P02_ALL:" + totalCount + ":" + gradedCount + ":" +

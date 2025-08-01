@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 class UploadStatus(Enum):
     """Statuts d'upload avec emojis et contexte."""
     WAITING_APPROVAL = "⏳ WAITING_APPROVAL"     # Fichier créé, en attente d'approbation pour upload
+    QUEUED = "📋 QUEUED"                        # Fichier en queue d'upload
     APPROVED = "✅ APPROVED"                     # Approuvé pour upload
     UPLOADING = "🔄 UPLOADING"                  # Upload en cours vers Frame.io
     PROCESSING = "⚙️ PROCESSING"                # Traitement Frame.io en cours
@@ -139,9 +140,53 @@ class UploadTracker:
         base_data = f"{shot_id}_{version}_{file_path_obj.name}"
         return hashlib.md5(base_data.encode()).hexdigest()[:16]
     
+    def is_likely_incomplete_file(self, file_path: str) -> bool:
+        """
+        Détermine si un fichier vidéo semble incomplet basé sur sa taille.
+        
+        Args:
+            file_path: Chemin du fichier
+            
+        Returns:
+            bool: True si le fichier semble incomplet
+        """
+        try:
+            file_path_obj = Path(file_path)
+            if not file_path_obj.exists():
+                return True
+                
+            file_size = file_path_obj.stat().st_size
+            file_name = file_path_obj.name.lower()
+            
+            # Tailles minimales attendues pour différents formats (en bytes)
+            min_sizes = {
+                '.mov': 20 * 1024 * 1024,   # 20MB minimum pour MOV
+                '.mp4': 15 * 1024 * 1024,   # 15MB minimum pour MP4
+                '.avi': 25 * 1024 * 1024,   # 25MB minimum pour AVI
+                '.mxf': 30 * 1024 * 1024,   # 30MB minimum pour MXF
+            }
+            
+            # Détecter l'extension
+            extension = file_path_obj.suffix.lower()
+            min_expected_size = min_sizes.get(extension, 20 * 1024 * 1024)  # Default 20MB
+            
+            if file_size < min_expected_size:
+                size_mb = file_size / (1024 * 1024)
+                expected_mb = min_expected_size / (1024 * 1024)
+                logger.warning(f"⚠️ Fichier potentiellement incomplet: {file_path_obj.name}")
+                logger.warning(f"   📊 Taille actuelle: {size_mb:.1f} MB")
+                logger.warning(f"   📏 Taille minimale attendue: {expected_mb:.1f} MB")
+                return True
+                
+            return False
+            
+        except Exception as e:
+            logger.error(f"❌ Erreur vérification fichier incomplet: {e}")
+            return False
+    
     def is_duplicate(self, file_path: str, shot_id: str, version: str) -> Optional[Dict[str, Any]]:
         """
-        Vérifie si un fichier est un doublon
+        Vérifie si un fichier est un doublon ou un remplacement
         
         Args:
             file_path: Chemin du fichier
@@ -149,26 +194,68 @@ class UploadTracker:
             version: Version
             
         Returns:
-            Dict ou None: Données de l'upload existant si doublon détecté
+            Dict ou None: Données de l'upload existant si doublon détecté, None si c'est un remplacement
         """
         try:
-            file_hash = self._calculate_file_hash(file_path)
-            if not file_hash:
-                return None
+            # Vérifier d'abord si le nouveau fichier semble incomplet
+            if self.is_likely_incomplete_file(file_path):
+                logger.warning(f"⚠️ Fichier potentiellement incomplet détecté: {shot_id} {version}")
+                logger.warning(f"   💡 Le fichier pourrait encore être en cours d'écriture")
+                logger.warning(f"   🔄 Autorisation conditionnelle de l'upload")
             
             upload_id = self.generate_upload_id(file_path, shot_id, version)
             
-            # Vérifier par ID d'upload
+            # Vérifier par ID d'upload (shot_id + version)
             if upload_id in self.tracking_data.get("uploads", {}):
                 existing_upload = self.tracking_data["uploads"][upload_id]
-                logger.warning(f"⚠️ Doublon détecté par ID: {upload_id}")
-                return existing_upload
-            
-            # Vérifier par hash de fichier
-            for existing_id, existing_data in self.tracking_data.get("uploads", {}).items():
-                if existing_data.get("file_hash") == file_hash:
-                    logger.warning(f"⚠️ Doublon détecté par hash: {file_hash[:16]}...")
-                    return existing_data
+                
+                # Vérifier le statut pour éviter les doublons en cours de traitement
+                current_status = existing_upload.get("status", "")
+                if current_status in ["� QUEUED", "�🔄 UPLOADING", "⚙️ PROCESSING", "🎉 COMPLETED"]:
+                    logger.warning(f"⚠️ Fichier déjà en cours de traitement: {shot_id} {version}")
+                    logger.warning(f"   📊 Statut actuel: {current_status}")
+                    logger.warning(f"   🚫 Upload bloqué pour éviter le doublon")
+                    return existing_upload
+                
+                # Comparer le contenu pour détecter les remplacements
+                file_path_obj = Path(file_path)
+                if not file_path_obj.exists():
+                    logger.warning(f"⚠️ Fichier non trouvé: {file_path}")
+                    return existing_upload
+                
+                # Calculer le hash du nouveau fichier
+                new_hash = self._calculate_file_hash(file_path)
+                new_size = file_path_obj.stat().st_size
+                
+                # Récupérer les données existantes
+                existing_hash = existing_upload.get("file_hash")
+                existing_size = existing_upload.get("file_size", 0)
+                
+                # Comparer hash et taille
+                if new_hash and existing_hash:
+                    if new_hash == existing_hash and new_size == existing_size:
+                        logger.warning(f"⚠️ Doublon exact détecté: {shot_id} {version} (même hash)")
+                        return existing_upload
+                    else:
+                        logger.warning(f"🔄 REMPLACEMENT DÉTECTÉ: {shot_id} {version}")
+                        logger.warning(f"   📊 Taille: {existing_size} → {new_size} bytes")
+                        logger.warning(f"   🔐 Hash: {existing_hash[:16]}... → {new_hash[:16]}...")
+                        logger.warning(f"   ✅ Autorisation du re-upload")
+                        return None  # Permettre le re-upload
+                elif new_size != existing_size:
+                    # Différence de taille significative
+                    size_diff_percent = abs(new_size - existing_size) / max(existing_size, 1) * 100
+                    if size_diff_percent > 5:  # Plus de 5% de différence
+                        logger.warning(f"🔄 REMPLACEMENT DÉTECTÉ par taille: {shot_id} {version}")
+                        logger.warning(f"   📊 Taille: {existing_size} → {new_size} bytes ({size_diff_percent:.1f}% différence)")
+                        logger.warning(f"   ✅ Autorisation du re-upload")
+                        return None  # Permettre le re-upload
+                    else:
+                        logger.warning(f"⚠️ Doublon similaire détecté: {shot_id} {version} (taille proche)")
+                        return existing_upload
+                else:
+                    logger.warning(f"⚠️ Doublon détecté par shot_id: {shot_id} {version}")
+                    return existing_upload
             
             return None
             
@@ -206,7 +293,7 @@ class UploadTracker:
                 "file_hash": file_hash,
                 "created_at": datetime.now().isoformat(),
                 "last_updated": datetime.now().isoformat(),
-                "status": "⏳ WAITING_APPROVAL",
+                "status": "📋 QUEUED",  # Marquer directement comme en queue
                 "frameio_data": {
                     "file_id": None,
                     "upload_status": "PENDING",
@@ -422,6 +509,22 @@ class UploadTracker:
             logger.error(f"❌ Erreur nettoyage: {e}")
             return 0
     
+    def mark_queued(self, upload_id: str) -> bool:
+        """
+        Marque un upload comme mis en queue pour éviter les doublons.
+        
+        Args:
+            upload_id: ID de l'upload
+            
+        Returns:
+            bool: True si mis à jour avec succès
+        """
+        updates = {
+            'status': '📋 QUEUED',
+            'queued_at': datetime.now().isoformat()
+        }
+        return self.update_upload(upload_id, updates)
+    
     def approve_upload(self, upload_id: str, approved_by: str = None) -> bool:
         """
         Approuve un upload pour le traitement.
@@ -563,6 +666,7 @@ class UploadTracker:
             event_data = {
                 'upload_id': upload_id,
                 'shot_name': upload_data.get('shot_id', ''),
+                'version': upload_data.get('version', ''),
                 'status': status,
                 'old_status': old_status,
                 'file_name': upload_data.get('file_name', ''),
@@ -614,6 +718,7 @@ class UploadTracker:
         """
         status_map = {
             UploadStatus.WAITING_APPROVAL.value: "⏳",
+            UploadStatus.QUEUED.value: "📋",
             UploadStatus.APPROVED.value: "✅", 
             UploadStatus.UPLOADING.value: "🔄",
             UploadStatus.PROCESSING.value: "⚙️",

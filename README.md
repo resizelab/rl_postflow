@@ -3,12 +3,12 @@
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-pytest-orange.svg)](tests/)
-[![Version](https://img.shields.io/badge/Version-4.1.9-red.svg)](https://github.com/resizelab/rl_postflow/releases)
+[![Version](https://img.shields.io/badge/Version-4.3.0-red.svg)](https://github.com/resizelab/rl_postflow/releases)
 [![Windows](https://img.shields.io/badge/Windows-Compatible-brightgreen.svg)](docs/WINDOWS_GUIDE.md)
 [![Multi-Platform](https://img.shields.io/badge/Multi--Platform-macOS%20%7C%20Windows%20%7C%20Linux-blue.svg)](docs/DEPLOYMENT_STRATEGY.md)
 
 > **Pipeline de post-production automatisé pour documentaire animé**  
-> Traitement et suivi de 516 plans sur 25 scènes avec intégrations professionnelles
+> Traitement et suivi de 516 plans sur 25 scènes avec intégrations professionnelles complètes
 
 ## 🚀 Fonctionnalités Principales
 
@@ -19,36 +19,51 @@
 - **Processing par scène** : Traitement batch intelligent avec priorité
 
 ### 🔗 **Intégrations**
-- **Discord** : Notifications automatiques avec mentions utilisateurs et timestamps Paris
-- **Frame.io** : Upload et review automatisés avec intégration seamless
+- **Discord** : Notifications automatiques enrichies avec mentions et liens de partage
+- **Frame.io** : Upload, review et partage automatisés avec webhooks intelligents
 - **Google Sheets** : Synchronisation bidirectionnelle et gestion utilisateurs
-- **LucidLink** : Vérification des fichiers sources et monitoring
-- **Template Factory** : Système centralisé de templates Discord optimisé
+- **LucidLink** : Vérification des fichiers sources et monitoring temps réel
+- **After Effects** : Génération automatique de projets par priorité (P02, P03)
 
 ### 🎯 **Monitoring**
 - **Dashboard web** : Interface de monitoring en temps réel
-- **Gestion d'erreurs** : Système de retry et alertes
-- **Métriques** : Suivi des performances et statistiques
+- **Webhooks intelligents** : Traitement automatique des commentaires Frame.io
+- **Gestion d'erreurs** : Système de retry et alertes avec déduplication
+- **Métriques** : Suivi des performances et statistiques détaillées
 
-## 🆕 Nouveautés v4.1.9 - **CORRECTIONS CRITIQUES & OPTIMISATIONS**
+## 🆕 Nouveautés v4.3.0 - **DISCORD FIXES & AFTER EFFECTS WORKFLOW**
 
-### 🔧 **Corrections Majeures**
-- ✅ **Google Sheets Tracker** : Fix complet des bugs de compatibilité GoogleConnectionManager
-- ✅ **Optimized Sheets Adapter** : Correction du mapping des colonnes de recherche  
-- ✅ **Processing illimité** : Suppression de toutes les limitations (3 → 999 fichiers)
-- ✅ **Double synchronisation** : Élimination des appels sync en double au démarrage
+### 🔧 **Corrections Critiques Discord**
+- ✅ **Version Display Fix** : Affichage correct des versions dans les notifications (shot_name + version)
+- ✅ **Share Link Authentication** : Correction des erreurs 401 avec variables d'environnement
+- ✅ **Message Deduplication** : Élimination des notifications en double avec cache intelligent
+- ✅ **Enhanced Webhooks** : Traitement amélioré des commentaires Frame.io
 
-### 🎨 **Améliorations UX**
-- 🖼️ **Discord Thumbnails** : Intégration directe des images dans les embeds (fini les liens)
-- 🚀 **Architecture Hostinger** : Upload optimisé FTP pour thumbnails haute performance
-- 👥 **User Notifier** : Notifications Discord enrichies avec mentions utilisateurs
-- ⚡ **Sync Checker** : Détection intelligente nom + taille + date (±2s tolerance)
+### 🎨 **Workflow After Effects**
+- 🎯 **After Effects Generator v3** : Support des configurations personnalisées (--config)
+- 📊 **Priority-Based Generation** : Génération séparée P02 (71 plans) et P03 (21 plans)
+- 🎯 **CSV Analysis Enhanced** : Filtrage par priorité et génération JSON distincte
+- ✅ **Production Ready** : Scripts validés en dry-run et prêts pour génération
 
-### 🛠️ **Corrections Techniques**
-- 🔄 **Upload Tracker** : Enregistrement file_mtime pour détection précise des changements
-- 🔍 **File Matching** : Critères multiples pour éviter les re-uploads inutiles
-- 🚫 **Anti-boucles** : Prévention des traitements en boucle infinie
-- 📊 **Queue Processing** : Traitement séquentiel optimal (max_concurrent=1)
+### 🛠️ **Améliorations Techniques**
+- 🔄 **Environment Variable Consistency** : Authentification unifiée Frame.io
+- 💬 **Comment Processing** : Déduplication intelligente des notifications
+- 📋 **Enhanced CSV Processing** : Support priorités multiples avec export séparé
+- ⚙️ **Configuration Management** : JSON configs distincts pour éviter l'écrasement
+
+## 🆕 Nouveautés v4.2.0 - **MP4 DISCORD INTEGRATION & WORKFLOW ENHANCEMENT**
+
+### 🎥 **Intégration MP4 Avancée**
+- ✅ **Upload MP4 optimisé** : Support natif des formats de production
+- ✅ **Workflow MP4** : Pipeline dédié pour les fichiers de montage
+- ✅ **Thumbnails automatiques** : Génération preview pour Discord/Frame.io
+- ✅ **Quality Control** : Validation format et résolution
+
+### 🔗 **Améliorations Discord**
+- 🎛️ **Rich Embeds** : Messages Discord enrichis avec métadonnées
+- 📊 **Progress Tracking** : Notifications de progression temps réel
+- 🏷️ **User Mentions** : Intégration Google Sheets pour notifier les bons utilisateurs
+- 🖼️ **Visual Previews** : Aperçus automatiques dans les notifications
 
 ## 🆕 Nouveautés v4.1.5 - **SYNC CHECKER & DISCORD THUMBNAILS**
 

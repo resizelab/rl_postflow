@@ -390,12 +390,13 @@ def generate_detailed_report(data, validation_mode=False):
                 status_icon = "✅" if plan['status'] == "PROCESSED" else "📝" if plan['status'] == "" else "🔄"
                 print(f"      {status_icon} Plan {plan['shot_num']:03d} → {plan['shot_name']} ({plan['status'] or 'PENDING'})")
 
-def generate_after_effects_config(data, validation_mode=False):
+def generate_after_effects_config(data, validation_mode=False, priority_filter=None):
     """Génère un fichier JSON de configuration pour After Effects.
     
     Args:
         data: Données analysées du CSV
         validation_mode (bool): Si True, ne génère que pour les 3 premières séquences
+        priority_filter (str): Filtre de priorité pour nommer le fichier de sortie
     """
     
     if not data:
@@ -471,8 +472,15 @@ def generate_after_effects_config(data, validation_mode=False):
             'director_approval': plan['director_approval']
         }
     
-    # Sauvegarder le fichier JSON
-    config_path = Path(__file__).parent.parent / "config" / "after_effects_mapping_gsheets.json"
+    # Sauvegarder le fichier JSON avec nom spécifique selon le filtre
+    if priority_filter:
+        filename = f"after_effects_mapping_{priority_filter.upper()}.json"
+    elif validation_mode:
+        filename = "after_effects_mapping_validation.json"
+    else:
+        filename = "after_effects_mapping_gsheets.json"
+    
+    config_path = Path(__file__).parent.parent / "config" / filename
     config_path.parent.mkdir(exist_ok=True)
     
     with open(config_path, 'w', encoding='utf-8') as f:
@@ -597,20 +605,21 @@ def main():
         priority_value = args.priority.strip().lower()
         print(f"📌 Mode priorité activé - PRIORITY={priority_value}")
 
-        # Correction : inclure toutes les lignes du CSV où PRIORITY contient 'P02', même si les champs sont vides ou anormaux
+        # Filtrage dynamique selon la priorité demandée
         csv_path = Path(__file__).parent.parent / "data" / "RL_O2B_UNDLM_SUIVI_ANIM - SHOTS_TRACK.csv"
-        p02_raw_plans = []
+        priority_raw_plans = []
         unique_id_counter = 1
+        priority_upper = priority_value.upper()
         with open(csv_path, 'r', encoding='utf-8') as file:
             reader = csv.DictReader(file)
             for row in reader:
                 prio_raw = str(row.get('PRIORITY', ''))
-                if 'P02' in prio_raw or 'p02' in prio_raw:
+                if priority_upper in prio_raw.upper():
                     plan = {
                         'shot_num': int(row.get('SHOTS', '-1')) if row.get('SHOTS', '').isdigit() else -1,
-                        'shot_name': row.get('SHOT_NAME', '') or f"P02_{unique_id_counter:03d}",
-                        'sq_id': 'P02_ALL',
-                        'sq_name': 'P02_ALL',
+                        'shot_name': row.get('SHOT_NAME', '') or f"{priority_upper}_{unique_id_counter:03d}",
+                        'sq_id': f'{priority_upper}_ALL',
+                        'sq_name': f'{priority_upper}_ALL',
                         'status': row.get('STATUS', '').strip(),
                         'comp_name': row.get('COMP_NAME', '').strip(),
                         'attribution': row.get('ATTRIBUTION', '').strip(),
@@ -624,42 +633,38 @@ def main():
                         'director_approval': row.get('DIRECTOR_APPROVAL', '') == 'TRUE',
                         'updated': row.get('UPDATED', ''),
                         'PRIORITY': prio_raw,
-                        'unique_id': f"P02_{unique_id_counter:03d}"
+                        'unique_id': f"{priority_upper}_{unique_id_counter:03d}"
                     }
                     unique_id_counter += 1
-                    p02_raw_plans.append(plan)
+                    priority_raw_plans.append(plan)
 
-        print(f"✅ Plans 'P02' inclus dans le mapping : {len(p02_raw_plans)} (doit être 54)")
-        if len(p02_raw_plans) < 54:
-            print(f"❗ Il manque {54 - len(p02_raw_plans)} plans 'P02' dans le mapping. Vérifiez le CSV ou le parsing.")
-        elif len(p02_raw_plans) > 54:
-            print(f"❗ Il y a {len(p02_raw_plans) - 54} plans 'P02' en trop. Vérifiez le CSV ou le parsing.")
-
-        # Regrouper tous les plans dans une seule séquence 'P02_ALL'
+        print(f"✅ Plans '{priority_upper}' inclus dans le mapping : {len(priority_raw_plans)}")
+        
+        # Regrouper tous les plans dans une seule séquence
         filtered_sequences = {
-            'P02_ALL': {
-                'id': 'P02_ALL',
-                'name': 'P02_ALL',
+            f'{priority_upper}_ALL': {
+                'id': f'{priority_upper}_ALL',
+                'name': f'{priority_upper}_ALL',
                 'order': 1
             }
         }
-        filtered_plans_by_sequence = {'P02_ALL': p02_raw_plans}
+        filtered_plans_by_sequence = {f'{priority_upper}_ALL': priority_raw_plans}
         filtered_status_stats = defaultdict(int)
-        for plan in p02_raw_plans:
+        for plan in priority_raw_plans:
             filtered_status_stats[plan['status']] += 1
         filtered_data = {
             'sequences': filtered_sequences,
             'plans_by_sequence': filtered_plans_by_sequence,
-            'all_plans': p02_raw_plans,
+            'all_plans': priority_raw_plans,
             'status_stats': dict(filtered_status_stats)
         }
         generate_detailed_report(filtered_data, validation_mode=False)
-        config_path = generate_after_effects_config(filtered_data, validation_mode=False)
+        config_path = generate_after_effects_config(filtered_data, validation_mode=False, priority_filter=args.priority)
         generate_production_preview(filtered_data)
     else:
         # Générer les rapports
         generate_detailed_report(data, args.validation)
-        config_path = generate_after_effects_config(data, args.validation)
+        config_path = generate_after_effects_config(data, args.validation, priority_filter=None)
 
         # Créer les données filtrées pour l'aperçu production si en mode validation
         if args.validation:

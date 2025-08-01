@@ -261,7 +261,12 @@ class UploadQueue:
             self.metrics['processing_time_total'] += processing_time
             self.metrics['total_processed'] += 1
             
-            logger.info(f"✅ [{worker_name}] Traitement terminé: {item.file_path.name} ({processing_time:.1f}s)")
+            # Log détaillé avec plan + version si disponible
+            if item.metadata and 'nomenclature' in item.metadata and 'version' in item.metadata:
+                shot_info = f"{item.metadata['nomenclature']} {item.metadata['version']}"
+                logger.info(f"✅ [{worker_name}] Traitement terminé: {shot_info} ({processing_time:.1f}s)")
+            else:
+                logger.info(f"✅ [{worker_name}] Traitement terminé: {item.file_path.name} ({processing_time:.1f}s)")
             
             # Déplacer vers les terminés
             async with self._queue_lock:

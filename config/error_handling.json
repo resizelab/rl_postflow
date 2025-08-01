@@ -10,7 +10,7 @@
     "alerts": {
         "email_enabled": false,
         "discord_enabled": true,
-        "discord_webhook_url": "https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN",
+        "discord_webhook_url": "https://discord.com/api/webhooks/1391301937516777482/Nv0fk2t_JnNPRM02G1-ZZWsOM9BblevES_LO7zZEmp4scLSYkW-qfntYPC7yYeThTafM",
         "email_config": {
             "smtp_server": "smtp.gmail.com",
             "smtp_port": 587,

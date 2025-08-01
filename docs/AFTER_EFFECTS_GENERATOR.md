@@ -1,7 +1,8 @@
-# 🎬 After Effects Generator v2
+# 🎬 After Effects Generator v3
 
 > **Générateur automatique de projets After Effects pour RL PostFlow**  
-> Compatible avec le template SQXX et toutes les 28 séquences du projet
+> Compatible avec le template SQXX et toutes les 28 séquences du projet  
+> **v3.0** : Support des configurations prioritaires (P02, P03) et configs personnalisées
 
 ## 🚀 **Vue d'ensemble**
 
@@ -65,7 +66,26 @@ python scripts/analyze_gsheets_data.py
 python scripts/analyze_gsheets_data.py --validation
 ```
 
+3. **Générer configs prioritaires** (v3.0) :
+```bash
+# Générer config P02 (71 plans prioritaires)
+python scripts/analyze_gsheets_data.py --priority P02
+
+# Générer config P03 (21 plans prioritaires) 
+python scripts/analyze_gsheets_data.py --priority P03
+```
+
 ### **Génération de Projets AE**
+
+#### **v3.0 - Priorités et Configs Personnalisées**
+```bash
+# Projets prioritaires P02/P03
+python tools/after_effects_generator_v2/generate_ae_projects_v3.py --sequence P02_ALL --config ../../config/after_effects_mapping_P02.json
+python tools/after_effects_generator_v2/generate_ae_projects_v3.py --sequence P03_ALL --config ../../config/after_effects_mapping_P03.json
+
+# Avec simulation
+python tools/after_effects_generator_v2/generate_ae_projects_v3.py --sequence P02_ALL --config ../../config/after_effects_mapping_P02.json --dry-run
+```
 
 #### **Séquence individuelle**
 ```bash
@@ -84,12 +104,6 @@ python scripts/generate_ae_projects_v2.py --validation
 ```bash
 # Générer toutes les 28 séquences
 python scripts/generate_ae_projects_v2.py --all
-```
-
-#### **Mode simulation**
-```bash
-# Tester sans créer les fichiers
-python scripts/generate_ae_projects_v2.py --sequence SQ01 --dry-run
 ```
 
 ## 📁 **Structure Générée**

@@ -1,4 +1,4 @@
-# 📚 DOCUMENTATION POSTFLOW - ORGANISATION
+# 📚 DOCUMENTATION POSTFLOW v4.3.0 - ORGANISATION
 
 Cette documentation est organisée par thématique pour faciliter la navigation.
 
@@ -13,18 +13,27 @@ Cette documentation est organisée par thématique pour faciliter la navigation.
 - [`ARCHITECTURE.md`](ARCHITECTURE.md) - Architecture générale
 - [`PIPELINE_ARCHITECTURE.md`](PIPELINE_ARCHITECTURE.md) - Architecture pipeline
 - [`PROJECT_STRUCTURE.md`](PROJECT_STRUCTURE.md) - Structure du projet
+- [`REPOSITORY_STRUCTURE.md`](REPOSITORY_STRUCTURE.md) - Structure repository v4.3.0
 - [`STRUCTURE_FINALE.md`](STRUCTURE_FINALE.md) - État final de la structure
 
-### 🔧 **INTÉGRATIONS**
-#### Google Sheets
-- [`integrations/GOOGLE_SHEETS_DYNAMIC_MAPPING.md`](integrations/GOOGLE_SHEETS_DYNAMIC_MAPPING.md) - Mapping dynamique
-- [`integrations/GOOGLE_SHEETS_THUMBNAILS.md`](integrations/GOOGLE_SHEETS_THUMBNAILS.md) - Système de vignettes
-- [`GOOGLE_SHEETS_SETUP.md`](GOOGLE_SHEETS_SETUP.md) - Configuration Google Sheets
+### 🔧 **INTÉGRATIONS v4.3.0**
+#### Discord
+- [`DISCORD_INTEGRATION_REPORT.md`](DISCORD_INTEGRATION_REPORT.md) - Intégration Discord complète
+- [`AUTO_HOOKS_v4.3.0.md`](AUTO_HOOKS_v4.3.0.md) - **NOUVEAU** Système d'hooks v4.3.0
 
 #### Frame.io
 - [`integrations/FRAMEIO_INTEGRATION_FINAL.md`](integrations/FRAMEIO_INTEGRATION_FINAL.md) - Intégration complète
 - [`FRAMEIO_QUICKSTART.md`](FRAMEIO_QUICKSTART.md) - Démarrage Frame.io
 - [`FRAMEIO_V4_MIGRATION.md`](FRAMEIO_V4_MIGRATION.md) - Migration v4
+
+#### Google Sheets
+- [`integrations/GOOGLE_SHEETS_DYNAMIC_MAPPING.md`](integrations/GOOGLE_SHEETS_DYNAMIC_MAPPING.md) - Mapping dynamique
+- [`integrations/GOOGLE_SHEETS_THUMBNAILS.md`](integrations/GOOGLE_SHEETS_THUMBNAILS.md) - Système de vignettes
+- [`GOOGLE_SHEETS_SETUP.md`](GOOGLE_SHEETS_SETUP.md) - Configuration Google Sheets
+
+#### After Effects v3.0
+- [`AFTER_EFFECTS_GENERATOR.md`](AFTER_EFFECTS_GENERATOR.md) - **MIS À JOUR** Générateur v3.0
+- [`AFTER_EFFECTS_DEPLOYMENT_PLAN.md`](AFTER_EFFECTS_DEPLOYMENT_PLAN.md) - Plan de déploiement
 
 #### Autres
 - [`INTEGRATIONS_SETUP.md`](INTEGRATIONS_SETUP.md) - Configuration générale

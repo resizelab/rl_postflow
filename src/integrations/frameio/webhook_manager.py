@@ -633,7 +633,7 @@ class FrameIOWebhookManager:
                 logger.info(f"💬 Nouveau commentaire créé par {owner_name}: '{comment_text}'")
                 
                 # Analyser le commentaire et mettre à jour le statut de review
-                self._analyze_comment_and_update_status_sync(upload_id, file_id, comment_text, event_type)
+                self._analyze_comment_and_update_status_sync(upload_id, file_id, comment_text, event_type, owner_name)
                 
                 # Appel vers le tracking intelligent si disponible
                 if hasattr(self, 'intelligent_tracker') and self.intelligent_tracker:
@@ -707,7 +707,7 @@ class FrameIOWebhookManager:
             logger.error(f"❌ Erreur recherche upload par file_id: {e}")
             return None
 
-    def _analyze_comment_and_update_status_sync(self, upload_id: str, file_id: str, comment_text: str, event_type: str):
+    def _analyze_comment_and_update_status_sync(self, upload_id: str, file_id: str, comment_text: str, event_type: str, commenter_name: str = 'Frame.io User'):
         """
         Analyse un commentaire et met à jour le statut de review intelligemment
         """
@@ -725,7 +725,13 @@ class FrameIOWebhookManager:
             
             # Récupérer les données de l'upload pour l'événement
             upload_data = self.upload_tracker.get_upload(upload_id)
-            shot_name = upload_data.get('shot_id', '') if upload_data else ''
+            # Construire le nom avec plan + version pour les notifications
+            if upload_data:
+                shot_id = upload_data.get('shot_id', '')
+                version = upload_data.get('version', '')
+                shot_name = f"{shot_id} {version}" if version else shot_id
+            else:
+                shot_name = ''
             old_review_status = upload_data.get('frameio_data', {}).get('review_status') if upload_data else None
             
             # Mettre à jour le statut dans le tracker
@@ -745,7 +751,7 @@ class FrameIOWebhookManager:
                 'comment_text': comment_text,
                 'review_status': review_status,
                 'file_id': file_id,
-                'commenter': 'Frame.io User'  # Pourrait être amélioré avec l'API
+                'commenter': commenter_name  # Utiliser le vrai nom de l'utilisateur
             }
             event_manager.emit_sync(EventType.FRAMEIO_COMMENT_RECEIVED, comment_event_data, source='webhook_manager')
             

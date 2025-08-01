@@ -43,6 +43,8 @@ class LucidLinkExportHandler(FileSystemEventHandler):
         ]
         self.processing_files = set()
         self.processed_files = set()  # Fichiers déjà traités avec succès
+        self.file_monitoring = {}  # Tracking des fichiers en surveillance {file_path: {size, timestamp, recheck_count}}
+        self.max_recheck_attempts = 3  # Nombre max de re-vérifications
         
     def on_created(self, event):
         """Fichier créé."""
@@ -52,11 +54,21 @@ class LucidLinkExportHandler(FileSystemEventHandler):
     def on_modified(self, event):
         """Fichier modifié."""
         if not event.is_directory:
-            # Ignorer les événements modified pour les fichiers déjà traités
             file_path = event.src_path
+            file_name = os.path.basename(file_path)
+            
+            # Si le fichier est déjà traité, vérifier s'il a changé significativement
             if file_path in self.processed_files:
-                logger.debug(f"🔄 Événement modified ignoré pour fichier déjà traité: {os.path.basename(file_path)}")
+                # Pour les fichiers déjà traités, vérifier s'il y a un changement de taille significatif
+                if self._should_recheck_processed_file(file_path):
+                    logger.warning(f"🔄 Re-vérification fichier traité (changement détecté): {file_name}")
+                    # Retirer temporairement de processed_files pour permettre le retraitement
+                    self.processed_files.discard(file_path)
+                    self._handle_file_event(file_path, 'modified_recheck')
+                else:
+                    logger.debug(f"🔄 Événement modified ignoré pour fichier déjà traité: {file_name}")
                 return
+            
             self._handle_file_event(file_path, 'modified')
     
     def on_moved(self, event):
@@ -91,6 +103,108 @@ class LucidLinkExportHandler(FileSystemEventHandler):
             logger.error(f"❌ Erreur traitement événement: {e}")
             if file_path in self.processing_files:
                 self.processing_files.remove(file_path)
+    
+    def _should_recheck_processed_file(self, file_path: str) -> bool:
+        """
+        Détermine si un fichier déjà traité doit être re-vérifié.
+        Utilise la vitesse d'écriture et les changements de taille pour détecter les fichiers incomplets.
+        
+        Args:
+            file_path: Chemin du fichier
+            
+        Returns:
+            bool: True si le fichier doit être re-vérifié
+        """
+        try:
+            if not os.path.exists(file_path):
+                return False
+                
+            current_size = os.path.getsize(file_path)
+            current_time = time.time()
+            file_name = os.path.basename(file_path)
+            
+            # Récupérer les données de surveillance précédentes
+            if file_path not in self.file_monitoring:
+                # Premier contrôle - initialiser le tracking
+                self.file_monitoring[file_path] = {
+                    'size': current_size,
+                    'timestamp': current_time,
+                    'recheck_count': 0,
+                    'last_change_time': current_time
+                }
+                return False
+            
+            monitoring_data = self.file_monitoring[file_path]
+            previous_size = monitoring_data['size']
+            previous_time = monitoring_data['timestamp']
+            recheck_count = monitoring_data['recheck_count']
+            
+            # Calculer la vitesse d'écriture (bytes/seconde)
+            time_diff = current_time - previous_time
+            size_diff = current_size - previous_size
+            
+            if time_diff > 0 and size_diff > 0:
+                write_speed = size_diff / time_diff  # bytes/seconde
+                
+                # Détecter si le fichier grandit rapidement (plus de 1MB/s)
+                if write_speed > 1024 * 1024:  # 1 MB/s
+                    logger.warning(f"🚀 Fichier en écriture rapide détecté: {file_name}")
+                    logger.warning(f"   📊 Vitesse: {write_speed / (1024*1024):.2f} MB/s")
+                    logger.warning(f"   📏 Taille: {previous_size} → {current_size} bytes")
+                    
+                    # Mettre à jour le monitoring
+                    monitoring_data.update({
+                        'size': current_size,
+                        'timestamp': current_time,
+                        'recheck_count': recheck_count + 1,
+                        'last_change_time': current_time
+                    })
+                    
+                    # Re-vérifier si pas trop d'essais déjà
+                    if recheck_count < self.max_recheck_attempts:
+                        return True
+                    else:
+                        logger.warning(f"⚠️ Limite de re-vérifications atteinte pour: {file_name}")
+                        return False
+                        
+            # Détecter un changement de taille significatif (plus de 10% ou plus de 10MB)
+            elif size_diff != 0:
+                size_change_percent = abs(size_diff) / max(previous_size, 1) * 100
+                size_change_mb = abs(size_diff) / (1024 * 1024)
+                
+                if size_change_percent > 10 or size_change_mb > 10:
+                    logger.warning(f"📊 Changement de taille significatif: {file_name}")
+                    logger.warning(f"   📏 Taille: {previous_size} → {current_size} bytes")
+                    logger.warning(f"   📈 Changement: {size_change_percent:.1f}% ({size_change_mb:.1f} MB)")
+                    
+                    # Mettre à jour le monitoring
+                    monitoring_data.update({
+                        'size': current_size,
+                        'timestamp': current_time,
+                        'recheck_count': recheck_count + 1,
+                        'last_change_time': current_time
+                    })
+                    
+                    # Re-vérifier si pas trop d'essais déjà
+                    if recheck_count < self.max_recheck_attempts:
+                        return True
+                    else:
+                        logger.warning(f"⚠️ Limite de re-vérifications atteinte pour: {file_name}")
+                        return False
+            
+            # Vérifier si le fichier n'a pas changé depuis longtemps (> 60 secondes)
+            time_since_last_change = current_time - monitoring_data.get('last_change_time', current_time)
+            if time_since_last_change > 60:
+                # Nettoyer le monitoring des anciens fichiers
+                if file_path in self.file_monitoring:
+                    del self.file_monitoring[file_path]
+                return False
+            
+            return False
+            
+        except Exception as e:
+            logger.error(f"❌ Erreur vérification re-check: {e}")
+            return False
     
     def _schedule_file_processing(self, file_path: str, event_type: str):
         """Planifier le traitement d'un fichier en arrière-plan."""
@@ -149,42 +263,155 @@ class LucidLinkExportHandler(FileSystemEventHandler):
         thread = threading.Thread(target=process_file, daemon=True)
         thread.start()
     
-    def _wait_for_file_stability(self, file_path: str, max_wait: int = 30) -> bool:
-        """Attendre que le fichier soit stable."""
+    def _wait_for_file_stability(self, file_path: str, max_wait: int = 60) -> bool:
+        """
+        Attendre que le fichier soit stable avec vérifications renforcées pour LucidLink.
+        
+        Args:
+            file_path: Chemin vers le fichier
+            max_wait: Temps d'attente maximum en secondes (augmenté à 60s)
+            
+        Returns:
+            bool: True si le fichier est stable et complet
+        """
         try:
             if not os.path.exists(file_path):
                 return False
             
+            # Variables de stabilité
             prev_size = None
+            prev_hash = None
             stable_count = 0
-            required_stable_count = 3
+            required_stable_count = 5  # Augmenté de 3 à 5 pour plus de sécurité
             
-            for _ in range(max_wait):
+            # Taille minimum attendue pour un fichier vidéo (10MB)
+            min_video_size = 10 * 1024 * 1024
+            
+            logger.info(f"🔍 Vérification stabilité renforcée: {os.path.basename(file_path)}")
+            
+            for i in range(max_wait):
                 try:
                     current_size = os.path.getsize(file_path)
                     
-                    if prev_size is not None:
-                        if current_size == prev_size:
+                    # Ignorer les fichiers trop petits (probablement pas terminés)
+                    if current_size < min_video_size:
+                        logger.debug(f"📊 Fichier trop petit: {current_size:,} bytes (min: {min_video_size:,})")
+                        stable_count = 0
+                        prev_size = current_size
+                        time.sleep(2)  # Attente plus longue pour les petits fichiers
+                        continue
+                    
+                    # Test d'accès rapide (vérifier si le fichier est verrouillé)
+                    try:
+                        with open(file_path, 'rb') as f:
+                            # Lire un échantillon au début
+                            chunk_start = f.read(8192)
+                            if len(chunk_start) < 8192:
+                                logger.debug(f"📊 Fichier inaccessible ou trop petit")
+                                stable_count = 0
+                                time.sleep(1)
+                                continue
+                            
+                            # Essayer de lire à la fin du fichier
+                            f.seek(-8192, 2)
+                            chunk_end = f.read(8192)
+                            
+                            # Calculer un hash simple pour détecter les changements
+                            import hashlib
+                            current_hash = hashlib.md5(chunk_start + chunk_end).hexdigest()
+                            
+                    except (OSError, PermissionError, IOError) as e:
+                        logger.debug(f"📊 Fichier verrouillé ou inaccessible: {e}")
+                        stable_count = 0
+                        time.sleep(1)
+                        continue
+                    
+                    # Vérification de stabilité
+                    if prev_size is not None and prev_hash is not None:
+                        if current_size == prev_size and current_hash == prev_hash:
                             stable_count += 1
+                            logger.debug(f"📊 Fichier stable (check {stable_count}/{required_stable_count}): {current_size:,} bytes")
+                            
                             if stable_count >= required_stable_count:
-                                # Vérifier l'accessibilité
-                                with open(file_path, 'rb') as f:
-                                    f.read(1024)
-                                return True
+                                # Test final d'intégrité
+                                if self._verify_file_integrity(file_path):
+                                    logger.info(f"✅ Fichier stable et complet: {os.path.basename(file_path)} ({current_size:,} bytes)")
+                                    return True
+                                else:
+                                    logger.warning(f"⚠️ Échec vérification intégrité, poursuite attente...")
+                                    stable_count = 0
                         else:
+                            if current_size != prev_size:
+                                logger.debug(f"📊 Taille changée: {prev_size:,} -> {current_size:,} bytes")
                             stable_count = 0
                     
                     prev_size = current_size
+                    prev_hash = current_hash
                     time.sleep(1)
                     
-                except (OSError, PermissionError):
+                except (OSError, PermissionError) as e:
+                    logger.debug(f"📊 Erreur accès fichier: {e}")
                     time.sleep(1)
                     continue
             
+            logger.warning(f"⚠️ Timeout stabilité après {max_wait}s: {os.path.basename(file_path)}")
             return False
             
         except Exception as e:
             logger.error(f"❌ Erreur vérification stabilité: {e}")
+            return False
+    
+    def _verify_file_integrity(self, file_path: str) -> bool:
+        """
+        Vérification d'intégrité approfondie du fichier vidéo.
+        
+        Args:
+            file_path: Chemin vers le fichier
+            
+        Returns:
+            bool: True si le fichier semble intègre
+        """
+        try:
+            # Test 1: Vérifier l'en-tête du fichier
+            with open(file_path, 'rb') as f:
+                header = f.read(32)
+                
+                # Vérifier les signatures de fichiers vidéo courants
+                video_signatures = [
+                    b'ftyp',  # MP4, MOV, M4V
+                    b'RIFF',  # AVI
+                    b'\x1a\x45\xdf\xa3',  # MKV
+                    b'FLV',   # FLV
+                ]
+                
+                has_valid_signature = any(sig in header for sig in video_signatures)
+                if not has_valid_signature:
+                    logger.warning(f"⚠️ Signature vidéo non reconnue: {file_path}")
+                    return False
+            
+            # Test 2: Taille minimum raisonnable
+            file_size = os.path.getsize(file_path)
+            if file_size < 1024 * 1024:  # Moins de 1MB
+                logger.warning(f"⚠️ Fichier trop petit pour une vidéo: {file_size:,} bytes")
+                return False
+            
+            # Test 3: Temps d'accès raisonnable (détection de cache LucidLink)
+            start_time = time.time()
+            with open(file_path, 'rb') as f:
+                f.seek(0, 2)  # Aller à la fin
+                f.seek(-1024, 2)  # Lire les derniers 1KB
+                f.read(1024)
+            access_time = time.time() - start_time
+            
+            if access_time > 2.0:  # Plus de 2 secondes = probablement pas en cache
+                logger.warning(f"⚠️ Accès lent au fichier ({access_time:.2f}s), possible sync incomplète")
+                return False
+            
+            logger.debug(f"✅ Intégrité vérifiée: {os.path.basename(file_path)} ({file_size:,} bytes, {access_time:.2f}s)")
+            return True
+            
+        except Exception as e:
+            logger.error(f"❌ Erreur vérification intégrité: {e}")
             return False
     
     def _matches_patterns(self, file_name: str) -> bool:
@@ -587,8 +814,7 @@ async def process_new_export(file_path: str, metadata: Dict[str, Any]):
     logger.info(f"🎬 NOUVEAU EXPORT DÉTECTÉ")
     logger.info(f"📁 Fichier: {metadata.get('file_name')}")
     logger.info(f"📊 Taille: {metadata.get('file_size', 0) / (1024*1024):.1f} MB")
-    logger.info(f"🎯 Plan: {metadata.get('nomenclature', 'N/A')}")
-    logger.info(f"🔢 Version: {metadata.get('version', 'N/A')}")
+    logger.info(f"🎯 Plan: {metadata.get('nomenclature', 'N/A')} {metadata.get('version', 'N/A')}")
     
     # Ici, on déclencherait le workflow complet
     # - Génération de thumbnail

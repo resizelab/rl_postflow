@@ -9,8 +9,8 @@ Point d'entrée principal du pipeline d'intégration LucidLink  ->  Frame.io
 - Surveillance en temps réel
 - Gestion des erreurs centralisée
 
-Version: 4.2.0 (MP4 Discord Integration)
-Date: 12 juillet 2025
+Version: 4.3.0 (Discord Fixes & After Effects Workflow)
+Date: 1 août 2025
 """
 
 import sys
@@ -23,8 +23,8 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 
 # Version du pipeline
-POSTFLOW_VERSION = "4.2.0"
-POSTFLOW_VERSION_NAME = "MP4 Discord Integration"
+POSTFLOW_VERSION = "4.3.0"
+POSTFLOW_VERSION_NAME = "Discord Fixes & After Effects Workflow"
 
 # Ajouter le répertoire src au path
 sys.path.insert(0, str(Path(__file__).parent / "src"))

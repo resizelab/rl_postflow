@@ -153,6 +153,146 @@ class FrameIOUploadError(Exception):
     """Exception pour les erreurs d'upload Frame.io"""
     pass
 
+def calculate_file_hash(file_path: Path) -> str:
+    """Calcule le hash SHA256 d'un fichier."""
+    sha256_hash = hashlib.sha256()
+    with open(file_path, "rb") as f:
+        # Lire par chunks pour économiser la mémoire
+        for chunk in iter(lambda: f.read(4096), b""):
+            sha256_hash.update(chunk)
+    return sha256_hash.hexdigest()
+
+async def check_frameio_filename_duplicate(upload_manager, folder_id: str, filename: str, file_path: Path) -> Dict[str, Any]:
+    """
+    Vérifie s'il existe déjà un fichier avec le même nom sur Frame.io.
+    Retourne des informations sur le fichier existant s'il y en a un.
+    
+    Args:
+        upload_manager: Instance de FrameIOUploadManager
+        folder_id: ID du dossier Frame.io
+        filename: Nom du fichier à vérifier
+        file_path: Chemin du fichier local
+        
+    Returns:
+        Dict avec:
+        - 'exists': bool - True si un fichier avec ce nom existe
+        - 'file_info': dict - Informations sur le fichier existant (si exists=True)
+        - 'is_replacement': bool - True si c'est probablement un remplacement
+        - 'local_hash': str - Hash du fichier local
+        - 'remote_hash': str - Hash du fichier distant (si disponible)
+    """
+    result = {
+        'exists': False,
+        'file_info': None,
+        'is_replacement': False,
+        'local_hash': None,
+        'remote_hash': None
+    }
+    
+    try:
+        logger.info(f"🔍 Vérification doublons pour: {filename}")
+        
+        # Calculer le hash du fichier local
+        local_hash = calculate_file_hash(file_path)
+        result['local_hash'] = local_hash
+        logger.info(f"📊 Hash local: {local_hash[:16]}...")
+        
+        # Obtenir le token d'accès
+        access_token = None
+        if upload_manager.auth:
+            access_token = upload_manager.auth.get_access_token()
+        elif upload_manager.config:
+            access_token = upload_manager.config.get('frameio.access_token')
+        
+        if not access_token:
+            logger.error("❌ Impossible d'obtenir le token d'accès")
+            return result
+        
+        # Requête pour lister les fichiers du dossier
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
+        
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            url = f"{upload_manager.base_url}/assets"
+            params = {
+                'parent_asset_id': folder_id,
+                'type': 'file',
+                'page_size': 100  # Ajuster si nécessaire
+            }
+            
+            logger.debug(f"🌐 Requête: GET {url} avec params: {params}")
+            response = await client.get(url, headers=headers, params=params)
+            
+            if response.status_code != 200:
+                logger.error(f"❌ Erreur API Frame.io: {response.status_code} - {response.text}")
+                return result
+            
+            data = response.json()
+            files = data.get('data', [])
+            
+            logger.info(f"📂 {len(files)} fichiers trouvés dans le dossier")
+            
+            # Chercher un fichier avec le même nom
+            for file_info in files:
+                if file_info.get('name') == filename:
+                    logger.warning(f"⚠️ Fichier existant trouvé: {filename}")
+                    result['exists'] = True
+                    result['file_info'] = file_info
+                    
+                    # Vérifier si c'est un remplacement basé sur les métadonnées
+                    remote_created = file_info.get('inserted_at')
+                    remote_size = file_info.get('filesize')
+                    local_size = file_path.stat().st_size
+                    
+                    # Comparer les tailles
+                    size_different = remote_size != local_size if remote_size else True
+                    
+                    # Comparer les dates (fichier local plus récent ?)
+                    local_mtime = file_path.stat().st_mtime
+                    time_different = True
+                    
+                    if remote_created:
+                        try:
+                            # Convertir la date Frame.io en timestamp
+                            remote_time = datetime.fromisoformat(remote_created.replace('Z', '+00:00')).timestamp()
+                            time_different = local_mtime > remote_time
+                        except:
+                            logger.warning("⚠️ Impossible de comparer les dates")
+                    
+                    # Considérer comme remplacement si taille différente OU fichier local plus récent
+                    if size_different or time_different:
+                        result['is_replacement'] = True
+                        logger.warning(f"🔄 Détection remplacement potentiel:")
+                        logger.warning(f"   - Taille locale: {local_size} vs distante: {remote_size}")
+                        logger.warning(f"   - Hash local: {local_hash[:16]}...")
+                        
+                        # Essayer de récupérer le hash distant si disponible dans les métadonnées
+                        # Note: Frame.io ne stocke pas toujours le hash, mais on peut essayer
+                        remote_hash = file_info.get('checksum') or file_info.get('md5') or file_info.get('sha256')
+                        if remote_hash:
+                            result['remote_hash'] = remote_hash
+                            logger.info(f"📊 Hash distant trouvé: {remote_hash[:16]}...")
+                            
+                            # Comparer les hashs si disponibles
+                            if remote_hash != local_hash:
+                                logger.warning("🚨 Hashs différents - Contenu modifié détecté!")
+                                result['is_replacement'] = True
+                            else:
+                                logger.info("✅ Hashs identiques - Même contenu")
+                                result['is_replacement'] = False
+                    
+                    break
+            
+            if not result['exists']:
+                logger.info(f"✅ Aucun doublon trouvé pour: {filename}")
+        
+    except Exception as e:
+        logger.error(f"❌ Erreur lors de la vérification des doublons: {e}")
+    
+    return result
+
 class FrameIOUploadManager:
     """Gestionnaire d'upload Frame.io v4 avec séquence recommandée"""
     
@@ -771,6 +911,33 @@ class FrameIOUploadManager:
                 logger.error(f"🚫 UPLOAD REFUSÉ - Nomenclature invalide: {e}")
                 return None
             
+            # VÉRIFICATION DES DOUBLONS ET DÉTECTION DE REMPLACEMENT
+            try:
+                duplicate_check = await check_frameio_filename_duplicate(
+                    self, folder_id, file_path_obj.name, file_path_obj
+                )
+                
+                if duplicate_check['exists']:
+                    if duplicate_check['is_replacement']:
+                        logger.warning(f"🔄 REMPLACEMENT DÉTECTÉ pour {file_path_obj.name}")
+                        logger.warning(f"   📊 Hash local: {duplicate_check['local_hash'][:16]}...")
+                        if duplicate_check['remote_hash']:
+                            logger.warning(f"   📊 Hash distant: {duplicate_check['remote_hash'][:16]}...")
+                        
+                        # POLITIQUE: Permettre le remplacement mais avec warning explicite
+                        logger.warning("⚠️ UPLOAD AUTORISÉ - Remplacement de fichier détecté")
+                        logger.warning("   🎯 L'ancien fichier sera écrasé sur Frame.io")
+                    else:
+                        logger.error(f"🚫 UPLOAD REFUSÉ - Fichier identique déjà présent: {file_path_obj.name}")
+                        logger.error("   💡 Suggestion: Vérifiez si c'est une nouvelle version (v002, v003, etc.)")
+                        return None
+                else:
+                    logger.info(f"✅ Aucun doublon - Upload autorisé pour: {file_path_obj.name}")
+                    
+            except Exception as e:
+                logger.error(f"❌ Erreur lors de la vérification de doublons: {e}")
+                logger.warning("⚠️ Poursuite de l'upload malgré l'erreur de vérification")
+            
             # Préparer les métadonnées d'upload avec les informations validées
             upload_metadata = UploadMetadata(
                 shot_id=nomenclature_info['shot_id'],
@@ -1226,7 +1393,7 @@ class FrameIOUploadManager:
             file_size = file_path.stat().st_size
             logger.info(f"🎬 Upload Frame.io PRODUCTION (remote_upload): {file_path.name}")
             logger.info(f"   📊 Taille: {file_size / (1024*1024):.1f} MB")
-            logger.info(f"   🎯 Plan: {shot_name} - Scène: {scene_name}")
+            logger.info(f"   🎯 Plan: {shot_name} {nomenclature_info['version']} - Scène: {scene_name}")
             
             # Vérifier l'auth
             if not self.access_token and not self.auth:
@@ -1259,6 +1426,33 @@ class FrameIOUploadManager:
             if not target_folder_id:
                 logger.error("❌ Impossible de créer la structure de dossiers")
                 return None
+            
+            # VÉRIFICATION DES DOUBLONS ET DÉTECTION DE REMPLACEMENT
+            try:
+                duplicate_check = await check_frameio_filename_duplicate(
+                    self, target_folder_id, file_path.name, file_path
+                )
+                
+                if duplicate_check['exists']:
+                    if duplicate_check['is_replacement']:
+                        logger.warning(f"🔄 REMPLACEMENT DÉTECTÉ pour {file_path.name}")
+                        logger.warning(f"   📊 Hash local: {duplicate_check['local_hash'][:16]}...")
+                        if duplicate_check['remote_hash']:
+                            logger.warning(f"   📊 Hash distant: {duplicate_check['remote_hash'][:16]}...")
+                        
+                        # POLITIQUE: Permettre le remplacement mais avec warning explicite
+                        logger.warning("⚠️ UPLOAD AUTORISÉ - Remplacement de fichier détecté")
+                        logger.warning("   🎯 L'ancien fichier sera écrasé sur Frame.io")
+                    else:
+                        logger.error(f"🚫 UPLOAD REFUSÉ - Fichier identique déjà présent: {file_path.name}")
+                        logger.error("   💡 Suggestion: Vérifiez si c'est une nouvelle version (v002, v003, etc.)")
+                        return None
+                else:
+                    logger.info(f"✅ Aucun doublon - Upload autorisé pour: {file_path.name}")
+                    
+            except Exception as e:
+                logger.error(f"❌ Erreur lors de la vérification de doublons: {e}")
+                logger.warning("⚠️ Poursuite de l'upload malgré l'erreur de vérification")
             
             # 1. S'assurer que Cloudflare ou le serveur public est prêt
             self._ensure_cloudflare_or_public_server()

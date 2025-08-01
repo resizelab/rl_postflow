@@ -5,6 +5,31 @@ Toutes les modifications notables de ce projet seront documentées dans ce fichi
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.3.0] - 2025-08-01 🔧 **DISCORD FIXES & AFTER EFFECTS WORKFLOW**
+
+### ✨ Ajouté - Corrections Discord Critiques
+- **Version Display Fix** : Affichage correct des versions dans les notifications (shot_name + version)
+- **Share Link Authentication** : Correction des erreurs 401 avec variables d'environnement  
+- **Message Deduplication** : Élimination des notifications en double avec cache intelligent
+- **Enhanced Webhooks** : Traitement amélioré des commentaires Frame.io
+
+### 🎨 Ajouté - Workflow After Effects v3
+- **After Effects Generator v3** : Support des configurations personnalisées (--config)
+- **Priority-Based Generation** : Génération séparée P02 (71 plans) et P03 (21 plans) 
+- **CSV Analysis Enhanced** : Filtrage par priorité et génération JSON distincte
+- **Production Ready** : Scripts validés en dry-run et prêts pour génération
+
+### 🛠️ Amélioré - Techniques
+- **Environment Variable Consistency** : Authentification unifiée Frame.io
+- **Comment Processing** : Déduplication intelligente des notifications
+- **Enhanced CSV Processing** : Support priorités multiples avec export séparé
+- **Configuration Management** : JSON configs distincts pour éviter l'écrasement
+
+### 🐛 Corrigé
+- Correction de l'authentification Frame.io pour les share links
+- Élimination des notifications Discord en double
+- Fix de l'affichage des versions dans les webhooks
+
 ## [4.1.10] - 2025-07-28 🎬 **GÉNÉRATEUR AFTER EFFECTS V2 COMPLET**
 
 ### ✨ Ajouté - Générateur After Effects v2

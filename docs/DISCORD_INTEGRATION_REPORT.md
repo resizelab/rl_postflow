@@ -148,12 +148,34 @@ Hey <@123456789012345678> 👋
 - **Documentation** : ✅ Guide utilisateur complet
 
 ### 🚀 **Prêt pour la production**
-Le système `DiscordUserNotifier` est maintenant complètement intégré dans le pipeline RL PostFlow v4.1.1 et prêt à être utilisé en production avec :
+Le système `DiscordUserNotifier` est maintenant complètement intégré dans le pipeline RL PostFlow v4.3.0 et prêt à être utilisé en production avec :
 
 1. **Mentions automatiques** des utilisateurs basées sur Google Sheets
 2. **Templates riches** pour toutes les notifications
 3. **Intégration transparente** dans le pipeline existant
 4. **Fallback intelligent** pour assurer la continuité
+
+## 🆕 **Nouvelles fonctionnalités v4.3.0**
+
+### **Corrections Discord majeures**
+- ✅ **Version dans notifications** : Affichage correct du numéro de version dans les notifications Discord
+- ✅ **Share links Frame.io** : Correction de l'authentification pour la création des liens de partage
+- ✅ **Déduplication commentaires** : Élimination des notifications Discord dupliquées pour les commentaires Frame.io
+
+### **Auto Hooks améliorés**
+```python
+# Nouvelles fonctionnalités dans src/utils/auto_hooks.py
+- Cache de déduplication pour éviter les notifications en double
+- Gestion complète des versions dans les noms de plan
+- Support des share links Frame.io dans les notifications
+```
+
+### **Integration Frame.io**
+```python
+# Nouvelles fonctionnalités dans src/integrations/frameio/
+- share_manager.py : Gestionnaire de liens de partage avec authentification corrigée  
+- webhook_manager.py : Inclusion de la version dans la construction du shot_name
+```
 
 **Prochaines étapes optionnelles** :
 - Tests avec de vrais utilisateurs Discord
@@ -163,4 +185,5 @@ Le système `DiscordUserNotifier` est maintenant complètement intégré dans le
 ---
 
 *Intégration terminée le 10 juillet 2025*  
-*RL PostFlow v4.1.1 - Prêt pour publication open source* 🎉
+*Mis à jour v4.3.0 le 1er août 2025*  
+*RL PostFlow v4.3.0 - Prêt pour publication open source* 🎉

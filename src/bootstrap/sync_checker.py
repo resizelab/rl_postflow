@@ -183,16 +183,73 @@ class SyncChecker:
                 # Fichier traité, vérifier le statut
                 status = matched_upload.get('status', 'UNKNOWN')
                 
+                # Vérifier aussi le pipeline_status.json pour les uploads qui ont échoué
+                needs_retry = await self._check_pipeline_status_for_retry(file_path, matched_upload)
+                
                 # Vérifier les statuts de completion (avec et sans emoji)
-                if status in ['COMPLETED', '🎉 COMPLETED', 'SUCCESS', '✅ SUCCESS']:
+                if status in ['COMPLETED', '🎉 COMPLETED', 'SUCCESS', '✅ SUCCESS'] and not needs_retry:
                     processed_files.append(file_path)
                     logger.info(f"✅ Fichier déjà traité: {file_path.name} (statut: {status})")
                 else:
-                    # Fichier en cours ou échoué
+                    # Fichier en cours, échoué ou à retraiter selon pipeline_status
                     missing_files.append(file_path)
-                    logger.warning(f"⚠️ Fichier incomplet (statut: {status}): {file_path.name}")
+                    if needs_retry:
+                        logger.warning(f"🔄 Fichier à retraiter (pipeline status failed): {file_path.name}")
+                    else:
+                        logger.warning(f"⚠️ Fichier incomplet (statut: {status}): {file_path.name}")
         
         return found_files, processed_files, missing_files
+    
+    async def _check_pipeline_status_for_retry(self, file_path: Path, upload_data: Dict[str, Any]) -> bool:
+        """
+        Vérifie si un fichier doit être retraité selon pipeline_status.json
+        
+        Args:
+            file_path: Chemin du fichier
+            upload_data: Données d'upload depuis uploads_tracking.json
+            
+        Returns:
+            bool: True si le fichier doit être retraité
+        """
+        try:
+            pipeline_status_file = Path("data/pipeline_status.json")
+            if not pipeline_status_file.exists():
+                return False
+            
+            import json
+            with open(pipeline_status_file, 'r', encoding='utf-8') as f:
+                pipeline_data = json.load(f)
+            
+            shots = pipeline_data.get('shots', {})
+            shot_id = upload_data.get('shot_id')
+            version = upload_data.get('version')
+            
+            if not shot_id or not version:
+                return False
+            
+            plan_key = f"{shot_id}_{version}"
+            
+            if plan_key in shots:
+                shot_data = shots[plan_key]
+                current_status = shot_data.get('current_status', '')
+                
+                # Vérifier si le statut indique un échec d'upload
+                failed_statuses = ['upload_failed', 'failed', 'error', 'rejected']
+                if current_status in failed_statuses:
+                    logger.info(f"🔄 Pipeline status détecte échec pour {file_path.name}: {current_status}")
+                    return True
+                    
+                # Vérifier si frameio_file_id est manquant mais status est "completed"
+                frameio_file_id = shot_data.get('frameio_file_id')
+                if current_status == 'completed' and not frameio_file_id:
+                    logger.info(f"🔄 Pipeline status détecte completion sans file_id pour {file_path.name}")
+                    return True
+            
+            return False
+            
+        except Exception as e:
+            logger.debug(f"Erreur vérification pipeline status pour {file_path.name}: {e}")
+            return False
     
     async def _display_sync_summary(self, found_files: List[Path], processed_files: List[Path], missing_files: List[Path]):
         """Affiche le résumé de synchronisation"""

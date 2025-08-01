@@ -147,11 +147,14 @@ class PipelineTracker:
         except Exception as e:
             print(f"❌ Error saving status file: {e}")
     
-    def initialize_shot(self, nomenclature: str, source_file: str = "") -> ShotProgress:
-        """Initialize tracking for a new shot."""
-        if nomenclature not in self.shots:
-            self.shots[nomenclature] = ShotProgress(
-                nomenclature=nomenclature,
+    def initialize_shot(self, nomenclature: str, source_file: str = "", version: str = "v001") -> ShotProgress:
+        """Initialize tracking for a new shot with version support."""
+        # Créer la clé unique avec shot_id + version
+        shot_key = f"{nomenclature}_{version}" if version and not nomenclature.endswith(f"_{version}") else nomenclature
+        
+        if shot_key not in self.shots:
+            self.shots[shot_key] = ShotProgress(
+                nomenclature=shot_key,
                 current_status=ShotStatus.PENDING,
                 stage=PipelineStage.SOURCE_VERIFICATION,
                 source_file_path=source_file,
@@ -159,22 +162,25 @@ class PipelineTracker:
             )
             self.save_status()
         
-        return self.shots[nomenclature]
+        return self.shots[shot_key]
     
-    def update_shot_status(self, nomenclature: str, status: ShotStatus, notes: str = "", **kwargs) -> None:
-        """Update the status of a shot."""
-        if nomenclature not in self.shots:
-            self.initialize_shot(nomenclature)
+    def update_shot_status(self, nomenclature: str, status: ShotStatus, notes: str = "", version: str = "v001", **kwargs) -> None:
+        """Update the status of a shot with version support."""
+        # Créer la clé unique avec shot_id + version  
+        shot_key = f"{nomenclature}_{version}" if version and not nomenclature.endswith(f"_{version}") else nomenclature
         
-        self.shots[nomenclature].update_status(status, notes)
+        if shot_key not in self.shots:
+            self.initialize_shot(nomenclature, version=version)
+        
+        self.shots[shot_key].update_status(status, notes)
         
         # Update additional fields
         for key, value in kwargs.items():
-            if hasattr(self.shots[nomenclature], key):
-                setattr(self.shots[nomenclature], key, value)
+            if hasattr(self.shots[shot_key], key):
+                setattr(self.shots[shot_key], key, value)
         
         self.save_status()
-        print(f"📈 Updated {nomenclature}: {status.value}")
+        print(f"📈 Updated {shot_key}: {status.value}")
     
     def get_shots_by_status(self, status: ShotStatus) -> List[ShotProgress]:
         """Get all shots with a specific status."""
@@ -183,6 +189,21 @@ class PipelineTracker:
     def get_shots_by_stage(self, stage: PipelineStage) -> List[ShotProgress]:
         """Get all shots in a specific stage."""
         return [shot for shot in self.shots.values() if shot.stage == stage]
+    
+    def get_shot_versions(self, shot_id: str) -> List[ShotProgress]:
+        """Get all versions of a specific shot."""
+        return [shot for shot_key, shot in self.shots.items() 
+                if shot_key.startswith(f"{shot_id}_v") or shot_key == shot_id]
+    
+    def get_latest_version(self, shot_id: str) -> Optional[ShotProgress]:
+        """Get the latest version of a specific shot."""
+        versions = self.get_shot_versions(shot_id)
+        if not versions:
+            return None
+        
+        # Trier par clé pour obtenir la version la plus récente
+        sorted_versions = sorted(versions, key=lambda x: x.nomenclature, reverse=True)
+        return sorted_versions[0]
     
     def get_pipeline_stats(self) -> Dict[str, Any]:
         """Get pipeline statistics."""

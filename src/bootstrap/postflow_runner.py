@@ -69,6 +69,7 @@ class PostFlowRunner:
         self.discord_notifier = None
         self.user_notifier = None
         self.upload_queue = None
+        self.token_manager = None  # Nouveau: gestionnaire automatique de tokens
         
         # État du pipeline
         self.is_running = False
@@ -236,8 +237,15 @@ class PostFlowRunner:
                 sheets_tracker=self.sheets_tracker,
                 discord_notifier=self.discord_notifier,
                 user_notifier=self.user_notifier,
-                frameio_api=self.frameio_manager  # Passer l'API Frame.io pour FrameioVideoHook
+                frameio_api=self.frameio_manager,  # Passer l'API Frame.io pour FrameioVideoHook
+                config_manager=self.config_manager,  # Pour les liens de partage Frame.io
+                upload_tracker=self.upload_tracker  # Pour récupérer la dernière version des shots
             )
+            
+            # Initialiser le gestionnaire automatique de tokens
+            from src.utils.token_refresh_manager import initialize_token_manager
+            self.token_manager = initialize_token_manager(self.config_manager)
+            logger.info("🔄 Gestionnaire automatique de tokens initialisé")
             
             logger.info("✅ Intégrations initialisées avec succès")
             
@@ -553,7 +561,9 @@ class PostFlowRunner:
                 except Exception as e:
                     logger.error(f"[ERROR] Erreur finalisation tracking: {e}")
             
-            logger.info(f"[PARTY] Workflow terminé avec succès: {file_path.name}")
+            # Message final avec plan + version
+            shot_info = f"{metadata.get('nomenclature', 'N/A')} {metadata.get('version', 'N/A')}"
+            logger.info(f"[PARTY] Workflow terminé avec succès: {shot_info}")
             
         except Exception as e:
             logger.error(f"[ERROR] Erreur workflow: {e}")
@@ -595,10 +605,39 @@ class PostFlowRunner:
             return None, None
     
     async def _upload_to_frameio(self, file_path: Path) -> Optional[str]:
-        """Upload le fichier vers Frame.io"""
+        """Upload le fichier vers Frame.io avec vérifications de sécurité"""
         try:
             if not self.frameio_manager:
                 return None
+            
+            # 🔒 VÉRIFICATION DE SÉCURITÉ: Taille minimale du fichier
+            file_size = file_path.stat().st_size
+            min_video_size = 5 * 1024 * 1024  # 5 MB minimum
+            
+            if file_size < min_video_size:
+                logger.error(f"❌ [SÉCURITÉ] Fichier trop petit pour un upload: {file_size:,} bytes (min: {min_video_size:,})")
+                logger.error(f"❌ [SÉCURITÉ] Fichier probablement incomplet: {file_path.name}")
+                return None
+            
+            # 🔒 VÉRIFICATION DE SÉCURITÉ: Test d'accès rapide (cache LucidLink)
+            try:
+                import time
+                start_time = time.time()
+                with open(file_path, 'rb') as f:
+                    f.seek(-1024, 2)  # Lire les derniers 1KB
+                    f.read(1024)
+                access_time = time.time() - start_time
+                
+                if access_time > 3.0:  # Plus de 3 secondes = probablement pas entièrement en cache
+                    logger.warning(f"⚠️ [SÉCURITÉ] Accès lent au fichier ({access_time:.2f}s), sync LucidLink incomplète ?")
+                    logger.warning(f"⚠️ [SÉCURITÉ] Upload annulé par sécurité: {file_path.name}")
+                    return None
+                    
+            except Exception as e:
+                logger.error(f"❌ [SÉCURITÉ] Erreur test d'accès fichier: {e}")
+                return None
+            
+            logger.info(f"✅ [SÉCURITÉ] Fichier validé pour upload: {file_size:,} bytes, accès: {access_time:.2f}s")
             
             # Extraire les métadonnées pour obtenir shot_name et scene_name
             metadata = self._extract_metadata_from_path(file_path)
@@ -992,6 +1031,15 @@ class PostFlowRunner:
                 logger.info("✅ Queue d'upload arrêtée")
             except Exception as e:
                 logger.warning(f"⚠️ Erreur arrêt queue d'upload: {e}")
+        
+        # Arrêter le gestionnaire de tokens
+        if self.token_manager:
+            logger.info("[STOP] Arrêt du gestionnaire de tokens...")
+            try:
+                self.token_manager.stop_monitoring()
+                logger.info("✅ Gestionnaire de tokens arrêté")
+            except Exception as e:
+                logger.warning(f"⚠️ Erreur arrêt gestionnaire de tokens: {e}")
         
         # Arrêter l'infrastructure
         if self.infrastructure_manager:

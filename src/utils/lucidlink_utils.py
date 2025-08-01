@@ -333,17 +333,19 @@ class LucidLinkFileWaiter:
         # Étape 3: Vérification de stabilité après mise en cache
         start_time = time.time()
         consecutive_stable_checks = 0
-        required_stable_checks = 3
+        required_stable_checks = 6  # 6 vérifications sur 30 secondes
+        check_interval_stable = 5.0  # Vérifications toutes les 5 secondes
+        max_stability_wait = 30.0  # Attendre max 30 secondes pour la stabilité
         
         prev_size = None
         prev_hash = None
         
-        while (time.time() - start_time) < max_wait:
+        while (time.time() - start_time) < max_stability_wait:
             try:
                 # Vérifier l'existence et l'accessibilité
                 if not file_path.exists():
                     logger.debug(f"Fichier non trouvé: {file_path}")
-                    await asyncio.sleep(check_interval)
+                    await asyncio.sleep(check_interval_stable)
                     continue
                 
                 # Vérifier la taille
@@ -353,7 +355,7 @@ class LucidLinkFileWaiter:
                 # Ignorer les fichiers vides ou très petits (potentiellement des placeholders)
                 if current_size < 1024:  # Moins de 1KB
                     logger.debug(f"Fichier trop petit ({current_size} bytes), attente...")
-                    await asyncio.sleep(check_interval)
+                    await asyncio.sleep(check_interval_stable)
                     continue
                 
                 # Vérifier l'accès en lecture avec test de cache
@@ -363,7 +365,7 @@ class LucidLinkFileWaiter:
                         chunk = f.read(65536)
                         if not chunk:
                             logger.debug(f"Fichier vide ou inaccessible")
-                            await asyncio.sleep(check_interval)
+                            await asyncio.sleep(check_interval_stable)
                             continue
                         
                         current_hash = hashlib.md5(chunk).hexdigest()
@@ -379,7 +381,7 @@ class LucidLinkFileWaiter:
                         
                         if not is_likely_cached:
                             logger.info(f"⏳ Fichier probablement en cours de cache (temps accès: {cache_test_time:.2f}s)")
-                            await asyncio.sleep(check_interval)
+                            await asyncio.sleep(check_interval_stable)
                             continue
                         
                         # Vérifier la stabilité
@@ -406,7 +408,7 @@ class LucidLinkFileWaiter:
                         
                 except (OSError, PermissionError) as e:
                     logger.debug(f"Erreur accès fichier: {e}")
-                    await asyncio.sleep(check_interval)
+                    await asyncio.sleep(check_interval_stable)
                     continue
                 
             except Exception as e:
@@ -449,8 +451,8 @@ class LucidLinkFileWaiter:
             return False
     
     async def _standard_stability_check(self, file_path: Path, 
-                                      max_wait: int = 60, 
-                                      check_interval: int = 2) -> bool:
+                                      max_wait: int = 30, 
+                                      check_interval: int = 5) -> bool:
         """Vérification de stabilité standard pour les fichiers non-LucidLink"""
         try:
             if not file_path.exists():
@@ -459,7 +461,7 @@ class LucidLinkFileWaiter:
             prev_size = None
             prev_mtime = None
             stable_checks = 0
-            required_stable_checks = 3
+            required_stable_checks = 6  # 6 vérifications sur 30 secondes
             
             start_time = time.time()
             

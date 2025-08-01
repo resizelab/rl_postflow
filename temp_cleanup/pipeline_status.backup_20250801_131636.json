@@ -1,0 +1,86 @@
+{
+  "version": "2.0",
+  "created_at": "2025-08-01T11:37:13.120694",
+  "last_updated": "2025-08-01T11:37:13.120694",
+  "migration_note": "Migré depuis uploads_tracking.json avec support des versions",
+  "shots": {
+    "UNDLM_00146_v001": {
+      "shot_id": "UNDLM_00146",
+      "version": "v001",
+      "current_status": "completed",
+      "stage": "review",
+      "source_file": "E:\\Volumes\\resizelab\\o2b-undllm\\4_OUT\\2_FROM_ANIM\\SQ07\\UNDLM_00146\\SQ07_UNDLM_00146_v001.mov",
+      "created_at": "2025-07-31T17:55:07.805267",
+      "last_updated": "2025-07-31T17:56:09.192693",
+      "upload_id": "3819669e3e6d1617",
+      "frameio_file_id": "2d79cc79-3dea-411a-9140-d4ab037bc1c3",
+      "frameio_link": "https://next.frame.io/project/c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f/view/2d79cc79-3dea-411a-9140-d4ab037bc1c3",
+      "upload_status": "🎉 COMPLETED"
+    },
+    "UNDLM_00152_v001": {
+      "shot_id": "UNDLM_00152",
+      "version": "v001",
+      "current_status": "completed",
+      "stage": "review",
+      "source_file": "E:\\Volumes\\resizelab\\o2b-undllm\\4_OUT\\2_FROM_ANIM\\SQ07\\UNDLM_00152\\SQ07_UNDLM_00152_v001.mov",
+      "created_at": "2025-07-31T19:34:19.759198",
+      "last_updated": "2025-07-31T19:35:10.487860",
+      "upload_id": "2203789c8e25c6a0",
+      "frameio_file_id": "f9c691ef-d314-4a40-a882-741db2477917",
+      "frameio_link": "https://next.frame.io/project/c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f/view/f9c691ef-d314-4a40-a882-741db2477917",
+      "upload_status": "🎉 COMPLETED"
+    },
+    "UNDLM_00161_v001": {
+      "shot_id": "UNDLM_00161",
+      "version": "v001",
+      "current_status": "completed",
+      "stage": "review",
+      "source_file": "E:\\Volumes\\resizelab\\o2b-undllm\\4_OUT\\2_FROM_ANIM\\SQ07\\UNDLM_00161\\SQ07_UNDLM_00161_v001.mov",
+      "created_at": "2025-07-31T19:35:02.520513",
+      "last_updated": "2025-07-31T19:35:38.487423",
+      "upload_id": "58506fd581c6743d",
+      "frameio_file_id": "4eedbdf7-de7d-4d42-ab77-b1deea074dfc",
+      "frameio_link": "https://next.frame.io/project/c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f/view/4eedbdf7-de7d-4d42-ab77-b1deea074dfc",
+      "upload_status": "🎉 COMPLETED"
+    },
+    "UNDLM_00163_v001": {
+      "shot_id": "UNDLM_00163",
+      "version": "v001",
+      "current_status": "completed",
+      "stage": "review",
+      "source_file": "E:\\Volumes\\resizelab\\o2b-undllm\\4_OUT\\2_FROM_ANIM\\SQ07\\UNDLM_00163\\SQ07_UNDLM_00163_v001.mov",
+      "created_at": "2025-07-31T19:35:35.251271",
+      "last_updated": "2025-07-31T19:36:20.119669",
+      "upload_id": "df2e0e2dd7c2f54a",
+      "frameio_file_id": "7aab2381-e8e8-4017-9b15-ed6e478f23ad",
+      "frameio_link": "https://next.frame.io/project/c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f/view/7aab2381-e8e8-4017-9b15-ed6e478f23ad",
+      "upload_status": "🎉 COMPLETED"
+    },
+    "UNDLM_00150_v001": {
+      "shot_id": "UNDLM_00150",
+      "version": "v001",
+      "current_status": "completed",
+      "stage": "review",
+      "source_file": "E:\\Volumes\\resizelab\\o2b-undllm\\4_OUT\\2_FROM_ANIM\\SQ07\\UNDLM_00150\\SQ07_UNDLM_00150_v001.mov",
+      "created_at": "2025-07-31T19:48:13.420446",
+      "last_updated": "2025-07-31T21:42:34.024757",
+      "upload_id": "1e93bb513bcb06a4",
+      "frameio_file_id": "44b7b6a7-91d3-403d-b9a5-c7f321c0e55c",
+      "frameio_link": "https://next.frame.io/project/c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f/view/44b7b6a7-91d3-403d-b9a5-c7f321c0e55c",
+      "upload_status": "🎉 COMPLETED"
+    },
+    "UNDLM_00148_v001": {
+      "shot_id": "UNDLM_00148",
+      "version": "v001",
+      "current_status": "completed",
+      "stage": "review",
+      "source_file": "E:\\Volumes\\resizelab\\o2b-undllm\\4_OUT\\2_FROM_ANIM\\SQ07\\UNDLM_00148\\SQ07_UNDLM_00148_v001.mov",
+      "created_at": "2025-07-31T19:48:54.694244",
+      "last_updated": "2025-07-31T19:49:35.501047",
+      "upload_id": "ec128616e8879277",
+      "frameio_file_id": "f2d23d85-9829-45db-86ff-ea0f52023fc8",
+      "frameio_link": "https://next.frame.io/project/c5dc0e94-8f0a-48b4-8f34-ae672bb59f0f/view/f2d23d85-9829-45db-86ff-ea0f52023fc8",
+      "upload_status": "🎉 COMPLETED"
+    }
+  }
+}
